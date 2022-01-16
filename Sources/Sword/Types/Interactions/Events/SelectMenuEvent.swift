@@ -28,9 +28,9 @@ public class SelectMenuEvent: InteractionEvent {
     
     public let selectedValue: SelectMenuComponentData
     
-    var ephemeral: Int
+    public var ephemeral: Int
     
-    var isDefered: Bool
+    public var isDefered: Bool
     
     
     init(_ sword: Sword, data: [String : Any]) {

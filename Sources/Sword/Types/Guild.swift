@@ -112,7 +112,6 @@ public class Guild: Updatable, Imageable {
      - parameter shard: Shard ID this guild is handled by
      */
     init(_ sword: Sword, _ json: [String: Any], _ shard: Int? = nil) {
-        print(json)
         self.sword = sword
 
         self.id = Snowflake(json["id"])!

@@ -15,20 +15,27 @@ public struct Activities: Encodable {
     public init(name: String, type: ActivityType, url: String? = nil) {
         self.name = name
         self.type = type.rawValue
-        validateUrl(url: url)
+        let isValidURL = validateUrl(url: url)
 
-        self.url = url
+        if isValidURL {
+            self.url = url
+        } else {
+            self.url = "https://www.twitch.tv/"
+        }
     }
 
-    private func validateUrl(url: String?) {
+    private func validateUrl(url: String?) -> Bool {
         // If URL is nil then we can safely ignore
         if url == nil {
-            return
+            return true
         }
 
         if !url!.contains("https://twitch.tv/") || !url!.contains("https://youtube.com/") {
-            print("bruh")
+            print("[Sword] URL for activities requires either a Twitch or Youtube link. There will be no link to your stream in the RPC section.")
+            return false
         }
+        
+        return true
     }
 }
 

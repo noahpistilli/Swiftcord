@@ -1,6 +1,6 @@
 import Sword
 
-let bot = Shield(token: "Super secret token here")
+let bot = Sword(token: "Super secret token here")
 
 bot.setIntents(intents: .guilds)
 

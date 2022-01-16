@@ -6,6 +6,9 @@
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
 
+#if os(Linux)
+import FoundationNetworking
+#endif
 import Foundation
 import Dispatch
 

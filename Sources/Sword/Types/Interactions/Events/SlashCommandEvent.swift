@@ -192,7 +192,7 @@ public class SlashCommandEvent: InteractionEvent {
         
         for option in self.options {
             if option.name == optionName {
-                if option.type == .user {
+                if option.type == .string {
                     string = option.value
                 }
             }

@@ -39,19 +39,18 @@ extension Shard {
       case 1:
         let dm = DM(self.sword, data)
         self.sword.emit(.channelCreate, with: dm)
-          
+
       case 2:
         let channel = GuildVoice(self.sword, data)
         self.sword.emit(.channelCreate, with: channel)
-          
+
       case 3:
         let group = GroupDM(self.sword, data)
         self.sword.emit(.channelCreate, with: group)
-        
+
       case 4:
         let category = GuildCategory(self.sword, data)
         self.sword.emit(.channelCreate, with: category)
-
       default: return
       }
 
@@ -96,7 +95,7 @@ extension Shard {
       }
       self.sword.emit(.channelPinsUpdate, with: (channel, timestamp?.date)
       )
-      
+
     /// CHANNEL_UPDATE
     case .channelUpdate:
       switch data["type"] as! Int {
@@ -108,7 +107,7 @@ extension Shard {
         }
         channel.update(data)
         self.sword.emit(.channelUpdate, with: channel)
-          
+
       case 3:
         let group = GroupDM(self.sword, data)
         self.sword.groups[group.id] = group
@@ -134,7 +133,7 @@ extension Shard {
       if self.sword.unavailableGuilds[guild.id] != nil {
         self.sword.unavailableGuilds.removeValue(forKey: guild.id)
         self.sword.emit(.guildAvailable, with: guild)
-      }else {
+      } else {
         self.sword.emit(.guildCreate, with: guild)
       }
 
@@ -154,7 +153,7 @@ extension Shard {
         let unavailableGuild = UnavailableGuild(data, self.id)
         self.sword.unavailableGuilds[guild.id] = unavailableGuild
         self.sword.emit(.guildUnavailable, with: unavailableGuild)
-      }else {
+      } else {
         self.sword.emit(.guildDelete, with: guild)
       }
 
@@ -183,7 +182,7 @@ extension Shard {
         return
       }
       let member = Member(self.sword, guild, data)
-      guild.members[member.user.id] = member
+      guild.members[member.user!.id] = member
       self.sword.emit(.guildMemberAdd, with: (guild, member))
 
     /// GUILD_MEMBER_REMOVE
@@ -205,7 +204,7 @@ extension Shard {
       let members = data["members"] as! [[String: Any]]
       for member in members {
         let member = Member(self.sword, guild, member)
-        guild.members[member.user.id] = member
+        guild.members[member.user!.id] = member
       }
 
     /// GUILD_MEMBER_UPDATE
@@ -215,7 +214,7 @@ extension Shard {
         return
       }
       let member = Member(self.sword, guild, data)
-      guild.members[member.user.id] = member
+      guild.members[member.user!.id] = member
       self.sword.emit(.guildMemberUpdate, with: member)
 
     /// GUILD_ROLE_CREATE
@@ -257,17 +256,18 @@ extension Shard {
       guard let guild = self.sword.guilds[guildId] else {
         return
       }
-      guild.update(data) 
+      guild.update(data)
       self.sword.emit(.guildUpdate, with: guild)
 
     /// MESSAGE_CREATE
     case .messageCreate:
+
       let msg = Message(self.sword, data)
-      
+
       if let channel = msg.channel as? GuildText {
         channel.lastMessageId = msg.id
       }
-      
+
       self.sword.emit(.messageCreate, with: msg)
 
     /// MESSAGE_DELETE
@@ -287,7 +287,7 @@ extension Shard {
       }
       let messageIds = (data["ids"] as! [String]).map({ Snowflake($0)! })
       self.sword.emit(.messageDeleteBulk, with: (messageIds, channel))
-      
+
     /// MESSAGE_REACTION_REMOVE_ALL
     case .messageReactionRemoveAll:
       let channelId = Snowflake(data["channel_id"])!
@@ -296,7 +296,7 @@ extension Shard {
       }
       let messageId = Snowflake(data["message_id"])!
       self.sword.emit(.messageReactionRemoveAll, with: (messageId, channel))
-      
+
     /// MESSAGE_UPDATE
     case .messageUpdate:
       self.sword.emit(.messageUpdate, with: data)
@@ -306,14 +306,14 @@ extension Shard {
       let userId = Snowflake((data["user"] as! [String: Any])["id"])!
       let presence = Presence(data)
       let guildID = Snowflake(data["guild_id"])!
-      
+
       guard self.sword.options.willCacheAllMembers else {
         guard presence.status == .offline else { return }
-        
+
         self.sword.guilds[guildID]?.members.removeValue(forKey: userId)
         return
       }
-      
+
       self.sword.guilds[guildID]?.members[userId]?.presence = presence
       self.sword.emit(.presenceUpdate, with: (userId, presence))
 
@@ -321,14 +321,14 @@ extension Shard {
     case .ready:
       self.sword.readyTimestamp = Date()
       self.sessionId = data["session_id"] as? String
-      
+
       let guilds = data["guilds"] as! [[String: Any]]
 
       for guild in guilds {
         let guildID = Snowflake(guild["id"])!
         self.sword.unavailableGuilds[guildID] = UnavailableGuild(guild, self.id)
       }
-      
+
       self.sword.shardsReady += 1
       self.sword.emit(.shardReady, with: self.id)
 
@@ -347,6 +347,19 @@ extension Shard {
       let messageID = Snowflake(data["message_id"])!
       let emoji = Emoji(data["emoji"] as! [String: Any])
       self.sword.emit(event, with: (channel, userID, messageID, emoji))
+        
+    case .threadCreate:
+        let thread = Thread(sword, data)
+        self.sword.emit(.threadCreate, with: thread)
+        
+    case .threadDelete:
+        let thread = Thread(sword, data)
+        self.sword.emit(.threadDelete, with: thread)
+        
+    
+    case .threadUpdate:
+        let thread = Thread(sword, data)
+        self.sword.emit(.threadDelete, with: thread)
 
     /// TYPING_START
     case .typingStart:
@@ -370,6 +383,7 @@ extension Shard {
 
     /// VOICE_STATE_UPDATE
     case .voiceStateUpdate:
+        print(data)
       let guildId = Snowflake(data["guild_id"])!
       guard let guild = self.sword.guilds[guildId] else {
         return
@@ -384,7 +398,7 @@ extension Shard {
         guild.members[userId]?.voiceState = voiceState
 
         self.sword.emit(.voiceChannelJoin, with: (userId, voiceState))
-      }else {
+      } else {
         guild.voiceStates.removeValue(forKey: userId)
         guild.members[userId]?.voiceState = nil
 
@@ -394,6 +408,7 @@ extension Shard {
       self.sword.emit(.voiceStateUpdate, with: userId)
 
     case .voiceServerUpdate:
+        break
       return
     case .audioData:
       return
@@ -417,6 +432,68 @@ extension Shard {
       return
     case .voiceChannelLeave:
       return
+    case .interaction:
+        // Convert basic interaction event to specified event
+        let initialType = data["type"] as! Int
+        
+        let interactionDict = data["data"] as! [String : Any]
+        
+        if initialType == 2 {
+            let type = interactionDict["type"] as! Int
+            // Application Command event
+            switch type {
+            case 1:
+                self.handleEvent(data, Event.slashCommandEvent.rawValue)
+            case 2:
+                self.handleEvent(data, Event.userCommandEvent.rawValue)
+            case 3:
+                self.handleEvent(data, Event.messageCommandEvent.rawValue)
+            default:
+                return
+            }
+
+            return
+        }
+        else if initialType == 3 {
+            let type = interactionDict["component_type"] as! Int
+            // Message component event (Buttons/Select Boxes)
+            if type == 2 {
+                self.handleEvent(data, Event.buttonEvent.rawValue)
+            }
+            else if type == 3 {
+                self.handleEvent(data, Event.selectBoxEvent.rawValue)
+            }
+            
+            return
+        }
+        
+        return
+        
+    case .slashCommandEvent:
+        let slashCommand = SlashCommandEvent(sword, data: data)
+        
+        self.sword.emit(.slashCommandEvent, with: slashCommand)
+        return
+        
+    case .buttonEvent:
+        let button = ButtonEvent(sword, data: data)
+        
+        self.sword.emit(.buttonEvent, with: button)
+        return
+        
+    case .selectBoxEvent:
+        let selectBox = SelectMenuEvent(sword, data: data)
+        
+        self.sword.emit(.selectBoxEvent, with: selectBox)
+        return
+    case .userCommandEvent:
+        let userCommand = UserCommandEvent(sword, data: data)
+        
+        self.sword.emit(.userCommandEvent, with: userCommand)
+    case .messageCommandEvent:
+        let messageCommand = MessageCommandEvent(sword, data: data)
+        
+        self.sword.emit(.messageCommandEvent, with: messageCommand)
     }
   }
 

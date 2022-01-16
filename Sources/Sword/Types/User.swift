@@ -30,13 +30,13 @@ public struct User: Imageable {
 
   /// Whether or not this user is a bot
   public let isBot: Bool?
-  
+
   /// Whether of not user has mfa enabled (will probably be empty forever)
   public let isMfaEnabled: Bool?
 
   /// Whether user is verified or not
   public let isVerified: Bool?
-  
+
   /// Username of user
   public let username: String?
 
@@ -62,9 +62,9 @@ public struct User: Imageable {
   }
 
   // MARK: Functions
-  
+
   /// Gets DM for user
-  public func getDM(then completion: @escaping (DM?, RequestError?) -> ()) {
+  public func getDM(then completion: @escaping (DM?, RequestError?) -> Void) {
     self.sword?.getDM(for: self.id, then: completion)
   }
 
@@ -82,8 +82,8 @@ public struct User: Imageable {
       // as of 7/18/20, the CDN domain is still cdn.discordapp.com
       return URL(string: "https://cdn.discordapp.com/embed/avatars/\(discriminator % 5).\(format)")
     }
-    
+
     return URL(string: "https://cdn.discordapp.com/avatars/\(self.id)/\(avatar).\(format)")
   }
-  
+
 }

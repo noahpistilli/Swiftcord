@@ -2,30 +2,30 @@
   "object": {
     "pins": [
       {
-        "package": "SSCommonCrypto",
-        "repositoryURL": "https://github.com/Azoy/common-crypto-spm.git",
+        "package": "swift-nio",
+        "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "7e9904a0d0c0024a86ab6fe5698ffc8f7799efb4",
-          "version": "1.2.0"
+          "revision": "51c3fc2e4a0fcdf4a25089b288dd65b73df1b0ef",
+          "version": "2.37.0"
         }
       },
       {
-        "package": "Starscream",
-        "repositoryURL": "https://github.com/Azoy/Starscream.git",
+        "package": "swift-nio-ssl",
+        "repositoryURL": "https://github.com/apple/swift-nio-ssl.git",
         "state": {
           "branch": null,
-          "revision": "a21fca8e9dc83cf3a88a3ba9be15ff17a7e4e8d6",
-          "version": "3.0.5"
+          "revision": "52a486ff6de9bc3e26bf634c5413c41c5fa89ca5",
+          "version": "2.17.2"
         }
       },
       {
-        "package": "SSCZLib",
-        "repositoryURL": "https://github.com/Azoy/zlib-spm.git",
+        "package": "websocket-kit",
+        "repositoryURL": "https://github.com/vapor/websocket-kit",
         "state": {
-          "branch": null,
-          "revision": "f92fc0658af4cd9b11f233e9c02786ecbf75f1ee",
-          "version": "1.2.0"
+          "branch": "main",
+          "revision": "ff8fbce837ef01a93d49c6fb49a72be0f150dac7",
+          "version": null
         }
       }
     ]

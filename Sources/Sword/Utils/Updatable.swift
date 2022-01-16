@@ -7,8 +7,8 @@
 //
 
 /// Allows for a class to be updated at runtime
-protocol Updatable: class {
-  
+protocol Updatable: AnyObject {
+
   func update(_ json: [String: Any])
-  
+
 }

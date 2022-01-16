@@ -7,7 +7,7 @@
 //
 
 /// Role Type
-public struct Role {
+public struct Role: Codable {
 
   // MARK: Properties
 
@@ -35,7 +35,7 @@ public struct Role {
   /// The position for this role
   public let position: Int
 
-  // MARKK: Initializer
+  // MARK: Initializer
 
   /**
    Creates Role struct

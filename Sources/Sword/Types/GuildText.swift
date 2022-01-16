@@ -21,10 +21,10 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
     guard let parentId = parentId else {
       return nil
     }
-    
+
     return guild?.channels[parentId] as? GuildCategory
   }
-  
+
   /// Guild object for this channel
   public var guild: Guild? {
     return self.sword?.getGuild(for: id)
@@ -44,10 +44,10 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
 
   /// Name of channel
   public internal(set) var name: String?
-  
+
   /// Parent Category ID of this channel
   public internal(set) var parentId: Snowflake?
-  
+
   /// Array of Overwrite strcuts for channel
   public internal(set) var permissionOverwrites = [Snowflake: Overwrite]()
 
@@ -72,30 +72,30 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
   */
   init(_ sword: Sword, _ json: [String: Any]) {
     self.sword = sword
-    
+
     self.id = Snowflake(json["id"])!
-    
+
     self.lastMessageId = Snowflake(json["last_message_id"])
 
     if let lastPinTimestamp = json["last_pin_timestamp"] as? String {
       self.lastPinTimestamp = lastPinTimestamp.date
-    }else {
+    } else {
       self.lastPinTimestamp = nil
     }
 
     let name = json["name"] as? String
     self.name = name
-    
+
     if let isNsfw = json["nsfw"] as? Bool {
       self.isNsfw = isNsfw
-    }else if let name = name {
+    } else if let name = name {
       self.isNsfw = name == "nsfw" || name.hasPrefix("nsfw-")
-    }else {
+    } else {
       self.isNsfw = false
     }
 
     self.parentId = Snowflake(json["parent_id"])
-    
+
     if let overwrites = json["permission_overwrites"] as? [[String: Any]] {
       for overwrite in overwrites {
         let overwrite = Overwrite(overwrite)
@@ -105,7 +105,7 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
 
     self.position = json["position"] as? Int
     self.topic = json["topic"] as? String
-    
+
     if let guildId = Snowflake(json["guild_id"]) {
       sword.guilds[guildId]!.channels[self.id] = self
     }
@@ -113,39 +113,39 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
 
   // MARK: Functions
 
-  func update(_ json: [String : Any]) {
+  func update(_ json: [String: Any]) {
     self.lastMessageId = Snowflake(json["last_message_id"])
-    
+
     if let lastPinTimestamp = json["last_pin_timestamp"] as? String {
       self.lastPinTimestamp = lastPinTimestamp.date
-    }else {
+    } else {
       self.lastPinTimestamp = nil
     }
-    
+
     let name = json["name"] as? String
     self.name = name
-    
+
     if let isNsfw = json["nsfw"] as? Bool {
       self.isNsfw = isNsfw
-    }else if let name = name {
+    } else if let name = name {
       self.isNsfw = name == "nsfw" || name.hasPrefix("nsfw-")
-    }else {
+    } else {
       self.isNsfw = false
     }
-    
+
     self.parentId = Snowflake(json["parent_id"])
-    
+
     if let overwrites = json["permission_overwrites"] as? [[String: Any]] {
       for overwrite in overwrites {
         let overwrite = Overwrite(overwrite)
         self.permissionOverwrites[overwrite.id] = overwrite
       }
     }
-    
+
     self.position = json["position"] as? Int
     self.topic = json["topic"] as? String
   }
-  
+
   /**
    Creates a webhook for this channel
 
@@ -158,7 +158,7 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
   */
   public func createWebhook(
     with options: [String: String] = [:],
-    then completion: ((Webhook?, RequestError?) -> ())? = nil
+    then completion: ((Webhook?, RequestError?) -> Void)? = nil
   ) {
     guard self.type != .guildVoice else { return }
     self.sword?.createWebhook(for: self.id, with: options, then: completion)
@@ -171,7 +171,7 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
   */
   public func deleteReactions(
     from messageId: Snowflake,
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     guard self.type != .guildVoice else { return }
     self.sword?.deleteReactions(from: messageId, in: self.id, then: completion)
@@ -179,7 +179,7 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
 
   /// Gets this channel's webhooks
   public func getWebhooks(
-    then completion: @escaping ([Webhook]?, RequestError?) -> ()
+    then completion: @escaping ([Webhook]?, RequestError?) -> Void
   ) {
     guard self.type != .guildVoice else { return }
     self.sword?.getWebhooks(from: self.id, then: completion)
@@ -202,7 +202,7 @@ public struct Overwrite {
   public let id: Snowflake
 
   /// Either "role" or "member"
-  public let type: String
+  public let type: OverwriteType
 
   // MARK: Initializer
 
@@ -212,10 +212,16 @@ public struct Overwrite {
    - parameter json: JSON representable as a dictionary
   */
   init(_ json: [String: Any]) {
+
     self.allow = json["allow"] as! Int
     self.deny = json["deny"] as! Int
     self.id = Snowflake(json["id"])!
-    self.type = json["type"] as! String
+    self.type = OverwriteType(rawValue: json["type"] as! String)!
   }
+    
+    public enum OverwriteType: String {
+        case role
+        case member
+    }
 
 }

@@ -14,10 +14,6 @@ extension Sword {
    - parameter message: Info to output
   */
   func log(_ message: String) {
-    guard self.options.willLog else {
-      return
-    }
-
     print("[Sword] " + message)
   }
 
@@ -27,8 +23,8 @@ extension Sword {
    - parameter message: Warning to output
   */
   func warn(_ message: String) {
-    let prefix = "\u{001B}[1;93mWarning: \u{001B}[0m"
-    self.log(prefix + message)
+    let prefix = "\033[1;33mWarning: "
+    self.log(prefix + message + "\033[0m\n")
   }
 
   /**
@@ -37,8 +33,8 @@ extension Sword {
    - parameter message: Error to output
   */
   func error(_ message: String) {
-    let prefix = "\u{001B}[1;91mError: \u{001B}[0m"
-    self.log(prefix + message)
+    let prefix = "\033[1;31mError: "
+    self.log(prefix + message + "\033[0m\n")
   }
 
 }

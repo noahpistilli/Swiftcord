@@ -29,7 +29,7 @@ public extension Channel {
   // MARK: Functions
 
   /// Deletes the current channel, whether it be a DMChannel or GuildChannel
-  func delete(then completion: ((Channel?, RequestError?) -> ())? = nil) {
+  func delete(then completion: ((Channel?, RequestError?) -> Void)? = nil) {
     self.sword?.deleteChannel(self.id, then: completion)
   }
 
@@ -58,7 +58,7 @@ public extension TextChannel {
   func addReaction(
     _ reaction: String,
     to messageId: Snowflake,
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     self.sword?.addReaction(
       reaction,
@@ -75,7 +75,7 @@ public extension TextChannel {
    */
   func deleteMessage(
     _ messageId: Snowflake,
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     self.sword?.deleteMessage(messageId, from: self.id, then: completion)
   }
@@ -87,7 +87,7 @@ public extension TextChannel {
    */
   func deleteMessages(
     _ messages: [Snowflake],
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     self.sword?.deleteMessages(messages, from: self.id, then: completion)
   }
@@ -103,7 +103,7 @@ public extension TextChannel {
     _ reaction: String,
     from messageId: Snowflake,
     by userId: Snowflake? = nil,
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     self.sword?.deleteReaction(
       reaction,
@@ -123,7 +123,7 @@ public extension TextChannel {
   func editMessage(
     _ messageId: Snowflake,
     with options: [String: Any],
-    then completion: ((Message?, RequestError?) -> ())? = nil
+    then completion: ((Message?, RequestError?) -> Void)? = nil
   ) {
     self.sword?.editMessage(
       messageId,
@@ -140,7 +140,7 @@ public extension TextChannel {
    **/
   func getMessage(
     _ messageId: Snowflake,
-    then completion: @escaping (Message?, RequestError?) -> ()
+    then completion: @escaping (Message?, RequestError?) -> Void
   ) {
     self.sword?.getMessage(messageId, from: self.id, then: completion)
   }
@@ -159,7 +159,7 @@ public extension TextChannel {
    **/
   func getMessages(
     with options: [String: Any]? = nil,
-    then completion: @escaping ([Message]?, RequestError?) -> ()
+    then completion: @escaping ([Message]?, RequestError?) -> Void
   ) {
     self.sword?.getMessages(from: self.id, with: options, then: completion)
   }
@@ -173,7 +173,7 @@ public extension TextChannel {
   func getReaction(
     _ reaction: String,
     from messageId: Snowflake,
-    then completion: @escaping ([User]?, RequestError?) -> ()
+    then completion: @escaping ([User]?, RequestError?) -> Void
   ) {
     self.sword?.getReaction(
       reaction,
@@ -185,7 +185,7 @@ public extension TextChannel {
 
   /// Get Pinned messages for this channel
   func getPinnedMessages(
-    then completion: @escaping ([Message]?, RequestError?) -> ()
+    then completion: @escaping ([Message]?, RequestError?) -> Void
   ) {
     self.sword?.getPinnedMessages(from: self.id, then: completion)
   }
@@ -197,7 +197,7 @@ public extension TextChannel {
    */
   func pin(
     _ messageId: Snowflake,
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     self.sword?.pin(messageId, in: self.id, then: completion)
   }
@@ -209,11 +209,11 @@ public extension TextChannel {
    */
   func send(
     _ message: String,
-    then completion: ((Message?, RequestError?) -> ())? = nil
+    then completion: ((Message?, RequestError?) -> Void)? = nil
   ) {
     self.sword?.send(message, to: self.id, then: completion)
   }
-  
+
   /**
    Sends a message to channel
    
@@ -221,11 +221,11 @@ public extension TextChannel {
    */
   func send(
     _ message: [String: Any],
-    then completion: ((Message?, RequestError?) -> ())? = nil
+    then completion: ((Message?, RequestError?) -> Void)? = nil
   ) {
     self.sword?.send(message, to: self.id, then: completion)
   }
-  
+
   /**
    Sends a message to channel
    
@@ -233,11 +233,35 @@ public extension TextChannel {
    */
   func send(
     _ message: Embed,
-    then completion: ((Message?, RequestError?) -> ())? = nil
+    then completion: ((Message?, RequestError?) -> Void)? = nil
   ) {
     self.sword?.send(message, to: self.id, then: completion)
   }
-  
+
+    /**
+     Sends a button to channel
+     
+     - parameter message: Embed to send as message
+     */
+    func send(
+      _ message: ButtonBuilder,
+      then completion: ((Message?, RequestError?) -> Void)? = nil
+    ) {
+      self.sword?.send(message, to: self.id, then: completion)
+    }
+
+    /**
+     Sends a Select Menu to channel
+     
+     - parameter message: Embed to send as message
+     */
+    func send(
+      _ message: SelectMenuBuilder,
+      then completion: ((Message?, RequestError?) -> Void)? = nil
+    ) {
+      self.sword?.send(message, to: self.id, then: completion)
+    }
+
   /**
    Unpins a pinned message from this channel
 
@@ -245,7 +269,7 @@ public extension TextChannel {
    */
   func unpin(
     _ messageId: Snowflake,
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     self.sword?.unpin(messageId, from: self.id, then: completion)
   }
@@ -253,22 +277,22 @@ public extension TextChannel {
 }
 
 /// Distinguishes Guild channels over dm type channels
-public protocol GuildChannel: class, Channel {
+public protocol GuildChannel: AnyObject, Channel {
 
   // MARK: Properties
 
   /// Channel Category this channel belongs to
   var category: GuildCategory? { get }
-  
+
   /// Guild this channel belongs to
   var guild: Guild? { get }
 
   /// Name of the channel
   var name: String? { get }
-  
+
   /// The channel id of the category that owns this channel
   var parentId: Snowflake? { get }
-  
+
   /// Collection of overwrites mapped by `OverwriteID`
   var permissionOverwrites: [Snowflake: Overwrite] { get }
 
@@ -280,18 +304,37 @@ public protocol GuildChannel: class, Channel {
 /// Used to indicate the type of channel
 public enum ChannelType: Int {
 
-  /// This is a regular Guild Text Channel (`GuildChannel`)
-  case guildText
+    /// This is a regular Guild Text Channel (`GuildChannel`)
+    case guildText
 
-  /// This is a 1 on 1 DM with a user (`DMChannel`)
-  case dm
+    /// This is a 1 on 1 DM with a user (`DMChannel`)
+    case dm
 
-  /// This is the famous Guild Voice Channel (`GuildChannel`)
-  case guildVoice
+    /// This is the famous Guild Voice Channel (`GuildChannel`)
+    case guildVoice
 
-  /// This is a Group DM Channel (`GroupChannel`)
-  case groupDM
+    /// This is a Group DM Channel (`GroupChannel`)
+    case groupDM
 
-  /// This is a Guild Category Channel (`GuildCategory`)
-  case guildCategory
+    /// This is a Guild Category Channel (`GuildCategory`)
+    case guildCategory
+    
+    /// This is a Guild Announcement Channel (`GuildChannel`)
+    case guildNews
+
+    /// This is a Guild Store Channel. Bots cannot interact with this channel.
+    case guildStore
+    
+    /// This is a thread within a `guildNews` channel. (`Thread`)
+    case guildNewsThread = 10
+    
+    /// This is a thread within a public `guildText` channel. (`Thread`)
+    case guildPublicThread
+    
+    /// This is a thread within a `guildText` channel that is only accessible by members with
+    /// `MANAGE_THREADS` permission or if they were invited. (`Thread`)
+    case guildPrivateThread
+    
+    /// Guild Stage Channel
+    case guildStage
 }

@@ -1,5 +1,5 @@
 //
-//  ImageHandler.swift
+//  MultipartBody.swift
 //  Sword
 //
 //  Created by Alejandro Alonso
@@ -8,7 +8,7 @@
 
 #if !os(Linux)
 import Foundation
-  
+
 #if !os(macOS)
 import MobileCoreServices
 #endif

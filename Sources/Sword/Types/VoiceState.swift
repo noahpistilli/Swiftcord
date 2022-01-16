@@ -7,7 +7,7 @@
 //
 
 /// Structure with user's voice state info
-public struct VoiceState {
+public struct VoiceState: Decodable {
 
   // MARK: Properties
 

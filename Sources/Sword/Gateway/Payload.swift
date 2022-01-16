@@ -5,12 +5,10 @@
 //  Created by Alejandro Alonso
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
-
 /// Payload Type
 struct Payload {
 
   // MARK: Properties
-
   /// OP Code for payload
   var op: Int
 
@@ -24,10 +22,8 @@ struct Payload {
   let t: String?
 
   // MARK: Initializers
-
   /**
    Creates a payload from JSON String
-
    - parameter text: JSON String
   */
   init(with text: String) {
@@ -40,7 +36,6 @@ struct Payload {
 
   /**
    Creates a payload from either an Array | Dictionary
-
    - parameter op: OP code to dispatch
    - parameter data: Either an Array | Dictionary to dispatch under the payload.d
   */
@@ -52,16 +47,15 @@ struct Payload {
   }
 
   // MARK: Functions
-
   /// Returns self as a String
   func encode() -> String {
     var payload = ["op": self.op, "d": self.d]
-    
+
     if self.t != nil {
       payload["s"] = self.s!
       payload["t"] = self.t!
     }
-    
+
     return payload.encode()
   }
 

@@ -22,10 +22,10 @@ public struct DM: TextChannel {
 
   /// The last message's ID
   public let lastMessageId: Snowflake?
-  
+
   /// Indicates what kind of channel this is
   public let type = ChannelType.dm
-  
+
   // MARK: Initializer
 
   /**
@@ -43,7 +43,7 @@ public struct DM: TextChannel {
     self.recipient = User(sword, recipients[0])
 
     self.lastMessageId = Snowflake(json["last_message_id"])
-    
+
     sword.dms[self.recipient.id] = self
   }
 

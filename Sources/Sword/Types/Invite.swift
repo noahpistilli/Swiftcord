@@ -8,20 +8,20 @@
 
 /// Invite structure
 public struct Invite {
-  
+
   // MARK: Properties
-  
+
   /// Channel who owns this invite
   public internal(set) weak var channel: GuildText?
-  
+
   /// Invite code to join
   public let code: String
-  
+
   /// Guild who owns this invite
   public internal(set) weak var guild: Guild?
-  
+
   // MARK: Initializer
-  
+
   /**
    Creates an Invite structure
    
@@ -38,5 +38,5 @@ public struct Invite {
     ] as? GuildText
     self.code = json["code"] as! String
   }
-  
+
 }

@@ -22,10 +22,10 @@ public struct GroupDM: TextChannel {
 
   /// The last message's ID
   public let lastMessageId: Snowflake?
-  
+
   /// Indicates what kind of channel this is
   public let type = ChannelType.groupDM
-  
+
   // MARK: Initializer
 
   /**
@@ -45,8 +45,8 @@ public struct GroupDM: TextChannel {
     }
 
     self.lastMessageId = Snowflake(json["last_message_id"])
-    
+
     sword.groups[self.id] = self
   }
-  
+
 }

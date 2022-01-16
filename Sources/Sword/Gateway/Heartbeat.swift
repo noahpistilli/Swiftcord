@@ -9,12 +9,6 @@
 import Foundation
 import Dispatch
 
-#if !os(Linux)
-import Starscream
-#else
-import WebSockets
-#endif
-
 /// <3
 extension Gateway {
   func heartbeat(at interval: Int) {

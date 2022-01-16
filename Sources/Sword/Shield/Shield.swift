@@ -5,6 +5,7 @@
 //  Created by Alejandro Alonso
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
+
 /// Shield class that extends Sword
 open class Shield: Sword {
 
@@ -34,30 +35,30 @@ open class Shield: Sword {
     shieldOptions: ShieldOptions = ShieldOptions()
   ) {
     self.shieldOptions = shieldOptions
-    
+
     super.init(token: token, options: swordOptions)
-    
+
     if self.shieldOptions.willDefaultHelp {
       self.registerHelp()
     }
-    
+
     self.on(.ready) { [unowned self] data in
       let bot = data as! User
 
       if self.shieldOptions.prefixes.contains("@bot") {
         self.shieldOptions.prefixes.remove(
-          at: self.shieldOptions.prefixes.index(of: "@bot")!
+            at: self.shieldOptions.prefixes.firstIndex(of: "@bot")!
         )
         self.shieldOptions.prefixes.append("<@!\(bot.id)> ")
         self.shieldOptions.prefixes.append("<@\(bot.id)> ")
       }
-      
+
       _ = self.listeners[.ready]!.remove(at: 0)
     }
 
     self.on(.messageCreate) { [unowned self] data in
       guard self.commands.count > 0 else { return }
-      
+
       self.handle(message: data)
     }
   }
@@ -81,14 +82,14 @@ open class Shield: Sword {
         return
       }
     }
-    
+
     if !self.shieldOptions.requirements.guilds.isEmpty {
       guard let guildChannel = msg.channel as? GuildChannel,
         !self.shieldOptions.requirements.guilds.contains(guildChannel.guild!.id) else {
         return
       }
     }
-    
+
     if !self.shieldOptions.requirements.permissions.isEmpty {
       let permission = self.shieldOptions.requirements.permissions.lazy.map {
         $0.rawValue
@@ -112,16 +113,16 @@ open class Shield: Sword {
       var commandString = arguments.remove(at: 0)
 
       let originalCommand = commandString
-      var correctCaseAlias: String? = nil
+      var correctCaseAlias: String?
       commandString = commandString.lowercased()
-      
+
       if self.commands[commandString] == nil {
         if let alias = self.commandAliases[commandString] {
           commandString = alias.target
           correctCaseAlias = alias.casePreserved
         }
       }
-      
+
       guard let command = self.commands[commandString] else { return }
 
       let correctCaseCommand = correctCaseAlias ?? command.name
@@ -137,14 +138,14 @@ open class Shield: Sword {
           return
         }
       }
-      
+
       if !command.options.requirements.guilds.isEmpty {
         guard let guildChannel = msg.channel as? GuildChannel,
           !command.options.requirements.guilds.contains(guildChannel.guild!.id) else {
             return
         }
       }
-      
+
       if !command.options.requirements.permissions.isEmpty {
         let requiredPermission = command.options.requirements.permissions.lazy.map {
           $0.rawValue
@@ -162,7 +163,7 @@ open class Shield: Sword {
       command.execute(msg, arguments)
     }
   }
-  
+
   /**
    Registers a command
    
@@ -170,14 +171,14 @@ open class Shield: Sword {
   */
   public func register(_ command: Commandable) {
     self.commands[command.name.lowercased()] = command
-    
+
     if !command.options.aliases.isEmpty {
       for alias in command.options.aliases {
         self.commandAliases[alias.lowercased()] = (alias, command.name.lowercased())
       }
     }
   }
-  
+
   /**
    Registers a command
    
@@ -188,7 +189,7 @@ open class Shield: Sword {
   public func register(
     _ commandName: String,
     with options: CommandOptions = CommandOptions(),
-    _ function: @escaping (Message, [String]) -> ()
+    _ function: @escaping (Message, [String]) -> Void
   ) {
     self.commands[commandName.lowercased()] = GenericCommand(
       function: function,
@@ -215,7 +216,7 @@ open class Shield: Sword {
     with options: CommandOptions = CommandOptions(),
     message: String
   ) {
-    let function: (Message, [String]) -> () = { msg, args in
+    let function: (Message, [String]) -> Void = { msg, _ in
       msg.reply(with: message)
     }
 
@@ -231,13 +232,13 @@ open class Shield: Sword {
       }
     }
   }
-  
+
   /// Creates a default help command for the bot
   func registerHelp() {
-    self.register("help") { [unowned self] msg, args in
+    self.register("help") { [unowned self] msg, _ in
       var embed = Embed()
       embed.title = "\(self.user!.username!)'s Help"
-      
+
       for command in self.commands.values {
         embed.addField(
           command.name,
@@ -245,11 +246,11 @@ open class Shield: Sword {
           isInline: true
         )
       }
-      
+
       msg.channel.send(embed)
     }
   }
-  
+
   /**
    Unregisters a command
    
@@ -270,3 +271,4 @@ open class Shield: Sword {
   }
 
 }
+

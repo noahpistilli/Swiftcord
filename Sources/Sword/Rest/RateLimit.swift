@@ -28,7 +28,7 @@ extension Sword {
     let matches = regex.matches(
       in: url,
       options: [],
-      range: NSMakeRange(0, string.length)
+      range: NSRange(location: 0, length: string.length)
     )
 
     guard matches.count > 0 else {
@@ -82,15 +82,14 @@ extension Sword {
     }
 
     let limit = Int(limitHeader as! String)!
-    let interval = Int(intervalHeader as! String)! - Int(date)
-
+    let interval = Int(round(Double(intervalHeader as! String)!)) - Int(date)
     if self.rateLimits[route] == nil {
       let bucket = Bucket(
         name: "me.azoy.sword.rest.\(route)",
         limit: limit,
         interval: interval
       )
-      bucket.take(1)
+        bucket.take(1)
 
       self.rateLimits[route] = bucket
     }

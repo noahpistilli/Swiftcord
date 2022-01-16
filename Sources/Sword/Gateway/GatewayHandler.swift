@@ -5,7 +5,6 @@
 //  Created by Alejandro Alonso
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
-
 import Foundation
 
 /// Gateway Handler
@@ -13,18 +12,18 @@ extension Shard {
 
   /**
    Handles all gateway events (except op: 0)
-
    - parameter payload: Payload sent with event
    */
   func handleGateway(_ payload: Payload) {
-    
+
     guard let op = OP(rawValue: payload.op) else {
       self.sword.log(
         "Received unknown gateway\nOP: \(payload.op)\nData: \(payload.d)"
       )
       return
     }
-    
+      print(payload.encode())
+
     switch op {
 
     /// OP: 1
@@ -37,7 +36,7 @@ extension Shard {
 
     /// OP: 10
     case .hello:
-      self.heartbeat(at: (payload.d as! [String: Any])["heartbeat_interval"] as! Int)
+        self.heartbeat(at: (payload.d as! [String: Any])["heartbeat_interval"] as! Int)
 
       guard !self.isReconnecting else {
         self.isReconnecting = false
@@ -46,9 +45,8 @@ extension Shard {
           "session_id": self.sessionId!,
           "seq": self.lastSeq ?? NSNull()
         ]
-          
-        let payload = Payload(op: .resume, data: data)
 
+        let payload = Payload(op: .resume, data: data)
         self.send(payload.encode())
         return
       }
@@ -64,8 +62,9 @@ extension Shard {
     case .reconnect:
       self.isReconnecting = true
       self.reconnect()
+        
 
-    /// Others~~~
+    /// Others
     default:
       break
     }

@@ -5,21 +5,16 @@
 //  Created by Alejandro Alonso
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
-
 import Foundation
 import Dispatch
 
-#if !os(Linux)
-import Starscream
-#else
-import WebSockets
-#endif
+import WebSocketKit
+
 
 /// WS class
 class Shard: Gateway {
 
   // MARK: Properties
-
   /// Gateway URL for gateway
   var gatewayUrl = ""
 
@@ -30,10 +25,10 @@ class Shard: Gateway {
   var heartbeatPayload: Payload {
     return Payload(op: .heartbeat, data: self.lastSeq ?? NSNull())
   }
-  
+
   /// The dispatch queue to handle sending heartbeats
   let heartbeatQueue: DispatchQueue!
-  
+
   /// ID of shard
   let id: Int
 
@@ -63,12 +58,10 @@ class Shard: Gateway {
 
   /// Number of missed heartbeat ACKs
   var acksMissed = 0
-  
-  // MARK: Initializer
 
+  // MARK: Initializer
   /**
    Creates Shard Handler
-
    - parameter sword: Parent class
    - parameter id: ID of the current shard
    - parameter shardCount: Total number of shards bot needs to be connected to
@@ -80,31 +73,30 @@ class Shard: Gateway {
     self.gatewayUrl = gatewayUrl
 
     self.heartbeatQueue = DispatchQueue(
-      label: "me.azoy.sword.shard.\(id).heartbeat",
+      label: "io.github.SketchMaster2001.Sword.shard.\(id).heartbeat",
       qos: .userInitiated
     )
-    
+
     self.globalBucket = Bucket(
-      name: "me.azoy.sword.shard.\(id).global",
+      name: "io.github.SketchMaster2001.Sword.shard.\(id).global",
       limit: 120,
       interval: 60
     )
 
     self.presenceBucket = Bucket(
-      name: "me.azoy.sword.shard.\(id).presence",
+      name: "io.github.SketchMaster2001.Sword.shard.\(id).presence",
       limit: 5,
       interval: 60
     )
   }
 
   // MARK: Functions
-
   /**
    Handles gateway events from WS connection with Discord
-
    - parameter payload: Payload struct that Discord sent as JSON
   */
   func handlePayload(_ payload: Payload) {
+
     if let sequenceNumber = payload.s {
       self.lastSeq = sequenceNumber
     }
@@ -121,7 +113,7 @@ class Shard: Gateway {
     self.handleEvent(payload.d as! [String: Any], payload.t!)
     self.sword.emit(.payload, with: payload.encode())
   }
-  
+
   /**
    Handles gateway disconnects
    
@@ -129,9 +121,9 @@ class Shard: Gateway {
   */
   func handleDisconnect(for code: Int) {
     self.isReconnecting = true
-    
+
     self.sword.emit(.disconnect, with: self.id)
-    
+
     guard let closeCode = CloseOP(rawValue: code) else {
       self.sword.log("Connection closed with unrecognized response \(code).")
 
@@ -154,7 +146,7 @@ class Shard: Gateway {
           self.sword.warn("Detected a loss of internet...")
           self.reconnect()
         }
-      
+
       case .shardingRequired:
         print("[Sword] Sharding is required for this bot to run correctly.")
 
@@ -179,6 +171,7 @@ class Shard: Gateway {
 
     var data: [String: Any] = [
       "token": self.sword.token,
+      "intents": self.sword.intents,
       "properties": [
         "$os": osName,
         "$browser": "Sword",
@@ -190,11 +183,11 @@ class Shard: Gateway {
         self.id, self.shardCount
       ]
     ]
-    
+
     if let presence = self.sword.presence {
       data["presence"] = presence
     }
-    
+
     let identity = Payload(
       op: .identify,
       data: data
@@ -207,7 +200,6 @@ class Shard: Gateway {
 
   /**
    Sends a payload to socket telling it we want to join a voice channel
-
    - parameter channelId: Channel to join
    - parameter guildId: Guild that the channel belongs to
   */
@@ -227,7 +219,6 @@ class Shard: Gateway {
 
   /**
    Sends a payload to socket telling it we want to leave a voice channel
-
    - parameter guildId: Guild we want to remove bot from
   */
   func leaveVoiceChannel(in guildId: Snowflake) {
@@ -248,21 +239,15 @@ class Shard: Gateway {
 
   /// Used to reconnect to gateway
   func reconnect() {
-    #if !os(Linux)
-    if let isOn = self.session?.isConnected, isOn {
-      self.session?.disconnect()
+    if self.isConnected {
+        let _ = self.session?.close(code: .goingAway)
     }
-    #else
-    if let isOn = self.session?.state, isOn == .open {
-        try? self.session?.close()
-    }
-    #endif
-    
+
     self.isConnected = false
     self.acksMissed = 0
-    
+
     self.sword.log("Disconnected from gateway... Resuming session")
-    
+
     self.start()
   }
 
@@ -282,17 +267,12 @@ class Shard: Gateway {
 
   /**
    Sends a payload through WS connection
-
    - parameter text: JSON text to send through WS connection
    - parameter presence: Whether or not this WS payload updates shard presence
   */
   func send(_ text: String, presence: Bool = false) {
     let item = DispatchWorkItem { [unowned self] in
-      #if !os(Linux)
-      self.session?.write(string: text)
-      #else
-      try? self.session?.send(text)
-      #endif
+        self.session?.send(text)
     }
 
     presence ? self.presenceBucket.queue(item) : self.globalBucket.queue(item)
@@ -300,12 +280,8 @@ class Shard: Gateway {
 
   /// Used to stop WS connection
   func stop() {
-    #if !os(Linux)
-    self.session?.disconnect()
-    #else
-    try? self.session?.close()
-    #endif
-    
+    let _ = self.session?.close(code: .goingAway)
+
     self.isConnected = false
     self.isReconnecting = false
     self.acksMissed = 0

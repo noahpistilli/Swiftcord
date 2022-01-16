@@ -6,19 +6,16 @@
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
 
-import Foundation
-import Dispatch
-
-#if !os(Linux)
-import Starscream
-#else
-import Sockets
-import TLS
-import URI
-import WebSockets
+#if os(Linux)
+import FoundationNetworking
 #endif
 
-protocol Gateway: class {
+import Foundation
+import Dispatch
+import WebSocketKit
+import NIOPosix
+
+protocol Gateway: AnyObject {
 
   var acksMissed: Int { get set }
   
@@ -52,61 +49,44 @@ extension Gateway {
   
   /// Starts the gateway connection
   func start() {
-    #if !os(Linux)
-    if self.session == nil {
-      self.session = WebSocket(url: URL(string: self.gatewayUrl)!)
+      let loopgroup = MultiThreadedEventLoopGroup(numberOfThreads: 2)
       
-      self.session?.onConnect = { [unowned self] in
-        self.isConnected = true
+      self.acksMissed = 0
+      
+      let url = URL(string: self.gatewayUrl)!
+      
+      let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(loopgroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
+      
+      let future = wsClient.connect(
+        scheme: url.scheme!,
+        host: url.host!,
+        port: url.port ?? 443
+      ) { ws in
+          
+          self.session = ws
+          self.isConnected = true
+          self.webSocketEventHandlers()
       }
       
-      self.session?.onText = { [unowned self] text in
-        self.handlePayload(Payload(with: text))
+      future.whenFailure { err in
+          print((err as NSError).code)
+          self.handleDisconnect(for: (err as NSError).code)
       }
-      
-      self.session?.onDisconnect = { [unowned self] error in
-        self.isConnected = false
-        
-        guard let error = error else { return }
-        
-        self.handleDisconnect(for: (error as NSError).code)
-      }
-    }
-
-    self.acksMissed = 0
-    self.session?.connect()
-    #else
-    do {
-      let gatewayUri = try URI(self.gatewayUrl)
-      let tcp = try TCPInternetSocket(
-        scheme: "https",
-        hostname: gatewayUri.hostname,
-        port: gatewayUri.port ?? 443
-      )
-      let stream = try TLS.InternetSocket(tcp, TLS.Context(.client))
-      try WebSocket.connect(to: gatewayUrl, using: stream) {
-        [unowned self] ws in
-        
-        self.session = ws
-        self.isConnected = true
-        
-        ws.onText = { _, text in
-          self.handlePayload(Payload(with: text))
-        }
-
-        ws.onClose = { _, code, _, _ in
-          self.isConnected = false
-
-          guard let code = code else { return }
-
-          self.handleDisconnect(for: Int(code))
-        }
-      }
-    }catch {
-      print("[Sword] \(error.localizedDescription)")
-      self.start()
-    }
-    #endif
   }
+    
+    func webSocketEventHandlers() {
+        self.session?.onText { _, text in
+            self.handlePayload(Payload(with: text))
+        }
+        
+        self.session?.onClose.whenSuccess {
+            self.isConnected = false
+        }
 
+        self.session?.onClose.whenFailure { err in
+            print((err as NSError).code)
+            self.isConnected = false
+            self.handleDisconnect(for: (err as NSError).code)
+        }
+    }
 }

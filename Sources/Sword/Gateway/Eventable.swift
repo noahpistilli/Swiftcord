@@ -7,22 +7,22 @@
 //
 
 /// Create a nifty Event Emitter in Swift
-public protocol Eventable: class {
+public protocol Eventable: AnyObject {
 
   /// Event Listeners
-  var listeners: [Event: [(Any) -> ()]] { get set }
+  var listeners: [Event: [(Any) -> Void]] { get set }
 
   /**
    - parameter event: Event to listen for
    */
-  func on(_ event: Event, do function: @escaping (Any) -> ()) -> Int
+  func on(_ event: Event, do function: @escaping (Any) -> Void) -> Int
 
   /**
    - parameter event: Event to emit
    - parameter data: Array of stuff to emit listener with
    */
   func emit(_ event: Event, with data: Any)
-  
+
 }
 
 extension Eventable {
@@ -33,14 +33,14 @@ extension Eventable {
    - parameter event: Event to listen for
   */
   @discardableResult
-  public func on(_ event: Event, do function: @escaping (Any) -> ()) -> Int {
+  public func on(_ event: Event, do function: @escaping (Any) -> Void) -> Int {
     guard self.listeners[event] != nil else {
       self.listeners[event] = [function]
       return 0
     }
 
     self.listeners[event]!.append(function)
-    
+
     return self.listeners[event]!.count - 1
   }
 
@@ -57,5 +57,5 @@ extension Eventable {
       listener(data)
     }
   }
-  
+
 }

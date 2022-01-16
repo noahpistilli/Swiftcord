@@ -8,35 +8,49 @@
 
 /// Organize all dispatch events
 enum OP: Int {
-  case dispatch,
-       heartbeat,
-       identify,
-       statusUpdate,
-       voiceStateUpdate,
-       voiceServerPing,
-       resume,
-       reconnect,
-       requestGuildMember,
-       invalidSession,
-       hello,
-       heartbeatACK
+    case dispatch,
+         heartbeat,
+         identify,
+         statusUpdate,
+         voiceStateUpdate,
+         resume = 6,
+         reconnect,
+         requestGuildMember,
+         invalidSession,
+         hello,
+         heartbeatACK
+}
+
+/// Organize all voice dispatch events
+enum VoiceOP: Int {
+    case identify,
+         selectProtocol,
+         ready,
+         heartbeat,
+         sessionDescription,
+         speaking,
+         heartbeatACK,
+         resume,
+         hello,
+         resumed,
+         clientDisconnect
 }
 
 /// Organize all websocket close codes
 enum CloseOP: Int {
-  case noInternet = 50,
-       clean = 1000,
-       unknownError = 4000,
-       unknownOP,
-       decodeError,
-       notAuthenticated,
-       authenticationFailed,
-       alreadyAuthenticated,
-       invalidSeq = 4007,
-       rateLimited,
-       sessionTimeout,
-       invalidShard,
-       shardingRequired
+    case noInternet = 50,
+         clean = 1000,
+         unknownError = 4000,
+         unknownOP,
+         decodeError,
+         notAuthenticated,
+         authenticationFailed,
+         alreadyAuthenticated,
+         invalidSeq = 4007,
+         rateLimited,
+         sessionTimeout,
+         invalidShard,
+         shardingRequired
 }
 
 /// Organize all the different http methods
@@ -50,19 +64,19 @@ enum HTTPMethod: String {
 
 /// Used to determine avatar url format
 public enum FileExtension: String {
-  
+
   /// .gif format
   case gif
-  
+
   /// .jpg format
   case jpg
-  
+
   /// .png format
   case png
-  
+
   /// .webp format
   case webp
-  
+
 }
 
 /// Organize all ws dispatch events
@@ -114,7 +128,7 @@ public enum Event: String {
      ```
     */
   case channelPinsUpdate = "CHANNEL_PINS_UPDATE"
-  
+
     /**
      Fired when a channel is updated
 
@@ -150,7 +164,7 @@ public enum Event: String {
      ```
    */
   case disconnect
-  
+
     /**
      Fired when a guild is available (This is not guildCreate)
 
@@ -385,7 +399,7 @@ public enum Event: String {
      ```
      */
   case messageReactionRemoveAll = "MESSAGE_REACTION_REMOVE_ALL"
-  
+
     /**
      Fired when a message is updated
 
@@ -460,7 +474,7 @@ public enum Event: String {
 
   /// :nodoc:
   case resume = "RESUME"
-  
+
   /// :nodoc:
   case resumed = "RESUMED"
 
@@ -475,6 +489,12 @@ public enum Event: String {
      ```
     */
   case shardReady
+    
+    case threadCreate = "THREAD_CREATE"
+    
+    case threadDelete = "THREAD_DELETE"
+    
+    case threadUpdate = "THREAD_UPDATE"
 
     /**
      Fired when someone starts typing a message
@@ -539,4 +559,85 @@ public enum Event: String {
   /// :nodoc:
   case voiceServerUpdate = "VOICE_SERVER_UPDATE"
 
+    /// Generic Interaction event
+    case interaction = "INTERACTION_CREATE"
+    
+    case buttonEvent = "BUTTON_INTERACTION"
+    
+    case selectBoxEvent = "SELECT_BOX_INTERACTION"
+    
+    case slashCommandEvent = "SLASH_COMMAND_INTERACTION"
+    
+    case userCommandEvent = "USER_COMMAND_INTERACTION"
+    
+    case messageCommandEvent = "MESSAGE_COMMAND_INTERACTION"
+}
+
+/// Value for Intents
+public enum Intents: Int {
+    case guilds = 1
+    
+    /// Events on member join, leave and updates. This is a Privileged Intent
+    case guildMembers = 2
+    
+    /// Ban events
+    case guildBans = 4
+    
+    /// Emote and Stickers create, update and delete events
+    case guildEmojisAndStickers = 8
+    
+    /// Events on creating, editing or deleting integrations.
+    case guildIntegrations = 16
+    
+    /// Webhook events
+    case guildWebhooks = 32
+    
+    /// Events on the creation or deletion of invites
+    case guildInvites = 64
+    
+    /// Voice State events. Required to determine which members are in a voice channel
+    case guildVoiceStates = 128
+    
+    /// Presence events. This is an extremely heavy intent! If you are trying to get information on members, use the `guildMembers` intent instead. This is a privileged Intent
+    case guildPresences = 256
+    
+    /// Events on when a message in a guild is created, updated or deleted. This will become a privileged intent in 2022
+    case guildMessages = 512
+    
+    /// Events on when a reaction is added to a message in a guild
+    case guildMessageReactions = 1024
+    
+    /// Typing event of a member in a guild
+    case guildMessageTyping = 2048
+    
+    // TODO: Figure this out
+    case directMessages = 4096
+    
+    /// Events on when a reaction is added to a message in a DM
+    case directMessagesReactions = 8192
+    
+    /// Typing event of a user in a DM
+    case directMessagesTyping = 16384
+    
+    /// Events on when an event is created, edited or deleted in a guild
+    case guildScheduledEvents = 65536
+}
+
+/// Value type for statuses
+public enum Status: String {
+
+  /// Do not disturb status
+  case dnd = "dnd"
+
+  /// Away status
+  case idle = "idle"
+
+  /// Invisible/Offline status
+  case offline = "offline"
+
+  /// Online status
+  case online = "online"
+
+    // Shown as offline but really isn't
+    case invisible = "invisible"
 }

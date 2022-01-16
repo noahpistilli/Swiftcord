@@ -52,23 +52,23 @@ public struct Webhook {
     self.channel = sword.guilds[
       sword.getGuild(for: channelId)!.id
     ]!.channels[channelId]! as! GuildText
-    
+
     self.guild = sword.getGuild(for: channelId)!
 
     self.id = Snowflake(json["id"])!
     self.name = json["name"] as! String
-    
+
     if let user = json["user"] as? [String: Any] {
       self.user = User(sword, user)
-    }else {
+    } else {
       self.user = nil
     }
-    
+
     self.token = json["token"] as! String
   }
 
   /// Deletes the current webhook from its guild
-  public func delete(then completion: @escaping (RequestError?) -> () = {_ in}) {
+  public func delete(then completion: @escaping (RequestError?) -> Void = {_ in}) {
     self.sword?.deleteWebhook(self.id, token: self.token, then: completion)
   }
 
@@ -88,7 +88,7 @@ public struct Webhook {
   */
   public func execute(
     with content: Any,
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     self.sword?.executeWebhook(
       self.id,
@@ -109,7 +109,7 @@ public struct Webhook {
   */
   public func executeSlack(
     with content: [String: Any],
-    then completion: ((RequestError?) -> ())? = nil
+    then completion: ((RequestError?) -> Void)? = nil
   ) {
     self.sword?.executeSlackWebhook(
       self.id,
@@ -131,7 +131,7 @@ public struct Webhook {
   */
   public func modify(
     with options: [String: String],
-    then completion: ((Webhook?, RequestError?) -> ())? = nil
+    then completion: ((Webhook?, RequestError?) -> Void)? = nil
   ) {
     self.sword?.modifyWebhook(
       self.id,

@@ -43,3 +43,5 @@ bot.on(.slashCommandEvent) { data in
       event.reply(message: "User \(invokedUser) was selected!")
   }
 }
+
+bot.connect()

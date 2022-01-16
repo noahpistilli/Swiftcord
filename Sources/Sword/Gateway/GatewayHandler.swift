@@ -22,7 +22,6 @@ extension Shard {
       )
       return
     }
-      print(payload.encode())
 
     switch op {
 

@@ -66,6 +66,9 @@ extension Endpoint {
         case let .deleteChannelPermission(channel, overwrite):
             return (.delete, "/channels/\(channel)/permissions/\(overwrite)")
 
+        case let .deleteGlobalSlashCommand(appId, commandId):
+            return (.delete, "/applications/\(appId)/commands/\(commandId)")
+            
         case let .deleteGuild(guild):
             return (.delete, "/guilds/\(guild)")
             
@@ -282,6 +285,9 @@ extension Endpoint {
 
         case let .uploadGuildApplicationCommand(appId, guildId):
             return (.post, "/applications/\(appId)/guilds/\(guildId)/commands")
+            
+        case let .uploadGlobalApplicationCommand(appId):
+            return (.post, "/applications/\(appId)/commands")
         }
     }
 }

@@ -43,6 +43,8 @@ enum Endpoint {
     case deleteChannel(Snowflake)
 
     case deleteChannelPermission(Snowflake, Snowflake)
+    
+    case deleteGlobalSlashCommand(Snowflake, Snowflake)
 
     case deleteGuild(Snowflake)
     
@@ -178,4 +180,5 @@ enum Endpoint {
 
     case uploadGuildApplicationCommand(Snowflake, Snowflake)
 
+    case uploadGlobalApplicationCommand(Snowflake)
 }

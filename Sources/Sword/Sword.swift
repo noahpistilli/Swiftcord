@@ -2230,5 +2230,63 @@ open class Sword: Eventable {
       completion?(error)
     }
   }
+    
+    public func uploadSlashCommand(
+        commandData: SlashCommandBuilder,
+        then completion: ((RequestError?) -> Void)? = nil
+    ) {
+        let jsonData = try! self.encoder.encode(commandData)
+
+        self.requestWithBodyAsData(.uploadGlobalApplicationCommand(self.user!.id), body: jsonData) { _, err in
+            if let error = err {
+                completion?(error)
+            } else {
+                completion?(nil)
+            }
+        }
+    }
+    
+    public func uploadUserCommand(
+        commandData: UserCommandBuilder,
+        then completion: ((RequestError?) -> Void)? = nil
+    ) {
+        let jsonData = try! self.encoder.encode(commandData)
+        
+        self.requestWithBodyAsData(.uploadGlobalApplicationCommand(self.user!.id), body: jsonData) { data, err in
+            if let error = err {
+                completion?(error)
+            } else {
+                completion?(nil)
+            }
+        }
+    }
+    
+    public func uploadMessageCommand(
+        commandData: MessageCommandBuilder,
+        then completion: ((RequestError?) -> Void)? = nil
+    ) {
+        let jsonData = try! self.encoder.encode(commandData)
+        
+        self.requestWithBodyAsData(.uploadGlobalApplicationCommand(self.user!.id), body: jsonData) { _, err in
+            if let error = err {
+                completion?(error)
+            } else {
+                completion?(nil)
+            }
+        }
+    }
+    
+    public func deleteApplicationCommand(
+        commandId: Snowflake,
+        then completion: ((RequestError?) -> Void)? = nil
+    ) {
+        self.request(.deleteGlobalSlashCommand(self.user!.id, commandId)) { _, err in
+            if let error = err {
+                completion?(error)
+            } else {
+                completion?(nil)
+            }
+        }
+    }
 
 }

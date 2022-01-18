@@ -20,6 +20,9 @@ public struct Emoji: Imageable, Codable {
 
     /// Whether or not this emoji is managed
     public let isManaged: Bool?
+    
+    /// The base64 encoded image
+    private let image: String?
 
     /// Name of the emoji
     public let name: String
@@ -28,7 +31,10 @@ public struct Emoji: Imageable, Codable {
     public let requiresColons: Bool?
 
     /// Array of roles that can use this emoji
-    public internal(set) var roles = [Role]()
+    public var rolesArray = [Role]()
+    
+    /// Array of role Snowflakes
+    private var roles = [Snowflake]()
 
     /// Tag used for rest endpoints
     public var tag: String {
@@ -55,9 +61,11 @@ public struct Emoji: Imageable, Codable {
 
         if let roles = json["roles"] as? [[String: Any]] {
             for role in roles {
-                self.roles.append(Role(role))
+                self.rolesArray.append(Role(role))
             }
         }
+        
+        self.image = nil
     }
 
     /**
@@ -72,8 +80,22 @@ public struct Emoji: Imageable, Codable {
         self.isManaged = nil
         self.name = name
         self.requiresColons = nil
+        self.image = nil
     }
     
+    /// This init is purely for uploading an emoji to Discord
+    init(name: String, base64Image: String, roles: [Role] = []) {
+        // Required fields
+        self.name = name
+        self.image = base64Image
+        self.roles = roles.map { $0.id }
+        
+        self.id = nil
+        self.isAnimated = nil
+        self.isManaged = nil
+        self.requiresColons = nil
+    }
+        
     /**
      Gets the link of the emoji's image
    
@@ -86,4 +108,4 @@ public struct Emoji: Imageable, Codable {
         // as of 7/18/20, the CDN domain is still cdn.discordapp.com
         return URL(string: "https://cdn.discordapp.com/emojis/\(id).\(format)")
     }
-    }
+}

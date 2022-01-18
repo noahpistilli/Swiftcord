@@ -463,9 +463,10 @@ open class Sword: Eventable {
     public func deleteGuildEmoji(
         _ guildId: Snowflake,
         emojiId: Snowflake,
+        reason: String,
         then completion: ((RequestError?) -> Void)? = nil
     ) {
-        self.request(.deleteGuildEmoji(guildId, emojiId)) { _, error in
+        self.request(.deleteGuildEmoji(guildId, emojiId), reason: reason) { _, error in
             completion?(error)
         }
     }
@@ -1149,6 +1150,41 @@ open class Sword: Eventable {
       completion(data as? [[String: Any]], error)
     }
   }
+    
+    /// Gets a sticker from a guild
+    public func getGuildSticker(
+        from guildId: Snowflake,
+        stickerId: Snowflake,
+        then completion: @escaping (Sticker?, RequestError?) -> Void
+    ) {
+        self.request(.getGuildSticker(guildId, stickerId)) { data, error in
+            if let error = error {
+                completion(nil, error)
+            } else {
+                completion(Sticker(data as! [String:Any]), nil)
+            }
+        }
+    }
+    
+    /// Gets all the stickers from a guild
+    public func getGuildStickers(
+        from guildId: Snowflake,
+        then completion: @escaping ([Sticker]?, RequestError?) -> Void
+    ) {
+        self.request(.getGuildStickers(guildId)) { data, error in
+            if let error = error {
+                completion(nil, error)
+            } else {
+                var returnStickers = [Sticker]()
+                let stickers = data as! [[String: Any]]
+                for sticker in stickers {
+                  returnStickers.append(Sticker(sticker))
+                }
+
+                completion(returnStickers, nil)
+            }
+        }
+    }
 
   /**
    Gets a guild's webhooks
@@ -1433,6 +1469,20 @@ open class Sword: Eventable {
         }
     }
 
+    /// Gets a sticker
+    public func getSticker(
+        stickerId: Snowflake,
+        then completion: @escaping (Sticker?, RequestError?) -> Void
+    ) {
+        self.request(.getSticker(stickerId)) { data, error in
+            if let error = error {
+                completion(nil, error)
+            } else {
+                completion(Sticker(data as! [String:Any]), nil)
+            }
+        }
+    }
+    
   /**
    Either get a cached user or restfully get a user
 
@@ -1702,9 +1752,10 @@ open class Sword: Eventable {
         for guildId: Snowflake,
         emojiId: Snowflake,
         with options: [String: Any],
+        reason: String,
         then completion: ((Emoji?, RequestError?) -> Void)? = nil
     ) {
-        self.request(.modifyGuildEmoji(guildId, emojiId), body: options) { data, error in
+        self.request(.modifyGuildEmoji(guildId, emojiId), body: options, reason: reason) { data, error in
             if let error = error {
                 completion?(nil, error)
             } else {
@@ -2230,6 +2281,26 @@ open class Sword: Eventable {
       completion?(error)
     }
   }
+    
+    public func uploadEmoji(
+        name: String,
+        emoji: Icon,
+        roles: [Role],
+        guildId: Snowflake,
+        then completion: ((Emoji?, RequestError?) -> Void)? = nil
+    ) {
+        let emoji = Emoji(name: name, base64Image: emoji.toDataString(), roles: roles)
+        
+        let jsonData = try! self.encoder.encode(emoji)
+        
+        self.requestWithBodyAsData(.uploadEmoji(guildId), body: jsonData) { data, error in
+            if let error = error {
+                completion?(nil, error)
+            } else {
+                completion?(Emoji(data as! [String:Any]), nil)
+            }
+        }
+    }
     
     public func uploadSlashCommand(
         commandData: SlashCommandBuilder,

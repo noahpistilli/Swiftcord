@@ -427,9 +427,10 @@ public class Guild: Updatable, Imageable {
     */
     public func deleteEmoji(
         _ emojiId: Snowflake,
+        reason: String,
         then completion: ((RequestError?) -> Void)? = nil
     ) {
-        self.sword?.deleteGuildEmoji(self.id, emojiId: emojiId, then: completion)
+        self.sword?.deleteGuildEmoji(self.id, emojiId: emojiId, reason: reason, then: completion)
     }
 
     /**
@@ -584,6 +585,21 @@ public class Guild: Updatable, Imageable {
             }
         }
     }
+    
+    /// Gets a sticker from this guild
+    public func getSticker(
+        stickerId: Snowflake,
+        then completion: @escaping (Sticker?, RequestError?) -> Void
+    ) {
+        self.sword?.getGuildSticker(from: self.id, stickerId: stickerId, then: completion)
+    }
+    
+    /// Gets all the stickers from this guild
+    public func getStickers(
+        then completion: @escaping ([Sticker]?, RequestError?) -> Void
+    ) {
+        self.sword?.getGuildStickers(from: self.id, then: completion)
+    }
 
     /// Gets an array of voice regions from guild
     public func getVoiceRegions(
@@ -702,9 +718,10 @@ public class Guild: Updatable, Imageable {
     public func modifyEmoji(
         emojiId: Snowflake,
         with options: [String: Any],
+        reason: String,
         then completion: ((Emoji?, RequestError?) -> Void)? = nil
     ) {
-        self.sword?.modifyEmoji(for: self.id, emojiId: emojiId, with: options)
+        self.sword?.modifyEmoji(for: self.id, emojiId: emojiId, with: options, reason: reason, then: completion)
     }
     
     /**
@@ -886,6 +903,15 @@ public class Guild: Updatable, Imageable {
         then completion: ((RequestError?) -> Void)? = nil
     ) {
         self.sword?.unbanMember(userId, from: self.id, then: completion)
+    }
+    
+    public func uploadEmoji(
+        name: String,
+        emoji: Icon,
+        roles: [Role] = [],
+        then completion: ((Emoji?, RequestError?) -> Void)? = nil
+    ) {
+        self.sword?.uploadEmoji(name: name, emoji: emoji, roles: roles, guildId: self.id, then: completion)
     }
 
     public func uploadSlashCommand(

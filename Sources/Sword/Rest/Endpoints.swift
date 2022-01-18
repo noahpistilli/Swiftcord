@@ -115,6 +115,10 @@ enum Endpoint {
     case getGuildPruneCount(Snowflake)
 
     case getGuildRoles(Snowflake)
+    
+    case getGuildSticker(Snowflake, Snowflake)
+    
+    case getGuildStickers(Snowflake)
 
     case getGuildVoiceRegions(Snowflake)
 
@@ -127,6 +131,8 @@ enum Endpoint {
     case getReactions(Snowflake, Snowflake, String)
     
     case getScheduledEvent(Snowflake)
+    
+    case getSticker(Snowflake)
 
     case getThreads(Snowflake)
 
@@ -177,6 +183,8 @@ enum Endpoint {
     case syncGuildIntegration(Snowflake, Snowflake)
 
     case triggerTypingIndicator(Snowflake)
+    
+    case uploadEmoji(Snowflake)
 
     case uploadGuildApplicationCommand(Snowflake, Snowflake)
 

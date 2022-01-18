@@ -176,6 +176,12 @@ extension Endpoint {
         case let .getGuildMember(guild, user):
             return (.get, "/guilds/\(guild)/members/\(user)")
 
+        case let .getGuildSticker(guildId, stickerId):
+            return (.get, "/guilds/\(guildId)/stickers/\(stickerId)")
+            
+        case let .getGuildStickers(guildId):
+            return (.get, "/guilds/\(guildId)/stickers")
+            
         case let .getGuildPruneCount(guild):
             return (.get, "/guilds/\(guild)/prune")
 
@@ -199,6 +205,9 @@ extension Endpoint {
 
         case let .getScheduledEvent(guildId):
             return (.get, "/guilds/\(guildId)/scheduled-events?with_user_count=true")
+            
+        case let .getSticker(stickerId):
+            return (.get, "/stickers/\(stickerId)")
             
         case let .getThreads(guild):
             return (.get, "/guilds/\(guild)/threads/active")
@@ -282,6 +291,9 @@ extension Endpoint {
 
         case let .triggerTypingIndicator(channel):
             return (.post, "/channels/\(channel)/typing")
+            
+        case let .uploadEmoji(guildId):
+            return (.post, "/guilds/\(guildId)/emojis")
 
         case let .uploadGuildApplicationCommand(appId, guildId):
             return (.post, "/applications/\(appId)/guilds/\(guildId)/commands")

@@ -5,11 +5,11 @@ let bot = Sword(token: "Super secret token here")
 bot.setIntents(intents: .guilds)
 
 // Create slash command
-// NOTE: This creates a guild only slash command. When we do support global slash commands, you can call the Sword instance
+// NOTE: This creates a guild only slash command. To create a global slash command, call `bot.uploadSlashCommand(commandData: command)
 let command = SlashCommandBuilder(name: "test", description: "Testing slash commands in Sword")
     .addOption(option: ApplicationCommandOptions(name: "user", description: "User to select", type: .user))
 
-bot.guilds[guildId].uploadSlashCommand(commandData: slashBuilder)
+bot.guilds[guildId].uploadSlashCommand(commandData: command)
 
 // Listen for slash commands
 bot.on(.slashCommandEvent) { data in

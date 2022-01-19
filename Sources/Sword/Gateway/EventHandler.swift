@@ -407,7 +407,6 @@ extension Shard {
       self.sword.emit(.voiceStateUpdate, with: userId)
 
     case .voiceServerUpdate:
-        break
       return
     case .audioData:
       return

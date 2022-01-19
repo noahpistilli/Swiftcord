@@ -859,7 +859,7 @@ public class Guild: Updatable, Imageable {
         self.sword?.modifyMember(
             userId,
             in: self.id,
-            with: ["communication_disabled_until": nil],
+            with: ["communication_disabled_until": NSNull()],
             then: completion
         )
     }

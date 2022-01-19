@@ -59,7 +59,7 @@ extension Gateway {
       let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(loopgroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
       
       
-      try! wsClient.connect(
+      wsClient.connect(
         scheme: url.scheme!,
         host: url.host!,
         port: url.port ?? 443

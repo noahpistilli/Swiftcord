@@ -23,8 +23,8 @@ extension Sword {
    - parameter message: Warning to output
   */
   func warn(_ message: String) {
-    let prefix = "\033[1;33mWarning: "
-    self.log(prefix + message + "\033[0m\n")
+    let prefix = "Warning: "
+    self.log(prefix + message + "\n")
   }
 
   /**
@@ -33,8 +33,8 @@ extension Sword {
    - parameter message: Error to output
   */
   func error(_ message: String) {
-    let prefix = "\033[1;31mError: "
-    self.log(prefix + message + "\033[0m\n")
+    let prefix = "Error: "
+    self.log(prefix + message + "\n")
   }
 
 }

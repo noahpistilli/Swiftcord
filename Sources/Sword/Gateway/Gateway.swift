@@ -14,6 +14,7 @@ import Foundation
 import Dispatch
 import WebSocketKit
 import NIOPosix
+import NIOWebSocket
 
 protocol Gateway: AnyObject {
 
@@ -49,7 +50,7 @@ extension Gateway {
   
   /// Starts the gateway connection
   func start() {
-      let loopgroup = MultiThreadedEventLoopGroup(numberOfThreads: 2)
+      let loopgroup = MultiThreadedEventLoopGroup(numberOfThreads: 4)
       
       self.acksMissed = 0
       
@@ -57,7 +58,8 @@ extension Gateway {
       
       let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(loopgroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
       
-      let future = wsClient.connect(
+      
+      try! wsClient.connect(
         scheme: url.scheme!,
         host: url.host!,
         port: url.port ?? 443
@@ -66,13 +68,7 @@ extension Gateway {
           self.session = ws
           self.isConnected = true
           self.webSocketEventHandlers()
-          print("[Sword] Connected to Discord!")
-      }
-      
-      future.whenFailure { err in
-          print((err as NSError).code)
-          self.handleDisconnect(for: (err as NSError).code)
-      }
+      }.whenComplete { _ in }
   }
     
     func webSocketEventHandlers() {
@@ -83,11 +79,30 @@ extension Gateway {
         self.session?.onClose.whenSuccess {
             self.isConnected = false
         }
-
-        self.session?.onClose.whenFailure { err in
-            print((err as NSError).code)
-            self.isConnected = false
-            self.handleDisconnect(for: (err as NSError).code)
+        
+        self.session?.onClose.whenComplete { result in
+            switch result {
+            case .success():
+                self.isConnected = false
+                
+                // If it is nil we just do nothing
+                if let closeCode = self.session?.closeCode {
+                    switch closeCode {
+                    case .unknown(let int):
+                        // Unknown will the codes sent by Discord
+                        self.handleDisconnect(for: Int(int))
+                    default:
+                        break
+                    }
+                }
+                
+                break
+            case .failure(let err):
+                // I have never experienced this
+                self.isConnected = false
+                self.handleDisconnect(for: (err as NSError).code)
+            }
         }
+
     }
 }

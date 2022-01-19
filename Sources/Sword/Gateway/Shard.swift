@@ -120,39 +120,54 @@ class Shard: Gateway {
    - parameter code: Close code for the gateway closing
   */
   func handleDisconnect(for code: Int) {
-    self.isReconnecting = true
+      self.isReconnecting = true
 
-    self.sword.emit(.disconnect, with: self.id)
+      self.sword.emit(.disconnect, with: self.id)
 
-    guard let closeCode = CloseOP(rawValue: code) else {
-      self.sword.log("Connection closed with unrecognized response \(code).")
+      guard let closeCode = CloseOP(rawValue: code) else {
+          self.sword.log("Connection closed with unrecognized response \(code).")
 
-      self.reconnect()
-
-      return
-    }
-
-    switch closeCode {
-      case .authenticationFailed:
-        print("[Sword] Invalid Bot Token")
-
-      case .invalidShard:
-        print("[Sword] Invalid Shard (We messed up here. Try again.)")
-
-      case .noInternet:
-        self.sword.globalQueue.asyncAfter(
-          deadline: DispatchTime.now() + .seconds(10)
-        ) { [unowned self] in
-          self.sword.warn("Detected a loss of internet...")
           self.reconnect()
-        }
 
-      case .shardingRequired:
-        print("[Sword] Sharding is required for this bot to run correctly.")
+          return
+      }
 
-      default:
-        self.reconnect()
-    }
+      switch closeCode {
+        case .authenticationFailed:
+          self.sword.error("Invalid Bot Token")
+          break
+
+        case .invalidShard:
+          self.sword.warn("Invalid Shard (We messed up here. Try again.)")
+          break
+
+        case .noInternet:
+          self.sword.globalQueue.asyncAfter(
+            deadline: DispatchTime.now() + .seconds(10)
+          ) { [unowned self] in
+              self.sword.warn("Detected a loss of internet...")
+              self.reconnect()
+          }
+
+        case .shardingRequired:
+          self.sword.error("Sharding is required for this bot to run correctly.")
+          break
+          
+        case .invalidAPIVersion:
+          // This should never happen ever
+          self.sword.error("The API version sent to Discord is incorrect. Something is seriously wrong here. Please report this.")
+        
+        case .invalidIntents:
+          // This also should never happen
+          self.sword.error("The intents sent to Discord are incorrect. Something is seriously wrong here. Please report this.")
+          
+        case .disallowedIntents:
+          self.sword.error("You tried to subscribe to an intent you are not authorized to use. Please remove that intent.")
+          break
+          
+        default:
+          self.reconnect()
+      }
   }
 
   /// Sends shard identity to WS connection
@@ -240,7 +255,7 @@ class Shard: Gateway {
   /// Used to reconnect to gateway
   func reconnect() {
     if self.isConnected {
-        let _ = self.session?.close(code: .goingAway)
+        let _ = self.session?.close()
     }
 
     self.isConnected = false

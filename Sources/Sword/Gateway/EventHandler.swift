@@ -359,7 +359,7 @@ extension Shard {
     
     case .threadUpdate:
         let thread = Thread(sword, data)
-        self.sword.emit(.threadDelete, with: thread)
+        self.sword.emit(.threadUpdate, with: thread)
 
     /// TYPING_START
     case .typingStart:
@@ -383,7 +383,6 @@ extension Shard {
 
     /// VOICE_STATE_UPDATE
     case .voiceStateUpdate:
-        print(data)
       let guildId = Snowflake(data["guild_id"])!
       guard let guild = self.sword.guilds[guildId] else {
         return
@@ -461,7 +460,7 @@ extension Shard {
                 self.handleEvent(data, Event.buttonEvent.rawValue)
             }
             else if type == 3 {
-                self.handleEvent(data, Event.selectBoxEvent.rawValue)
+                self.handleEvent(data, Event.selectMenuEvent.rawValue)
             }
             
             return
@@ -481,10 +480,10 @@ extension Shard {
         self.sword.emit(.buttonEvent, with: button)
         return
         
-    case .selectBoxEvent:
+    case .selectMenuEvent:
         let selectBox = SelectMenuEvent(sword, data: data)
         
-        self.sword.emit(.selectBoxEvent, with: selectBox)
+        self.sword.emit(.selectMenuEvent, with: selectBox)
         return
     case .userCommandEvent:
         let userCommand = UserCommandEvent(sword, data: data)

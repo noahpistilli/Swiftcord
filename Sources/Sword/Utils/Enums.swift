@@ -50,7 +50,10 @@ enum CloseOP: Int {
          rateLimited,
          sessionTimeout,
          invalidShard,
-         shardingRequired
+         shardingRequired,
+         invalidAPIVersion,
+         invalidIntents,
+         disallowedIntents
 }
 
 /// Organize all the different http methods
@@ -490,10 +493,40 @@ public enum Event: String {
     */
   case shardReady
     
+    /**
+     Fired when a thread is created
+
+     ### Usage ###
+     ```swift
+     bot.on(.threadCreate) { data in
+       let thread = data as! Thread
+     }
+     ```
+    */
     case threadCreate = "THREAD_CREATE"
     
+    /**
+     Fired when a thread is deleted
+
+     ### Usage ###
+     ```swift
+     bot.on(.threadDelete) { data in
+       let thread = data as! Thread
+     }
+     ```
+    */
     case threadDelete = "THREAD_DELETE"
     
+    /**
+     Fired when a thread is updated
+
+     ### Usage ###
+     ```swift
+     bot.on(.threadUpdate) { data in
+       let thread = data as! Thread
+     }
+     ```
+    */
     case threadUpdate = "THREAD_UPDATE"
 
     /**
@@ -560,16 +593,68 @@ public enum Event: String {
   case voiceServerUpdate = "VOICE_SERVER_UPDATE"
 
     /// Generic Interaction event
+    /// This should never be handled by the user. Its soul purpose is for the library to distinguish the different types of interactions
+    /// As they all send this event.
     case interaction = "INTERACTION_CREATE"
     
+    /**
+     Fired when a button is clicked
+
+     ### Usage ###
+     ```swift
+     bot.on(.buttonEvent) { data in
+       let event = data as! ButtonEvent
+     }
+     ```
+    */
     case buttonEvent = "BUTTON_INTERACTION"
     
-    case selectBoxEvent = "SELECT_BOX_INTERACTION"
+    /**
+     Fired when a Select Menu is selected
+
+     ### Usage ###
+     ```swift
+     bot.on(.selectMenuEvent) { data in
+       let event = data as! SelectMenuEvent
+     }
+     ```
+    */
+    case selectMenuEvent = "SELECT_BOX_INTERACTION"
     
+    /**
+     Fired when a slash command is used
+
+     ### Usage ###
+     ```swift
+     bot.on(.slashCommandEvent) { data in
+       let event = data as! SlashCommandEvent
+     }
+     ```
+    */
     case slashCommandEvent = "SLASH_COMMAND_INTERACTION"
     
+    /**
+     Fired when a user command is used
+
+     ### Usage ###
+     ```swift
+     bot.on(.userCommandEvent) { data in
+       let event = data as! UserCommandEvent
+     }
+     ```
+    */
     case userCommandEvent = "USER_COMMAND_INTERACTION"
     
+    /**
+     Fired when a message command is used
+
+     ### Usage ###
+     ```swift
+     bot.on(.messageCommandEvent) { data in
+       let event = data as! MessageCommandEvent
+     }
+     ```
+    */
     case messageCommandEvent = "MESSAGE_COMMAND_INTERACTION"
 }
 
@@ -626,17 +711,17 @@ public enum Intents: Int {
 /// Value type for statuses
 public enum Status: String {
 
-  /// Do not disturb status
-  case dnd = "dnd"
+    /// Do not disturb status
+    case dnd = "dnd"
 
-  /// Away status
-  case idle = "idle"
+    /// Away status
+    case idle = "idle"
 
-  /// Invisible/Offline status
-  case offline = "offline"
+    /// Invisible/Offline status
+    case offline = "offline"
 
-  /// Online status
-  case online = "online"
+    /// Online status
+    case online = "online"
 
     // Shown as offline but really isn't
     case invisible = "invisible"

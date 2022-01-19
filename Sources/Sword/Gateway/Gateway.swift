@@ -68,6 +68,7 @@ extension Gateway {
           self.session = ws
           self.isConnected = true
           self.webSocketEventHandlers()
+          print("[Sword] Connected to Discord!")
       }.whenComplete { _ in }
   }
     

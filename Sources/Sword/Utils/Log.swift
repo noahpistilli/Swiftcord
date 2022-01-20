@@ -6,6 +6,8 @@
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
 
+import Rainbow
+
 extension Sword {
 
   /**
@@ -14,7 +16,7 @@ extension Sword {
    - parameter message: Info to output
   */
   func log(_ message: String) {
-    print("[Sword] " + message)
+    print("[Sword] " + message.applyingCodes(Color.yellow))
   }
 
   /**
@@ -24,7 +26,7 @@ extension Sword {
   */
   func warn(_ message: String) {
     let prefix = "Warning: "
-    self.log(prefix + message + "\n")
+      self.log(prefix + message + "\n".applyingCodes(Color.yellow))
   }
 
   /**
@@ -34,7 +36,7 @@ extension Sword {
   */
   func error(_ message: String) {
     let prefix = "Error: "
-    self.log(prefix + message + "\n")
+      self.log(prefix + message + "\n".applyingCodes(Color.red))
   }
 
 }

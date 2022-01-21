@@ -261,36 +261,6 @@ public class Guild: Updatable, Imageable {
         self.verificationLevel = VerificationLevel(rawValue: json["verification_level"] as! Int)!
     }
     
-    /// Test joining voice
-    public func joinVoice() {
-        if !self.sword!.intentArray.contains(.guildVoiceStates) {
-            self.sword!.warn("This bot does not have the guildVoiceStates intent. It is required to connect to a voice channel.")
-            return
-        }
-        
-        // First we get the shard
-        let shards = self.sword?.shardManager.shards
-        
-        guard let shards = shards else {
-            return
-        }
-        
-        for shard in shards {
-            if shard.id == self.shard! {
-                // This is our current guilds shard
-                let payload: [String:Any] = [
-                    "guild_id": self.id.rawValue,
-                    "channel_id": 929491478336655411,
-                    "self_mute": false,
-                    "self_deaf": false
-                ]
-                
-                shard.send(Payload(op: .voiceStateUpdate, data: payload).encode())
-                break
-            }
-        }
-    }
-
     /**
      Bans a member from this guild
 

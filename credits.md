@@ -1,3 +1,16 @@
+It should be known that this is a fork of [Sword](https://github.com/Azoy/Sword).
+
+This is repository is licenced under the same MIT licence as Sword. The original contributors to Sword are listed below:
+
+[Azoy](https://github.com/Azoy)
+[tellowkrinkle](https://github.com/tellowkrinkle)
+[liamrosenfeld](https://github.com/liamrosenfeld)
+[nullpixel](https://github.com/nullpixel)
+[clbx](https://github.com/clbx)
+[MrLotU](https://github.com/MrLotU)
+[macdja38](https://github.com/macdja38)
+[loganwright](https://github.com/loganwright)
+
 Parts of voice handling done with work from Erik Little
 
 License:

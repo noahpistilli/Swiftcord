@@ -2,10 +2,10 @@
 import PackageDescription
 
 let package = Package(
-  name: "Sword",
+  name: "Swiftcord",
   platforms: [.macOS(.v10_15),],
   products: [
-    .library(name: "Sword", targets: ["Sword"])
+    .library(name: "Swiftcord", targets: ["Swiftcord"])
   ],
   dependencies: [
     // WebSockets for Linux and macOS
@@ -15,7 +15,7 @@ let package = Package(
   ],
   targets: [
     .target(
-      name: "Sword",
+      name: "Swiftcord",
       dependencies: [.product(name: "WebSocketKit", package: "websocket-kit"), "Rainbow"]
     )
   ]

@@ -9,37 +9,40 @@ import Foundation
 
 public class EmbedBuilder: Encodable {
     /// Author dictionary from embed
-    public var author: Author?
+    var author: Author?
   
     /// Side panel color of embed
-    public var color: Int?
+    var color: Int?
   
     /// Description of the embed
-    public var description: String?
+    var description: String?
   
     /// Fields for the embed
-    public var fields: [Field]?
+    var fields: [Field]?
   
     /// Footer dictionary from embed
-    public var footer: Footer?
+    var footer: Footer?
   
     /// Image data from embed
-    public var image: Image?
+    var image: Image?
     
     /// Thumbnail data from embed
-    public var thumbnail: Thumbnail?
+    var thumbnail: Thumbnail?
+    
+    /// Timestamp of the embed
+    var timestamp: String?
   
     /// Title of the embed
-    public var title: String?
+    var title: String?
   
     /// Type of embed | Discord says this should be considered deprecated. As such we set as rich
-    public var type: String
+    var type: String
   
     /// URL of the embed
-    public var url: String?
+    var url: String?
   
     /// Video data from embed
-    public var video: Video?
+    var video: Video?
     
     // MARK: Initializers
     
@@ -54,7 +57,7 @@ public class EmbedBuilder: Encodable {
     /**
      Adds a field to the embed
      
-     - parameter name: Name to give field
+     - parameter name: Title of the field
      - parameter value: Text that will be displayed underneath name
      - parameter inline: Whether or not to keep this field inline with others
     */
@@ -137,6 +140,11 @@ public class EmbedBuilder: Encodable {
         
         return self
     }
+    
+    public func setTimestamp() -> Self {
+        self.timestamp = ISO8601DateFormatter().string(from: Date())
+        return self
+    }
 }
 
 extension EmbedBuilder {
@@ -212,4 +220,9 @@ extension EmbedBuilder {
             self.width = width
         }
     }
+}
+
+/// Represents the parent tag in the JSON we send to Discord with an `EmbedBuilder`
+struct EmbedBody: Encodable {
+    let embeds: [EmbedBuilder]
 }

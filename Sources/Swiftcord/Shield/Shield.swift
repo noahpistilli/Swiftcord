@@ -38,10 +38,6 @@ open class Shield: Swiftcord {
 
     super.init(token: token, options: swiftcordOptions)
 
-    if self.shieldOptions.willDefaultHelp {
-      self.registerHelp()
-    }
-
     self.on(.ready) { [unowned self] data in
       let bot = data as! User
 
@@ -230,24 +226,6 @@ open class Shield: Swiftcord {
       for alias in options.aliases {
         self.commandAliases[alias.lowercased()] = (alias, commandName.lowercased())
       }
-    }
-  }
-
-  /// Creates a default help command for the bot
-  func registerHelp() {
-    self.register("help") { [unowned self] msg, _ in
-      var embed = Embed()
-      embed.title = "\(self.user!.username!)'s Help"
-
-      for command in self.commands.values {
-        embed.addField(
-          command.name,
-          value: command.options.description,
-          isInline: true
-        )
-      }
-
-      msg.channel.send(embed)
     }
   }
 

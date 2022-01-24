@@ -2114,13 +2114,15 @@ open class Swiftcord: Eventable {
    - parameter channelId: Channel to send message to
    */
   public func send(
-    _ content: Embed,
+    _ embeds: EmbedBuilder...,
     to channelId: Snowflake,
     then completion: ((Message?, RequestError?) -> Void)? = nil
   ) {
-    self.request(
+      let jsonData = try! self.encoder.encode(EmbedBody(embeds: embeds))
+      
+    self.requestWithBodyAsData(
       .createMessage(channelId),
-      body: ["embed": content.encode()]
+      body: jsonData
     ) { [unowned self] data, error in
       if let error = error {
         completion?(nil, error)

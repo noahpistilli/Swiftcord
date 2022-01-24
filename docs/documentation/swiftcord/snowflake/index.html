@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    
+    <title>Snowflake| Documentation</title>
+    
+    <link rel="icon"       href="../../../favicon.ico" />
+    <link rel="mask-icon"  href="../../../favicon.svg" color="#333333" />
+    <link rel='stylesheet' href='../../../css/site.css' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/default.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="doc-topic">
+        <nav role="navigation" class="nav documentation-nav">
+  <div class="nav__wrapper">
+    <div class="nav__background"></div>
+    <div class="nav-content">
+      <div class="nav-title">
+        <span class="nav-title-link inactive">Documentation</span>
+      </div>
+      <div class="nav-menu">
+        <div class="nav-menu-tray">
+          <ul class="nav-menu-items hierarchy">
+            
+              <li class="nav-menu-item hierarchy-item">
+                
+                
+                  <a href="../index.html" class="item">Swiftcord</a>
+                
+              </li>
+            
+              <li class="nav-menu-item hierarchy-item">
+                
+                  <span class="current item">Snowflake</span>
+                
+                
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main id="main" role="main" class="main">
+  <div class="topictitle">
+  <span class="eyebrow">Structure</span>
+  <h1 class="title">Snowflake</h1>
+</div>
+
+  <div class="container content-grid">
+  <div class="description">
+    <div class="abstract content">
+      The stored type of a Discord Snowflake ID.
+    </div>
+  </div>
+  
+  <!-- The sidebar once we have one: <div class="summary"></div> -->
+  
+  <div class="primary-content">
+    <section id='declaration' class='declaration'>
+  <h2>Declaration</h2>
+  <div class='declaration-group'>
+    <pre class='source indented'><code><span class='token-keyword'>struct</span> <span class='token-identifier'>Snowflake</span></code></pre>
+  </div>
+</section>
+
+  </div>
+</div>
+
+  
+  <section id='topics' class='contenttable alt-light'>
+  <div class='container'>
+    <h2 class='title'>Topics</h2>
+
+    
+      <div class="row contenttable-section">
+        <div class="col section-title large-3 medium-3 small-12">
+          <h3 class="title">Initializers</h3>
+        </div>
+  
+        <div class="col section-content large-9 medium-9 small-12">
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/init(_:)-3hv6d.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='identifier'>init</span><span class='decorator'>?(</span><span class='decorator'>Any</span><span class='decorator'>?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Initialize from any type Currently supports:</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/init(_:)-68ghg.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='identifier'>init</span><span class='decorator'>(</span><span class='decorator'>UInt64</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Initialize from a UInt64</div>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    
+      <div class="row contenttable-section">
+        <div class="col section-title large-3 medium-3 small-12">
+          <h3 class="title">Instance Properties</h3>
+        </div>
+  
+        <div class="col section-content large-9 medium-9 small-12">
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/numberinprocess.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>numberInProcess</span><span class='decorator'>: </span><span class='decorator'>Int</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Number of generated ID’s for the process</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/processid.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>processId</span><span class='decorator'>: </span><span class='decorator'>Int</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Discord’s internal process under worker that generated this snowflake</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/rawvalue-swift.property.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>let</span><span class='decorator empty-token'> </span><span class='identifier'>rawValue</span><span class='decorator'>: </span><span class='decorator'>UInt64</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">The internal value storage for a snowflake</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/timestamp.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>timestamp</span><span class='decorator'>: </span><span class='decorator'>Date</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Time when snowflake was created</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/workerid.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>workerId</span><span class='decorator'>: </span><span class='decorator'>Int</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Discord’s internal worker ID that generated this snowflake</div>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    
+      <div class="row contenttable-section">
+        <div class="col section-title large-3 medium-3 small-12">
+          <h3 class="title">Type Properties</h3>
+        </div>
+  
+        <div class="col section-content large-9 medium-9 small-12">
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/epoch.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>static</span><span class='decorator empty-token'> </span><span class='decorator'>let</span><span class='decorator empty-token'> </span><span class='identifier'>epoch</span><span class='decorator'>: </span><span class='decorator'>Date</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Discord’s epoch</div>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    
+      <div class="row contenttable-section">
+        <div class="col section-title large-3 medium-3 small-12">
+          <h3 class="title">Type Methods</h3>
+        </div>
+  
+        <div class="col section-content large-9 medium-9 small-12">
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/snowflake/fakesnowflake(date:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>static</span><span class='decorator empty-token'> </span><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>fakeSnowflake</span><span class='decorator'>(</span><span class='decorator'>date</span><span class='decorator'>: </span><span class='decorator'>Date</span><span class='decorator'>) -&gt; </span><span class='decorator'>Snowflake</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Creates a fake snowflake that would have been created at the specified date Useful for things like the messages before/after/around endpoint</div>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    
+      <div class="row contenttable-section">
+        <div class="col section-title large-3 medium-3 small-12">
+          <h3 class="title">Default Implementations</h3>
+        </div>
+  
+        <div class="col section-content large-9 medium-9 small-12">
+          
+            <div class="link-block topic">
+              
+              
+                <a href="../../../documentation/swiftcord/snowflake/equatable-implementations.html" class="link has-adjacent-elements">
+                  <span class="topic-icon-wrapper">&nbsp;</span>
+                  Equatable Implementations
+                </a>
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+              
+                <a href="../../../documentation/swiftcord/snowflake/hashable-implementations.html" class="link has-adjacent-elements">
+                  <span class="topic-icon-wrapper">&nbsp;</span>
+                  Hashable Implementations
+                </a>
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+              
+                <a href="../../../documentation/swiftcord/snowflake/rawrepresentable-implementations.html" class="link has-adjacent-elements">
+                  <span class="topic-icon-wrapper">&nbsp;</span>
+                  RawRepresentable Implementations
+                </a>
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+              
+                <a href="../../../documentation/swiftcord/snowflake/expressiblebyintegerliteral-implementations.html" class="link has-adjacent-elements">
+                  <span class="topic-icon-wrapper">&nbsp;</span>
+                  ExpressibleByIntegerLiteral Implementations
+                </a>
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+              
+                <a href="../../../documentation/swiftcord/snowflake/-implementations.html" class="link has-adjacent-elements">
+                  <span class="topic-icon-wrapper">&nbsp;</span>
+                   Implementations
+                </a>
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+              
+                <a href="../../../documentation/swiftcord/snowflake/comparable-implementations.html" class="link has-adjacent-elements">
+                  <span class="topic-icon-wrapper">&nbsp;</span>
+                  Comparable Implementations
+                </a>
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+              
+                <a href="../../../documentation/swiftcord/snowflake/customstringconvertible-implementations.html" class="link has-adjacent-elements">
+                  <span class="topic-icon-wrapper">&nbsp;</span>
+                  CustomStringConvertible Implementations
+                </a>
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+              
+                <a href="../../../documentation/swiftcord/snowflake/-implementations.html" class="link has-adjacent-elements">
+                  <span class="topic-icon-wrapper">&nbsp;</span>
+                   Implementations
+                </a>
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    
+  </div>
+</section>
+
+  
+</main>
+
+      </div>
+    </div>
+    <footer class="footer"></footer>
+    <script>hljs.highlightAll();</script>
+  </body>
+</html>

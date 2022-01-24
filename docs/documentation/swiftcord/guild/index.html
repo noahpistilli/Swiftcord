@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    
+    <title>Guild| Documentation</title>
+    
+    <link rel="icon"       href="../../../favicon.ico" />
+    <link rel="mask-icon"  href="../../../favicon.svg" color="#333333" />
+    <link rel='stylesheet' href='../../../css/site.css' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/default.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="doc-topic">
+        <nav role="navigation" class="nav documentation-nav">
+  <div class="nav__wrapper">
+    <div class="nav__background"></div>
+    <div class="nav-content">
+      <div class="nav-title">
+        <span class="nav-title-link inactive">Documentation</span>
+      </div>
+      <div class="nav-menu">
+        <div class="nav-menu-tray">
+          <ul class="nav-menu-items hierarchy">
+            
+              <li class="nav-menu-item hierarchy-item">
+                
+                
+                  <a href="../index.html" class="item">Swiftcord</a>
+                
+              </li>
+            
+              <li class="nav-menu-item hierarchy-item">
+                
+                  <span class="current item">Guild</span>
+                
+                
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main id="main" role="main" class="main">
+  <div class="topictitle">
+  <span class="eyebrow">Class</span>
+  <h1 class="title">Guild</h1>
+</div>
+
+  <div class="container content-grid">
+  <div class="description">
+    <div class="abstract content">
+      Guild Type
+    </div>
+  </div>
+  
+  <!-- The sidebar once we have one: <div class="summary"></div> -->
+  
+  <div class="primary-content">
+    <section id='declaration' class='declaration'>
+  <h2>Declaration</h2>
+  <div class='declaration-group'>
+    <pre class='source indented'><code><span class='token-keyword'>class</span> <span class='token-identifier'>Guild</span></code></pre>
+  </div>
+</section>
+
+  </div>
+</div>
+
+  
+  <section id='topics' class='contenttable alt-light'>
+  <div class='container'>
+    <h2 class='title'>Topics</h2>
+
+    
+      <div class="row contenttable-section">
+        <div class="col section-title large-3 medium-3 small-12">
+          <h3 class="title">Instance Properties</h3>
+        </div>
+  
+        <div class="col section-content large-9 medium-9 small-12">
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/afkchannelid.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>afkChannelId</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">ID of afk voice channel (if there is any)</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/afktimeout.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>afkTimeout</span><span class='decorator'>: </span><span class='decorator'>Int</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">AFK timeout in seconds (if there is any)</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/botmember.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>botMember</span><span class='decorator'>: </span><span class='decorator'>Member</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">The member type for the bot user</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/channels.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>channels</span><span class='decorator'>: [</span><span class='decorator'>Snowflake</span><span class='decorator'> : </span><span class='decorator'>GuildChannel</span><span class='decorator'>]</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Collection of channels mapped by channel ID</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/defaultmessagenotifications.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>defaultMessageNotifications</span><span class='decorator'>: </span><span class='decorator'>Int</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Default notification protocol</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/discoverysplash.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>discoverySplash</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Hash for the discovery splash. Only available guilds with discovery enabled</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/embedchannelid.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>embedChannelId</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">ID of embeddable channel</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/emojis.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>emojis</span><span class='decorator'>: [</span><span class='decorator'>Emoji</span><span class='decorator'>]</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Array of custom emojis for this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/features.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>features</span><span class='decorator'>: [</span><span class='decorator'>Guild</span><span class='decorator'>.</span><span class='decorator'>Feature</span><span class='decorator'>]</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Array of features this guild has</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/icon.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>icon</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Icon hash for guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/id.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>let</span><span class='decorator empty-token'> </span><span class='identifier'>id</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">ID of guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/isembedenabled.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>isEmbedEnabled</span><span class='decorator'>: </span><span class='decorator'>Bool</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Whether or not this guild is embeddable</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/islarge.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>let</span><span class='decorator empty-token'> </span><span class='identifier'>isLarge</span><span class='decorator'>: </span><span class='decorator'>Bool</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Whether or not this guild is considered “large”</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/iswidgetenabled.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>isWidgetEnabled</span><span class='decorator'>: </span><span class='decorator'>Bool</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Whether or not this guild has it’s widget enabled</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/joinedat.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>let</span><span class='decorator empty-token'> </span><span class='identifier'>joinedAt</span><span class='decorator'>: </span><span class='decorator'>Date</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">The date at which the bot joined the server</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/membercount.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>let</span><span class='decorator empty-token'> </span><span class='identifier'>memberCount</span><span class='decorator'>: </span><span class='decorator'>Int</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Amount of members this guild has</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/members.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>members</span><span class='decorator'>: [</span><span class='decorator'>Snowflake</span><span class='decorator'> : </span><span class='decorator'>Member</span><span class='decorator'>]</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Collection of members mapped by user ID</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/mfalevel-swift.property.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>mfaLevel</span><span class='decorator'>: </span><span class='decorator'>Guild</span><span class='decorator'>.</span><span class='decorator'>MFALevel</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">MFA level of guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/name.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>name</span><span class='decorator'>: </span><span class='decorator'>String</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Name of the guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/ownerid.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>ownerId</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Owner’s user ID</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/roles.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>roles</span><span class='decorator'>: [</span><span class='decorator'>Snowflake</span><span class='decorator'> : </span><span class='decorator'>Role</span><span class='decorator'>]</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Collection of roles mapped by role ID</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/shard.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>let</span><span class='decorator empty-token'> </span><span class='identifier'>shard</span><span class='decorator'>: </span><span class='decorator'>Int</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Shard ID this guild is handled by</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/splash.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>splash</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Splash Hash for guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/swiftcord.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>swiftcord</span><span class='decorator'>: </span><span class='decorator'>Swiftcord</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Parent class</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/threads.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>threads</span><span class='decorator'>: [</span><span class='decorator'>Snowflake</span><span class='decorator'> : </span><span class='decorator'>GuildChannel</span><span class='decorator'>]</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Collection of thread channels mapped by channel ID</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/verificationlevel-swift.property.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>verificationLevel</span><span class='decorator'>: </span><span class='decorator'>Guild</span><span class='decorator'>.</span><span class='decorator'>VerificationLevel</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Level of verification for guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/voicestates.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>voiceStates</span><span class='decorator'>: [</span><span class='decorator'>Snowflake</span><span class='decorator'> : </span><span class='decorator'>VoiceState</span><span class='decorator'>]</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Collection of member voice states currently in this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/widgetchannelid.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>var</span><span class='decorator empty-token'> </span><span class='identifier'>widgetChannelId</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">The channel ID that the widget will generate an invite to</div>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    
+      <div class="row contenttable-section">
+        <div class="col section-title large-3 medium-3 small-12">
+          <h3 class="title">Instance Methods</h3>
+        </div>
+  
+        <div class="col section-content large-9 medium-9 small-12">
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/ban(_:for:with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>ban</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>for</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>?, </span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Int</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Bans a member from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/createchannel(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>createChannel</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>GuildChannel</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Creates a channel in this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/createevent(_:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>createEvent</span><span class='decorator'>(</span><span class='decorator'>ScheduledEvent</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>ScheduledEvent</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Creates a scheduled event</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/createintegration(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>createIntegration</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>String</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Creates an integration for this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/createrole(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>createRole</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>Role</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Creates role in this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/delete(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>delete</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>Guild</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Deletes current guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/deleteapplicationcommand(commandid:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>deleteApplicationCommand</span><span class='decorator'>(</span><span class='decorator'>commandId</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/deleteemoji(_:reason:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>deleteEmoji</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>reason</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Deletes an emoji</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/deleteintegration(_:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>deleteIntegration</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Deletes an integration from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/deleterole(_:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>deleteRole</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>Role</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Deletes a role from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getauditlog(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getAuditLog</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]?, </span><span class='decorator'>then</span><span class='decorator'>: (</span><span class='decorator'>AuditLog</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Get’s this guild’s audit logs</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getbans(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getBans</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([</span><span class='decorator'>User</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets guild’s bans</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getembed(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getEmbed</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets the guild embed</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getemoji(emojiid:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getEmoji</span><span class='decorator'>(</span><span class='decorator'>emojiId</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: (</span><span class='decorator'>Emoji</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getemojis(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getEmojis</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([</span><span class='decorator'>Emoji</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets all the Emoji’s an a guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getintegrations(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getIntegrations</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([[</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets guild’s integrations</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getinvites(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getInvites</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([[</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets guild’s invites</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getmembers(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getMembers</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]?, </span><span class='decorator'>then</span><span class='decorator'>: ([</span><span class='decorator'>Member</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets an array of guild members</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getprunecount(for:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getPruneCount</span><span class='decorator'>(</span><span class='decorator'>for</span><span class='decorator'>: </span><span class='decorator'>Int</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: (</span><span class='decorator'>Int</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets number of users who would be pruned by x amount of days</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getroles(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getRoles</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([</span><span class='decorator'>Role</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets guild roles</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getscheduledevents(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getScheduledEvents</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([</span><span class='decorator'>ScheduledEvent</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets all the scheduled events in this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getsticker(stickerid:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getSticker</span><span class='decorator'>(</span><span class='decorator'>stickerId</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: (</span><span class='decorator'>Sticker</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets a sticker from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getstickers(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getStickers</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([</span><span class='decorator'>Sticker</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets all the stickers from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getvoiceregions(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getVoiceRegions</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([[</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets an array of voice regions from guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/getwebhooks(then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>getWebhooks</span><span class='decorator'>(</span><span class='decorator'>then</span><span class='decorator'>: ([</span><span class='decorator'>Webhook</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets guild’s webhooks</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/imageurl(format:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>imageUrl</span><span class='decorator'>(</span><span class='decorator'>format</span><span class='decorator'>: </span><span class='decorator'>FileExtension</span><span class='decorator'>) -&gt; </span><span class='decorator'>URL</span><span class='decorator'>?</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Gets the link of the guild’s icon</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/kick(_:for:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>kick</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>for</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>?, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Kicks member from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/modify(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>modify</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>Guild</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Modifies current guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/modifychannelpositions(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>modifyChannelPositions</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [[</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]], </span><span class='decorator'>then</span><span class='decorator'>: (([</span><span class='decorator'>GuildChannel</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Modifies channel positions</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/modifyembed(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>modifyEmbed</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: (([</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Modifes this guild’s Embed</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/modifyemoji(emojiid:with:reason:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>modifyEmoji</span><span class='decorator'>(</span><span class='decorator'>emojiId</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>], </span><span class='decorator'>reason</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>Emoji</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Modifes an emoji in this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/modifyintegration(_:with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>modifyIntegration</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Modifies an integration from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/modifymember(_:with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>modifyMember</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Modifies a member from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/modifyrole(_:with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>modifyRole</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>with</span><span class='decorator'>: [</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>Role</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Modifies a role from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/modifyrolepositions(with:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>modifyRolePositions</span><span class='decorator'>(</span><span class='decorator'>with</span><span class='decorator'>: [[</span><span class='decorator'>String</span><span class='decorator'> : </span><span class='decorator'>Any</span><span class='decorator'>]], </span><span class='decorator'>then</span><span class='decorator'>: (([</span><span class='decorator'>Role</span><span class='decorator'>]?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Modifies role positions</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/movemember(_:to:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>moveMember</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>to</span><span class='decorator'>: </span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Moves a member to another voice channel (if they are in one)</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/prunemembers(for:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>pruneMembers</span><span class='decorator'>(</span><span class='decorator'>for</span><span class='decorator'>: </span><span class='decorator'>Int</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>Int</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Prunes members for x amount of days</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/removetimeoutfromuser(_:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>removeTimeoutFromUser</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/syncintegration(_:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>syncIntegration</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Syncs an integration from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/timeoutuser(_:until:reason:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>timeoutUser</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>until</span><span class='decorator'>: </span><span class='decorator'>Date</span><span class='decorator'>, </span><span class='decorator'>reason</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/unbanmember(_:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>unbanMember</span><span class='decorator'>(</span><span class='decorator'>Snowflake</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Unbans a user from this guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/uploademoji(name:emoji:roles:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>uploadEmoji</span><span class='decorator'>(</span><span class='decorator'>name</span><span class='decorator'>: </span><span class='decorator'>String</span><span class='decorator'>, </span><span class='decorator'>emoji</span><span class='decorator'>: </span><span class='decorator'>Icon</span><span class='decorator'>, </span><span class='decorator'>roles</span><span class='decorator'>: [</span><span class='decorator'>Role</span><span class='decorator'>], </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>Emoji</span><span class='decorator'>?, </span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/uploadmessagecommand(commanddata:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>uploadMessageCommand</span><span class='decorator'>(</span><span class='decorator'>commandData</span><span class='decorator'>: </span><span class='decorator'>MessageCommandBuilder</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/uploadslashcommand(commanddata:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>uploadSlashCommand</span><span class='decorator'>(</span><span class='decorator'>commandData</span><span class='decorator'>: </span><span class='decorator'>SlashCommandBuilder</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/uploadusercommand(commanddata:then:).html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>func</span><span class='decorator empty-token'> </span><span class='identifier'>uploadUserCommand</span><span class='decorator'>(</span><span class='decorator'>commandData</span><span class='decorator'>: </span><span class='decorator'>UserCommandBuilder</span><span class='decorator'>, </span><span class='decorator'>then</span><span class='decorator'>: ((</span><span class='decorator'>RequestError</span><span class='decorator'>?) -&gt; </span><span class='decorator'>Void</span><span class='decorator'>)?)</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content"></div>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    
+      <div class="row contenttable-section">
+        <div class="col section-title large-3 medium-3 small-12">
+          <h3 class="title">Enumerations</h3>
+        </div>
+  
+        <div class="col section-content large-9 medium-9 small-12">
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/feature/index.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>enum</span><span class='decorator empty-token'> </span><span class='identifier'>Feature</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Guild features</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/mfalevel-swift.enum/index.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>enum</span><span class='decorator empty-token'> </span><span class='identifier'>MFALevel</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Level of verification for admisitrative actions for guild</div>
+              </div>
+            </div>
+          
+            <div class="link-block topic">
+              
+                <a href="../../../documentation/swiftcord/guild/verificationlevel-swift.enum/index.html" class="link has-adjacent-elements">
+                  <code class="decorated-title"><span class='decorator'>enum</span><span class='decorator empty-token'> </span><span class='identifier'>VerificationLevel</span></code>
+                </a>
+              
+              
+              <div class="abstract">
+                <div class="content">Level of verification for guild</div>
+              </div>
+            </div>
+          
+        </div>
+      </div>
+    
+  </div>
+</section>
+
+  
+</main>
+
+      </div>
+    </div>
+    <footer class="footer"></footer>
+    <script>hljs.highlightAll();</script>
+  </body>
+</html>

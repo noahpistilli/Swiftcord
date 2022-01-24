@@ -1,6 +1,9 @@
-# Sword - A Discord Library for Swift
+[![Swift Version](https://img.shields.io/badge/Swift-5.3-orange.svg?style=flat-square)](https://swift.org) 
+[![Tag](https://img.shields.io/github/tag/Azoy/Sword.svg?style=flat-square&label=release&colorB=)](https://github.com/Azoy/Sword/releases)
 
-[![Swift Version](https://img.shields.io/badge/Swift-5.3-orange.svg?style=flat-square)](https://swift.org) [![Tag](https://img.shields.io/github/tag/Azoy/Sword.svg?style=flat-square&label=release&colorB=)](https://github.com/Azoy/Sword/releases)
+<img align="right" src="https://cdn.discordapp.com/attachments/750623609810190348/934989484561403925/swiftcord3.png" height="200" width="200">
+
+# Swiftcord - A Discord Library for Swift
 
 ## Requirements
 1. macOS, Linux, iOS, watchOS, tvOS (no voice for iOS, watchOS, or tvOS)
@@ -18,12 +21,12 @@ import PackageDescription
 let package = Package(
     name: "yourswiftexecutablehere",
     dependencies: [
-        .package(url: "https://github.com/SketchMaster2001/Sword", .branch("master"))
+        .package(url: "https://github.com/SketchMaster2001/Swiftcord", .branch("master"))
     ],
     targets: [
       .target(
         name: "yourswiftexecutablehere",
-        dependencies: ["Sword"]
+        dependencies: ["Swiftcord"]
       )
     ]
 )
@@ -32,12 +35,12 @@ let package = Package(
 After that, open Sources/main.swift and remove everything and replace it with the example below.
 
 ```swift
-import Sword
+import Swiftcord
 
-let bot = Sword(token: "Your bot token here")
+let bot = Swiftcord(token: "Your bot token here")
 
 // Set activity if wanted
-let activity = Activities(name: "with Sword!", type: .playing)
+let activity = Activities(name: "with Swiftcord!", type: .playing)
 bot.editStatus(status: .online, activity: activity)
 
 // Set intents which are required
@@ -65,6 +68,6 @@ To run the bot in Xcode, all you need to do is open the directory the `Package.s
 Then click the play button!
 
 ## Links
-The documentation for this repo is out of date due to jazzy not working on my computer. You can still use Azoy's site below to access documentation for pretty much everything except for interactions and message components.
+[Documentation](https://sketchmaster2001.github.io/Swiftcord) - Created using Apple [docc](https://github.com/apple/swift-docc) and converted to HTML with [docc2html](https://github.com/DoccZz/docc2html)
 
-[Pre-v9 Documentation](https://azoy.github.io/Sword/) - (created with [Jazzy](https://github.com/Realm/Jazzy))
+[Swiftcord Discord server](https://discord.gg/cE2Cpn4r9X)

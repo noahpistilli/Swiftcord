@@ -349,16 +349,16 @@ extension Shard {
       self.swiftcord.emit(event, with: (channel, userID, messageID, emoji))
         
     case .threadCreate:
-        let thread = Thread(swiftcord, data)
+        let thread = ThreadChannel(swiftcord, data)
         self.swiftcord.emit(.threadCreate, with: thread)
         
     case .threadDelete:
-        let thread = Thread(swiftcord, data)
+        let thread = ThreadChannel(swiftcord, data)
         self.swiftcord.emit(.threadDelete, with: thread)
         
     
     case .threadUpdate:
-        let thread = Thread(swiftcord, data)
+        let thread = ThreadChannel(swiftcord, data)
         self.swiftcord.emit(.threadUpdate, with: thread)
 
     /// TYPING_START

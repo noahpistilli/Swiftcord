@@ -17,7 +17,7 @@ public struct AuditLog {
     public var guildScheduledEvents = [ScheduledEvent]()
     
     /// Array of threads found in audit log
-    public var threads = [Thread]()
+    public var threads = [ThreadChannel]()
 
     /// Array of users found in audit log
     public var users = [User]()
@@ -46,7 +46,7 @@ public struct AuditLog {
         
         let threads = json["threads"]!
         for thread in threads {
-            self.threads.append(Thread(swiftcord, thread as! [String : Any]))
+            self.threads.append(ThreadChannel(swiftcord, thread as! [String : Any]))
         }
 
         let users = json["users"]!

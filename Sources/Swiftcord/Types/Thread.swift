@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Thread: TextChannel, GuildChannel, Updatable {
+public class ThreadChannel: TextChannel, GuildChannel, Updatable {
     // MARK: Properties
 
     /// Parent class

@@ -499,7 +499,7 @@ public enum Event: String {
      ### Usage ###
      ```swift
      bot.on(.threadCreate) { data in
-       let thread = data as! Thread
+       let thread = data as! ThreadChannel
      }
      ```
     */
@@ -511,7 +511,7 @@ public enum Event: String {
      ### Usage ###
      ```swift
      bot.on(.threadDelete) { data in
-       let thread = data as! Thread
+       let thread = data as! ThreadChannel
      }
      ```
     */
@@ -523,7 +523,7 @@ public enum Event: String {
      ### Usage ###
      ```swift
      bot.on(.threadUpdate) { data in
-       let thread = data as! Thread
+       let thread = data as! ThreadChannel
      }
      ```
     */

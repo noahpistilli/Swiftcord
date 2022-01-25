@@ -137,7 +137,7 @@ public class Guild: Updatable, Imageable {
         
             if let threads = json["threads"] as? [[String : Any]] {
                 for thread in threads {
-                    let channel = Thread(swiftcord, thread)
+                    let channel = ThreadChannel(swiftcord, thread)
                     self.threads[channel.id] = channel
                     self.channels[channel.id] = channel
                 }

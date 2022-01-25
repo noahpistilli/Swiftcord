@@ -499,7 +499,7 @@ public enum Event: String {
      ### Usage ###
      ```swift
      bot.on(.threadCreate) { data in
-       let thread = data as! Thread
+       let thread = data as! ThreadChannel
      }
      ```
     */
@@ -511,7 +511,7 @@ public enum Event: String {
      ### Usage ###
      ```swift
      bot.on(.threadDelete) { data in
-       let thread = data as! Thread
+       let thread = data as! ThreadChannel
      }
      ```
     */
@@ -523,7 +523,7 @@ public enum Event: String {
      ### Usage ###
      ```swift
      bot.on(.threadUpdate) { data in
-       let thread = data as! Thread
+       let thread = data as! ThreadChannel
      }
      ```
     */
@@ -660,7 +660,8 @@ public enum Event: String {
 
 /// Value for Intents
 public enum Intents: Int {
-    case guilds = 1
+    /// The `guilds` intent is required for us to cache channels locally. It is also needed for many events
+    // case guilds = 1
     
     /// Events on member join, leave and updates. This is a Privileged Intent
     case guildMembers = 2

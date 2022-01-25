@@ -31,7 +31,7 @@ open class Swiftcord: Eventable {
   var isGloballyLocked = false
     
     /// Intents the bot is entitled to
-    var intents = 0
+    var intents = 1
     
     /// Array of the intents the bot is entitled to
     var intentArray: [Intents] = []

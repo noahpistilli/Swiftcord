@@ -15,6 +15,7 @@ import Dispatch
 import WebSocketKit
 import NIOPosix
 import NIOWebSocket
+import NIO
 
 protocol Gateway: AnyObject {
 
@@ -50,19 +51,20 @@ extension Gateway {
   
   /// Starts the gateway connection
   func start() {
-      let loopgroup = MultiThreadedEventLoopGroup(numberOfThreads: 4)
+      let loopgroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
       
       self.acksMissed = 0
       
       let url = URL(string: self.gatewayUrl)!
+      let path = self.gatewayUrl.components(separatedBy: "/?")[1]
       
       let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(loopgroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
-      
       
       wsClient.connect(
         scheme: url.scheme!,
         host: url.host!,
-        port: url.port ?? 443
+        port: url.port ?? 443,
+        path: "/?" + path
       ) { ws in
           
           self.session = ws

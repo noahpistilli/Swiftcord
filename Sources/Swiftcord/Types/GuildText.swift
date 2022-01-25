@@ -213,13 +213,13 @@ public struct Overwrite {
   */
   init(_ json: [String: Any]) {
 
-    self.allow = json["allow"] as! Int
-    self.deny = json["deny"] as! Int
+    self.allow = Int(json["allow"] as! String)!
+    self.deny = Int(json["deny"] as! String)!
     self.id = Snowflake(json["id"])!
-    self.type = OverwriteType(rawValue: json["type"] as! String)!
+    self.type = OverwriteType(rawValue: json["type"] as! Int)!
   }
     
-    public enum OverwriteType: String {
+    public enum OverwriteType: Int {
         case role
         case member
     }

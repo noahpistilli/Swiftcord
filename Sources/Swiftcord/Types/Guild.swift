@@ -139,6 +139,7 @@ public class Guild: Updatable, Imageable {
                 for thread in threads {
                     let channel = Thread(swiftcord, thread)
                     self.threads[channel.id] = channel
+                    self.channels[channel.id] = channel
                 }
             }
 

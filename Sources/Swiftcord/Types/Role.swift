@@ -49,7 +49,7 @@ public struct Role: Codable {
     self.isManaged = json["managed"] as! Bool
     self.isMentionable = json["mentionable"] as! Bool
     self.name = json["name"] as! String
-    self.permissions = json["permissions"] as! Int
+    self.permissions = Int(json["permissions"] as! String)!
     self.position = json["position"] as! Int
   }
 

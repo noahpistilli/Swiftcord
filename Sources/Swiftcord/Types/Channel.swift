@@ -232,7 +232,7 @@ public extension TextChannel {
    - parameter message: Embed to send as message
    */
   func send(
-    _ message: Embed,
+    _ message: EmbedBuilder,
     then completion: ((Message?, RequestError?) -> Void)? = nil
   ) {
     self.swiftcord?.send(message, to: self.id, then: completion)

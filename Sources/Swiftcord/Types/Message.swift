@@ -272,7 +272,7 @@ public struct Message {
    - parameter message: Embed to send to channel
   */
   public func reply(
-    with message: Embed,
+    with message: EmbedBuilder,
     then completion: ((Message?, RequestError?) -> Void)? = nil
   ) {
     self.channel.send(message, then: completion)

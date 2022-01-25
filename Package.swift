@@ -17,6 +17,10 @@ let package = Package(
     .target(
       name: "Swiftcord",
       dependencies: [.product(name: "WebSocketKit", package: "websocket-kit"), "Rainbow"]
+    ),
+    .testTarget(
+        name: "SwiftcordTests",
+        dependencies: [.target(name: "Swiftcord")]
     )
   ]
 )

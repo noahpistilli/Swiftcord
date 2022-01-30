@@ -9,20 +9,22 @@
 /// Create a nifty Event Emitter in Swift
 public protocol Eventable: AnyObject {
 
-  /// Event Listeners
-  var listeners: [Event: [(Any) -> Void]] { get set }
+    /// Event Listeners. For a better experience, use `ListenerAdapter`
+    var listeners: [Event: [(Any) -> Void]] { get set }
+    
+    /// Event listeners with `ListenerAdapter1`.
+    var listenerAdaptors: [ListenerAdapter] { get set }
 
-  /**
-   - parameter event: Event to listen for
-   */
-  func on(_ event: Event, do function: @escaping (Any) -> Void) -> Int
+    /**
+     - parameter event: Event to listen for
+     */
+    func on(_ event: Event, do function: @escaping (Any) -> Void) -> Int
 
-  /**
-   - parameter event: Event to emit
-   - parameter data: Array of stuff to emit listener with
-   */
-  func emit(_ event: Event, with data: Any)
-
+    /**
+     - parameter event: Event to emit
+     - parameter data: Array of stuff to emit listener with
+     */
+    func emit(_ event: Event, with data: Any)
 }
 
 extension Eventable {
@@ -57,5 +59,4 @@ extension Eventable {
       listener(data)
     }
   }
-
 }

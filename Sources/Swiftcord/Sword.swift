@@ -15,20 +15,20 @@ import Dispatch
 /// Main Class for Swiftcord
 open class Swiftcord: Eventable {
 
-  // MARK: Properties
-  /// Collection of DMChannels mapped by user id
-  public internal(set) var dms = [Snowflake: DM]() {
-    didSet {
-      guard dms.count > 10 else {
-        return
-      }
+    // MARK: Properties
+    /// Collection of DMChannels mapped by user id
+    public internal(set) var dms = [Snowflake: DM]() {
+        didSet {
+            guard dms.count > 10 else {
+                return
+            }
 
-      dms.removeValue(forKey: dms.first!.key)
+            dms.removeValue(forKey: dms.first!.key)
+        }
     }
-  }
 
-  /// Whether or not the global queue is locked
-  var isGloballyLocked = false
+    /// Whether or not the global queue is locked
+    var isGloballyLocked = false
     
     /// Intents the bot is entitled to
     var intents = 1
@@ -36,77 +36,78 @@ open class Swiftcord: Eventable {
     /// Array of the intents the bot is entitled to
     var intentArray: [Intents] = []
 
-  /// The queue that handles requests made after being globally limited
-  lazy var globalQueue: DispatchQueue = DispatchQueue(
-    label: "me.azoy.swiftcord.rest.global"
-  )
+    /// The queue that handles requests made after being globally limited
+    lazy var globalQueue: DispatchQueue = DispatchQueue(
+        label: "io.sketchmaster2001.swiftcord.rest.global"
+    )
 
-  /// Used to store requests when being globally rate limited
-  var globalRequestQueue = [() -> Void]()
+    /// Used to store requests when being globally rate limited
+    var globalRequestQueue = [() -> Void]()
 
-  /// Collection of group channels the bot is connected to
-  public internal(set) var groups = [Snowflake: GroupDM]()
+    /// Collection of group channels the bot is connected to
+    public internal(set) var groups = [Snowflake: GroupDM]()
 
-  /// Collections of guilds the bot is currently connected to
-  public internal(set) var guilds = [Snowflake: Guild]()
+    /// Collections of guilds the bot is currently connected to
+    public internal(set) var guilds = [Snowflake: Guild]()
     
     /// Global JSONEncoder
     var encoder = JSONEncoder()
     
+    /// Event listeners
+    public var listeners = [Event: [(Any) -> Void]]()
+
+    /// Optional options to apply to bot
+    var options: SwiftcordOptions
+
+    /// Initial presence of bot
+    var presence: [String: Any]?
     
+    /// Event listeners with the `ListenerAdapter` class
+    public var listenerAdaptors = [ListenerAdapter]()
 
-  /// Event listeners
-  public var listeners = [Event: [(Any) -> Void]]()
+    /// Collection of Collections of buckets mapped by route
+    var rateLimits = [String: Bucket]()
 
-  /// Optional options to apply to bot
-  var options: SwiftcordOptions
+    /// Timestamp of ready event
+    public internal(set) var readyTimestamp: Date?
 
-  /// Initial presence of bot
-  var presence: [String: Any]?
+    /// Global URLSession (trust me i saw it on a wwdc talk, this is legit lmfao  - Azoy)
+    let session = URLSession(
+        configuration: .default,
+        delegate: nil,
+        delegateQueue: OperationQueue()
+    )
 
-  /// Collection of Collections of buckets mapped by route
-  var rateLimits = [String: Bucket]()
+    /// Amount of shards to initialize
+    public internal(set) var shardCount = 1
 
-  /// Timestamp of ready event
-  public internal(set) var readyTimestamp: Date?
+    /// Shard Handler
+    lazy var shardManager = ShardManager()
 
-  /// Global URLSession (trust me i saw it on a wwdc talk, this is legit lmfao)
-  let session = URLSession(
-    configuration: .default,
-    delegate: nil,
-    delegateQueue: OperationQueue()
-  )
+    /// How many shards are ready
+    var shardsReady = 0
 
-  /// Amount of shards to initialize
-  public internal(set) var shardCount = 1
+    /// The bot token
+    let token: String
 
-  /// Shard Handler
-  lazy var shardManager = ShardManager()
+    /// Array of unavailable guilds the bot is currently connected to
+    public internal(set) var unavailableGuilds = [Snowflake: UnavailableGuild]()
 
-  /// How many shards are ready
-  var shardsReady = 0
-
-  /// The bot token
-  let token: String
-
-  /// Array of unavailable guilds the bot is currently connected to
-  public internal(set) var unavailableGuilds = [Snowflake: UnavailableGuild]()
-
-  /// Int in seconds of how long the bot has been online
-  public var uptime: Int? {
-    if let timestamp = self.readyTimestamp {
-      return Int(Date().timeIntervalSince(timestamp))
-    } else {
-      return nil
+    /// Int in seconds of how long the bot has been online
+    public var uptime: Int? {
+        if let timestamp = self.readyTimestamp {
+            return Int(Date().timeIntervalSince(timestamp))
+        } else {
+            return nil
+        }
     }
-  }
 
-  /// The user account for the bot
-  public internal(set) var user: User?
+    /// The user account for the bot
+    public internal(set) var user: User?
 
-  // MARK: Initializer
+    // MARK: Initializer
 
-  /**
+    /**
    Initializes the Swiftcord class
 
    - parameter token: The bot token
@@ -119,6 +120,15 @@ open class Swiftcord: Eventable {
 
   // MARK: Functions
 
+    /**
+     Adds events for the bot to listen to
+
+     - parameter listeners: Classes that conform to ListenerAdapter
+    */
+    public func addListeners(_ listeners: ListenerAdapter...) {
+        self.listenerAdaptors += listeners
+    }
+    
   /**
    Adds a reaction (unicode or custom emoji) to a message
 

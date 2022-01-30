@@ -1,9 +1,9 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
   name: "Swiftcord",
-  platforms: [.macOS(.v10_15),],
+  platforms: [.macOS("12"),],
   products: [
     .library(name: "Swiftcord", targets: ["Swiftcord"])
   ],

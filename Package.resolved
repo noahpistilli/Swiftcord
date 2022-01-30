@@ -2,30 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "COPUS",
-        "repositoryURL": "https://github.com/nuclearace/copus",
-        "state": {
-          "branch": null,
-          "revision": "365743902efc1c93730757cea288bef4b90637a0",
-          "version": "2.0.0"
-        }
-      },
-      {
         "package": "Rainbow",
         "repositoryURL": "https://github.com/onevcat/Rainbow",
         "state": {
           "branch": null,
           "revision": "e0dada9cd44e3fa7ec3b867e49a8ddbf543e3df3",
           "version": "4.0.1"
-        }
-      },
-      {
-        "package": "Sodium",
-        "repositoryURL": "https://github.com/nuclearace/Sodium",
-        "state": {
-          "branch": null,
-          "revision": "5812a3d879b77aae0fdfbd62d0e8354e914d15ae",
-          "version": "2.0.0"
         }
       },
       {

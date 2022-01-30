@@ -10,33 +10,33 @@ import Rainbow
 
 extension Swiftcord {
 
-  /**
-   Logs the given message
+    /**
+     Logs the given message
 
-   - parameter message: Info to output
-  */
-  func log(_ message: String) {
-    print("[Swiftcord] " + message.applyingCodes(Color.yellow))
-  }
+     - parameter message: Info to output
+     */
+    func log(_ message: String) {
+        print("[Swiftcord] " + message.applyingCodes(Color.yellow))
+    }
 
-  /**
-   Logs the given warning message
+    /**
+     Logs the given warning message
 
-   - parameter message: Warning to output
-  */
-  func warn(_ message: String) {
-    let prefix = "Warning: "
-      self.log(prefix + message + "\n".applyingCodes(Color.yellow))
-  }
+     - parameter message: Warning to output
+     */
+    func warn(_ message: String) {
+        let prefix = "Warning: "
+        self.log(prefix + message + "\n".applyingCodes(Color.yellow))
+    }
 
-  /**
-   Logs the given error message
+    /**
+     Logs the given error message
 
-   - parameter message: Error to output
-  */
-  func error(_ message: String) {
-    let prefix = "Error: "
-      self.log(prefix + message + "\n".applyingCodes(Color.red))
-  }
+     - parameter message: Error to output
+     */
+    func error(_ message: String) {
+        let prefix = "Error: "
+        self.log(prefix + message + "\n".applyingCodes(Color.red))
+    }
 
 }

@@ -29,7 +29,7 @@ enum Endpoint {
     case createGuildIntegration(Snowflake)
 
     case createGuildRole(Snowflake)
-    
+
     case createGuildScheduledEvent(Snowflake)
 
     case createMessage(Snowflake)
@@ -43,13 +43,13 @@ enum Endpoint {
     case deleteChannel(Snowflake)
 
     case deleteChannelPermission(Snowflake, Snowflake)
-    
+
     case deleteGlobalSlashCommand(Snowflake, Snowflake)
 
     case deleteGuild(Snowflake)
-    
+
     case deleteGuildEmoji(Snowflake, Snowflake)
-    
+
     case deleteGuildApplicationCommand(Snowflake, Snowflake, Snowflake)
 
     case deleteGuildIntegration(Snowflake, Snowflake)
@@ -71,7 +71,7 @@ enum Endpoint {
     case editChannelPermissions(Snowflake, Snowflake)
 
     case editMessage(Snowflake, Snowflake)
-    
+
     case editWebhook(Snowflake, String?)
 
     case executeSlackWebhook(Snowflake, String)
@@ -97,15 +97,15 @@ enum Endpoint {
     case getGuildAuditLogs(Snowflake)
 
     case getGuildBans(Snowflake)
-        
+
     case getGuildChannels(Snowflake)
 
     case getGuildEmbed(Snowflake)
-    
+
     case getGuildEmoji(Snowflake, Snowflake)
-    
+
     case getGuildEmojis(Snowflake)
-    
+
     case getGuildIntegrations(Snowflake)
 
     case getGuildInvites(Snowflake)
@@ -115,23 +115,23 @@ enum Endpoint {
     case getGuildPruneCount(Snowflake)
 
     case getGuildRoles(Snowflake)
-    
+
     case getGuildSticker(Snowflake, Snowflake)
-    
+
     case getGuildStickers(Snowflake)
 
     case getGuildVoiceRegions(Snowflake)
 
     case getGuildWebhooks(Snowflake)
-    
+
     case getInvite(String)
 
     case getPinnedMessages(Snowflake)
 
     case getReactions(Snowflake, Snowflake, String)
-    
+
     case getScheduledEvent(Snowflake)
-    
+
     case getSticker(Snowflake)
 
     case getThreads(Snowflake)
@@ -149,17 +149,17 @@ enum Endpoint {
     case leaveGuild(Snowflake)
 
     case listGuildMembers(Snowflake)
-    
+
     case modifyChannel(Snowflake)
 
     case modifyCurrentUser
-    
+
     case modifyGuild(Snowflake)
 
     case modifyGuildChannelPositions(Snowflake)
 
     case modifyGuildEmbed(Snowflake)
-    
+
     case modifyGuildEmoji(Snowflake, Snowflake)
 
     case modifyGuildIntegration(Snowflake, Snowflake)
@@ -175,15 +175,15 @@ enum Endpoint {
     case removeGuildBan(Snowflake, Snowflake)
 
     case removeGuildMember(Snowflake, Snowflake)
-    
+
     case replyToInteraction(Snowflake, String)
-    
+
     case replyToDeferedInteraction(Snowflake, String)
 
     case syncGuildIntegration(Snowflake, Snowflake)
 
     case triggerTypingIndicator(Snowflake)
-    
+
     case uploadEmoji(Snowflake)
 
     case uploadGuildApplicationCommand(Snowflake, Snowflake)

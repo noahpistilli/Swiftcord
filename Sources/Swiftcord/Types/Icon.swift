@@ -11,12 +11,12 @@ import Foundation
 public struct Icon {
     public let imageType: ImageType
     public let base64Image: String
-    
+
     public init(imageType: ImageType, image: Data) {
         self.imageType = imageType
         self.base64Image = image.base64EncodedString()
     }
-    
+
     func toDataString() -> String {
         return "data:\(self.imageType.rawValue);base64,\(self.base64Image)"
     }

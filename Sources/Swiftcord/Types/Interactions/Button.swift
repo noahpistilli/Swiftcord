@@ -10,21 +10,21 @@ import Foundation
 public class ButtonBuilder: Encodable {
     /// Message above the buttons. This is required if not sending an embed
     public var content: String?
-    
+
     /// Embed above the buttons.
     public var embeds: [EmbedBuilder]?
-    
+
     /// The buttons array
     public var components: [ActionRow<Button>]
 
     public init(message: String? = nil, embed: EmbedBuilder? = nil) {
         self.content = message
         self.embeds = []
-        
+
         if let embedBuilder = embed {
             self.embeds?.append(embedBuilder)
         }
-                
+
         self.components = []
     }
 

@@ -9,48 +9,48 @@
 /// Role Type
 public struct Role: Codable {
 
-  // MARK: Properties
+    // MARK: Properties
 
-  /// Color of role as an Int
-  public let color: Int
+    /// Color of role as an Int
+    public let color: Int
 
-  /// ID of the role
-  public let id: Snowflake
+    /// ID of the role
+    public let id: Snowflake
 
-  /// Whether or not this role is hoisted
-  public let isHoisted: Bool
+    /// Whether or not this role is hoisted
+    public let isHoisted: Bool
 
-  /// Whether or not this role is managed
-  public let isManaged: Bool
+    /// Whether or not this role is managed
+    public let isManaged: Bool
 
-  /// Whether or not this role is mentionable
-  public let isMentionable: Bool
+    /// Whether or not this role is mentionable
+    public let isMentionable: Bool
 
-  /// The name of the role
-  public let name: String
+    /// The name of the role
+    public let name: String
 
-  /// The permission number for this role
-  public let permissions: Int
+    /// The permission number for this role
+    public let permissions: Int
 
-  /// The position for this role
-  public let position: Int
+    /// The position for this role
+    public let position: Int
 
-  // MARK: Initializer
+    // MARK: Initializer
 
-  /**
-   Creates Role struct
+    /**
+     Creates Role struct
 
-   - parameter json: JSON representable as a dictionary
-  */
-  init(_ json: [String: Any]) {
-    self.color = json["color"] as! Int
-    self.isHoisted = json["hoist"] as! Bool
-    self.id = Snowflake(json["id"])!
-    self.isManaged = json["managed"] as! Bool
-    self.isMentionable = json["mentionable"] as! Bool
-    self.name = json["name"] as! String
-    self.permissions = Int(json["permissions"] as! String)!
-    self.position = json["position"] as! Int
-  }
+     - parameter json: JSON representable as a dictionary
+     */
+    init(_ json: [String: Any]) {
+        self.color = json["color"] as! Int
+        self.isHoisted = json["hoist"] as! Bool
+        self.id = Snowflake(json["id"])!
+        self.isManaged = json["managed"] as! Bool
+        self.isMentionable = json["mentionable"] as! Bool
+        self.name = json["name"] as! String
+        self.permissions = Int(json["permissions"] as! String)!
+        self.position = json["position"] as! Int
+    }
 
 }

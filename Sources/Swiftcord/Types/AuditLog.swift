@@ -12,10 +12,10 @@ public struct AuditLog {
 
     /// Array of audit log entries
     public var entries = [AuditLog.Entry]()
-    
+
     /// Array of scheduled events found in audit log
     public var guildScheduledEvents = [ScheduledEvent]()
-    
+
     /// Array of threads found in audit log
     public var threads = [ThreadChannel]()
 
@@ -29,7 +29,7 @@ public struct AuditLog {
 
     /**
      Creates an AuditLog structure
-   
+
      - parameter swiftcord: Parent class to give users and webhooks
      - parameter json: Dictionary representation of audit log
      */
@@ -38,15 +38,15 @@ public struct AuditLog {
         for entry in entries {
             self.entries.append(AuditLog.Entry(entry as! [String: Any]))
         }
-        
+
         let events = json["guild_scheduled_events"]!
         for event in events {
-            self.guildScheduledEvents.append(ScheduledEvent(swiftcord, event as! [String:Any]))
+            self.guildScheduledEvents.append(ScheduledEvent(swiftcord, event as! [String: Any]))
         }
-        
+
         let threads = json["threads"]!
         for thread in threads {
-            self.threads.append(ThreadChannel(swiftcord, thread as! [String : Any]))
+            self.threads.append(ThreadChannel(swiftcord, thread as! [String: Any]))
         }
 
         let users = json["users"]!
@@ -86,12 +86,12 @@ extension AuditLog {
 
         /// User ID that made this change
         public let userId: Snowflake
-        
+
         // MARK: Initializer
 
         /**
          Creates an AuditLogEntry structure
-     
+
          - parameter json: Dictionary representation of the entry
          */
         init(_ json: [String: Any]) {
@@ -126,11 +126,11 @@ extension AuditLog.Entry {
 
         /// Old value before change
         public let oldValue: Any
-        
+
         // MARK: Initializer
         /**
          Creates an AuditLogChange structure
-     
+
          - parameter json: Dictionary representation of a change
          */
         init(_ json: [String: Any]) {
@@ -167,7 +167,7 @@ extension AuditLog.Entry {
 
         /// A member is kicked from a guild
         case memberKick = 20
-        
+
         /// Someone decides to prune inactive members
         case memberPrune
 
@@ -179,16 +179,16 @@ extension AuditLog.Entry {
 
         /// A member of a guild was updated
         case memberUpdate
-      
+
         /// A member's role was updated
         case memberRoleUpdate
-      
+
         /// A member was moved to another voice channel forcefully
         case memberMove
-      
+
         /// A member was disconnected from a voice channel forcefully
         case memberDisconnect
-      
+
         // TODO: ???
         case botAdd
 
@@ -230,58 +230,58 @@ extension AuditLog.Entry {
 
         /// A message was deleted in a channel
         case messageDelete = 72
-        
+
         /// Multiple messages were deleted at once
         case messageBulkDelete
-        
+
         /// A message was pinned in a channel
         case messagePin
-        
+
         /// A message was unpinned in a channel
         case messageUnpin
-        
+
         /// An integration was created (Webhook, Bot)
         case integrationCreate = 80
-        
+
         /// An integration was updated (Webhook, Bot)
         case integrationUpdate
-        
+
         /// An integration was deleted (Webhook, Bot)
         case integrationDelete
-        
+
         /// A stage channel was created
         case stageCreate
-        
+
         /// A stage channel was updated
         case stageUpdate
-        
+
         /// A stage channel was deleted
         case stageDelete
-        
+
         /// A sticker was deleted
         case stickerCreate = 90
-        
+
         /// A sticker was updated
         case stickerUpdate
-        
+
         /// A sticker was deleted
         case stickerDelete
-        
+
         /// A scheduled event was created
         case guildScheduledEventCreate = 100
-        
+
         /// A scheduled event was updated
         case guildScheduledEventUpdate
-        
+
         /// A scheduled event was deleted
         case guildScheduledEventDelete
-        
+
         /// A thread was created
         case threadCreate = 110
-        
+
         /// A thread was updated
         case threadUpdate
-        
+
         /// A thread was deleted
         case threadDelete
     }

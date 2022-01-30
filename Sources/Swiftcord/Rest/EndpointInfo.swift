@@ -44,7 +44,7 @@ extension Endpoint {
 
         case let .createGuildRole(guild):
             return (.post, "/guilds/\(guild)/roles")
-            
+
         case let .createGuildScheduledEvent(guildId):
             return (.post, "/guilds/\(guildId)/scheduled-events")
 
@@ -68,16 +68,16 @@ extension Endpoint {
 
         case let .deleteGlobalSlashCommand(appId, commandId):
             return (.delete, "/applications/\(appId)/commands/\(commandId)")
-            
+
         case let .deleteGuild(guild):
             return (.delete, "/guilds/\(guild)")
-            
+
         case let .deleteGuildEmoji(guild, emoji):
             return (.delete, "/guilds/\(guild)/emojis/\(emoji)")
 
         case let .deleteGuildApplicationCommand(applicationId, guildId, commandId):
             return (.delete, "/applications/\(applicationId)/guilds/\(guildId)/commands/\(commandId)")
-            
+
         case let .deleteGuildIntegration(guild, integration):
             return (.delete, "/guilds/\(guild)/integrations/\(integration)")
 
@@ -111,12 +111,12 @@ extension Endpoint {
 
         case let .editMessage(channel, message):
             return (.patch, "/channels/\(channel)/messages/\(message)")
-            
+
         case let .editWebhook(webhook, token):
             if let token = token {
                 return (.patch, "/webhooks/\(webhook)/\(token)/messages/@original")
             }
-            
+
             return (.patch, "/webhooks/\(webhook)/messages/@original")
 
         case let .executeSlackWebhook(webhook, token):
@@ -160,10 +160,10 @@ extension Endpoint {
 
         case let .getGuildEmbed(guild):
             return (.get, "/guilds/\(guild)/embed")
-            
+
         case let .getGuildEmoji(guild, emoji):
             return (.get, "/guilds/\(guild)/emojis/\(emoji)")
-            
+
         case let .getGuildEmojis(guild):
             return (.get, "/guilds/\(guild)/emojis")
 
@@ -178,10 +178,10 @@ extension Endpoint {
 
         case let .getGuildSticker(guildId, stickerId):
             return (.get, "/guilds/\(guildId)/stickers/\(stickerId)")
-            
+
         case let .getGuildStickers(guildId):
             return (.get, "/guilds/\(guildId)/stickers")
-            
+
         case let .getGuildPruneCount(guild):
             return (.get, "/guilds/\(guild)/prune")
 
@@ -195,7 +195,7 @@ extension Endpoint {
             return (.get, "/guilds/\(guild)/webhooks")
 
         case let .getInvite(invite):
-        return (.get, "/invites/\(invite)")
+            return (.get, "/invites/\(invite)")
 
         case let .getPinnedMessages(channel):
             return (.get, "/channels/\(channel)/pins")
@@ -205,10 +205,10 @@ extension Endpoint {
 
         case let .getScheduledEvent(guildId):
             return (.get, "/guilds/\(guildId)/scheduled-events?with_user_count=true")
-            
+
         case let .getSticker(stickerId):
             return (.get, "/stickers/\(stickerId)")
-            
+
         case let .getThreads(guild):
             return (.get, "/guilds/\(guild)/threads/active")
 
@@ -251,7 +251,7 @@ extension Endpoint {
 
         case let .modifyGuildEmbed(guild):
             return (.patch, "/guilds/\(guild)/embed")
-            
+
         case let .modifyGuildEmoji(guild, emoji):
             return (.patch, "/guilds/\(guild)/emojis/\(emoji)")
 
@@ -279,10 +279,10 @@ extension Endpoint {
 
         case let .removeGuildMember(guild, user):
             return (.delete, "/guilds/\(guild)/members/\(user)")
-        
+
         case let .replyToInteraction(interactionId, token):
             return (.post, "/interactions/\(interactionId)/\(token)/callback")
-        
+
         case let .replyToDeferedInteraction(appId, token):
             return (.post, "/webhooks/\(appId)/\(token)")
 
@@ -291,13 +291,13 @@ extension Endpoint {
 
         case let .triggerTypingIndicator(channel):
             return (.post, "/channels/\(channel)/typing")
-            
+
         case let .uploadEmoji(guildId):
             return (.post, "/guilds/\(guildId)/emojis")
 
         case let .uploadGuildApplicationCommand(appId, guildId):
             return (.post, "/applications/\(appId)/guilds/\(guildId)/commands")
-            
+
         case let .uploadGlobalApplicationCommand(appId):
             return (.post, "/applications/\(appId)/commands")
         }

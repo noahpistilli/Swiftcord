@@ -1,78 +1,79 @@
 //
-//  File.swift
-//  
+//  ListenerAdapter.swift
+//
 //
 //  Created by Noah Pistilli on 2022-01-29.
 //
 
 import Foundation
 
-public class ListenerAdapter {
+open class ListenerAdapter {
     // Channel Create Events
-    public func onChannelCreate(event: TextChannel) {}
-    public func onCategoryCreate(event: GuildCategory) {}
-    public func onVoiceChannelCreate(event: GuildVoice) {}
-    
+    open func onChannelCreate(event: TextChannel) async {}
+    open func onCategoryCreate(event: GuildCategory) async {}
+    open func onVoiceChannelCreate(event: GuildVoice) async {}
+
     // Channel Delete Events
-    public func onChannelDelete(event: TextChannel) {}
-    public func onCategoryDelete(event: GuildCategory) {}
-    public func onVoiceChannelDelete(event: GuildVoice) {}
-    
-    
+    open func onChannelDelete(event: TextChannel) async {}
+    open func onCategoryDelete(event: GuildCategory) async {}
+    open func onVoiceChannelDelete(event: GuildVoice) async {}
+
     // Channel Update Events
-    public func onChannelUpdate(event: TextChannel) {}
-    public func onCategoryUpdate(event: GuildCategory) {}
-    public func onVoiceChannelUpdate(event: GuildVoice) {}
-    public func onChannelPinUpdate(event: Channel, lastPin: Date? = nil) {}
-    
+    open func onChannelUpdate(event: TextChannel) async {}
+    open func onCategoryUpdate(event: GuildCategory) async {}
+    open func onVoiceChannelUpdate(event: GuildVoice) async {}
+    open func onChannelPinUpdate(event: Channel, lastPin: Date? = nil) async {}
+
     // InteractionEvents
-    public func onButtonClickEvent(event: ButtonEvent) {}
-    public func onMessageCommandEvent(event: MessageCommandEvent) {}
-    public func onSlashCommandEvent(event: SlashCommandEvent) {}
-    public func onSelectMenuEvent(event: SelectMenuEvent) {}
-    public func onUserCommandEvent(event: UserCommandEvent) {}
-    
+    open func onButtonClickEvent(event: ButtonEvent) async {}
+    open func onMessageCommandEvent(event: MessageCommandEvent) async {}
+    open func onSlashCommandEvent(event: SlashCommandEvent) async {}
+    open func onSelectMenuEvent(event: SelectMenuEvent) async {}
+    open func onUserCommandEvent(event: UserCommandEvent) async {}
+
     // Guild Events
-    public func onGuildBan(guild: Guild, user: User) {}
-    public func onGuildUnban(guild: Guild, user: User) {}
-    public func onGuildCreate(guild: Guild) {}
-    public func onGuildDelete(guild: Guild) {}
-    public func onGuildMemberJoin(guild: Guild, member: Member) {}
-    public func onGuildMemberLeave(guild: Guild, user: User) {}
-    public func onGuildReady(guild: Guild) {}
-    public func onGuildRoleCreate(guild: Guild, role: Role) {}
-    public func onGuildRoleDelete(guild: Guild, role: Role) {}
-    public func onGuildAvailable(guild: Guild) {}
-    public func onUnavailableGuildDelete(guild: UnavailableGuild) {}
-    
+    open func onGuildBan(guild: Guild, user: User) async {}
+    open func onGuildUnban(guild: Guild, user: User) async {}
+    open func onGuildCreate(guild: Guild) async {}
+    open func onGuildDelete(guild: Guild) async {}
+    open func onGuildMemberJoin(guild: Guild, member: Member) async {}
+    open func onGuildMemberLeave(guild: Guild, user: User) async {}
+    open func onGuildReady(guild: Guild) async {}
+    open func onGuildRoleCreate(guild: Guild, role: Role) async {}
+    open func onGuildRoleDelete(guild: Guild, role: Role) async {}
+    open func onGuildAvailable(guild: Guild) async {}
+    open func onUnavailableGuildDelete(guild: UnavailableGuild) async {}
+
     // Guild Update Events
-    public func onGuildEmojisUpdate(guild: Guild, emojis: [Emoji]) {}
-    public func onGuildIntegrationUpdate(guild: Guild) {}
-    public func onGuildMemberUpdate(guild: Guild, member: Member) {}
-    public func onGuildRoleUpdate(guild: Guild, role: Role) {}
-    public func onGuildUpdate(guild: Guild) {}
-    
+    open func onGuildEmojisUpdate(guild: Guild, emojis: [Emoji]) async {}
+    open func onGuildIntegrationUpdate(guild: Guild) async {}
+    open func onGuildMemberUpdate(guild: Guild, member: Member) async {}
+    open func onGuildRoleUpdate(guild: Guild, role: Role) async {}
+    open func onGuildUpdate(guild: Guild) async {}
+
     // Message Events
-    public func onMessageCreate(event: Message) {}
-    public func onMessageDelete(messageId: Snowflake, channel: Channel) {}
-    public func onMessageBulkDelete(messageIds: [Snowflake], channel: Channel) {}
-    public func onMessageReactionAdd(channel: Channel, messageId: Snowflake, userId: Snowflake, emoji: Emoji) {}
-    public func onMessageReactionRemove(channel: Channel, messageId: Snowflake, userId: Snowflake, emoji: Emoji) {}
-    public func onMessageReactionRemoveAll(messageId: Snowflake, channel: Channel) {}
-    
+    open func onMessageCreate(event: Message) async {}
+    open func onMessageDelete(messageId: Snowflake, channel: Channel) async {}
+    open func onMessageBulkDelete(messageIds: [Snowflake], channel: Channel) async {}
+    open func onMessageReactionAdd(channel: Channel, messageId: Snowflake, userId: Snowflake, emoji: Emoji) async {}
+    open func onMessageReactionRemove(channel: Channel, messageId: Snowflake, userId: Snowflake, emoji: Emoji) async {}
+    open func onMessageReactionRemoveAll(messageId: Snowflake, channel: Channel) async {}
+
     // Thread Events
-    public func onThreadCreate(event: ThreadChannel) {}
-    public func onThreadDelete(event: ThreadChannel) {}
-    public func onThreadUpdate(event: ThreadChannel) {}
-    
+    open func onThreadCreate(event: ThreadChannel) async {}
+    open func onThreadDelete(event: ThreadChannel) async {}
+    open func onThreadUpdate(event: ThreadChannel) async {}
+
     // Voice Events
-    public func onVoiceChannelJoin(userId: Snowflake, state: VoiceState) {}
-    public func onVoiceChannelLeave(userId: Snowflake) {}
-    
+    open func onVoiceChannelJoin(userId: Snowflake, state: VoiceState) async {}
+    open func onVoiceChannelLeave(userId: Snowflake) async {}
+
     // Generic Events
-    public func onPresenceUpdate(member: Member?, presence: Presence) {}
-    public func onShardReady(id: Int) {}
-    public func onReady(botUser: User) {}
-    public func onTypingStart(channel: Channel, userId: Snowflake, time: Date) {}
-    public func onUserUpdate(event: User) {}
+    open func onPresenceUpdate(member: Member?, presence: Presence) async {}
+    open func onShardReady(id: Int) async {}
+    open func onReady(botUser: User) async {}
+    open func onTypingStart(channel: Channel, userId: Snowflake, time: Date) async {}
+    open func onUserUpdate(event: User) async {}
+
+    public init() {}
 }

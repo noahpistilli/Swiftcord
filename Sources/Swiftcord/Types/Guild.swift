@@ -35,7 +35,7 @@ public class Guild: Updatable, Imageable {
 
     /// Default notification protocol
     public var defaultMessageNotifications: Int
-    
+
     /// Hash for the discovery splash. Only available guilds with discovery enabled
     public var discoverySplash: String?
 
@@ -59,7 +59,7 @@ public class Guild: Updatable, Imageable {
 
     /// Whether or not this guild is considered "large"
     public let isLarge: Bool?
-    
+
     /// Whether or not this guild has it's widget enabled
     public var isWidgetEnabled: Bool?
 
@@ -68,7 +68,7 @@ public class Guild: Updatable, Imageable {
 
     /// Amount of members this guild has
     public let memberCount: Int?
-    
+
     /// Collection of members mapped by user ID
     public var members = [Snowflake: Member]()
 
@@ -77,10 +77,10 @@ public class Guild: Updatable, Imageable {
 
     /// Name of the guild
     public var name: String
-    
+
     /// Owner's user ID
     public var ownerId: Snowflake
-    
+
     /// Collection of roles mapped by role ID
     public var roles = [Snowflake: Role]()
 
@@ -89,7 +89,7 @@ public class Guild: Updatable, Imageable {
 
     /// Splash Hash for guild
     public var splash: String?
-    
+
     /// Collection of thread channels mapped by channel ID
     public var threads = [Snowflake: GuildChannel]()
 
@@ -98,7 +98,7 @@ public class Guild: Updatable, Imageable {
 
     /// Collection of member voice states currently in this guild
     public var voiceStates = [Snowflake: VoiceState]()
-    
+
     /// The channel ID that the widget will generate an invite to
     public var widgetChannelId: Snowflake?
 
@@ -134,8 +134,8 @@ public class Guild: Updatable, Imageable {
                 default: break
                 }
             }
-        
-            if let threads = json["threads"] as? [[String : Any]] {
+
+            if let threads = json["threads"] as? [[String: Any]] {
                 for thread in threads {
                     let channel = ThreadChannel(swiftcord, thread)
                     self.threads[channel.id] = channel
@@ -228,7 +228,7 @@ public class Guild: Updatable, Imageable {
         self.afkTimeout = json["afk_timeout"] as? Int
 
         self.defaultMessageNotifications =
-        json["default_message_notifications"] as! Int
+            json["default_message_notifications"] as! Int
         self.embedChannelId = Snowflake(json["embed_channel_id"])
         self.isEmbedEnabled = json["embed_enabled"] as? Bool
 
@@ -261,7 +261,7 @@ public class Guild: Updatable, Imageable {
         self.splash = json["splash"] as? String
         self.verificationLevel = VerificationLevel(rawValue: json["verification_level"] as! Int)!
     }
-    
+
     /**
      Bans a member from this guild
 
@@ -276,16 +276,9 @@ public class Guild: Updatable, Imageable {
     public func ban(
         _ member: Snowflake,
         for reason: String? = nil,
-        with options: [String: Int] = [:],
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.ban(
-            member,
-            from: self.id,
-            for: reason,
-            with: options,
-            then: completion
-        )
+        with options: [String: Int] = [:]
+    ) async throws {
+        try await self.swiftcord?.ban(member, from: self.id, for: reason, with: options)
     }
 
     /**
@@ -300,12 +293,11 @@ public class Guild: Updatable, Imageable {
      - **permission_overwrites**: Array of overwrite objects to give this channel
 
      - parameter options: Preconfigured options to give the channel on create
-    */
+     */
     public func createChannel(
-      with options: [String: Any],
-      then completion: ((GuildChannel?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.createChannel(for: self.id, with: options, then: completion)
+        with options: [String: Any]
+    ) async throws -> GuildChannel? {
+        return try await self.swiftcord?.createChannel(for: self.id, with: options)
     }
 
     /**
@@ -317,12 +309,11 @@ public class Guild: Updatable, Imageable {
      - **id**: The id of the user's integration to link to this guild
 
      - parameter options: Preconfigured options for this integration
-    */
+     */
     public func createIntegration(
-      with options: [String: String],
-      then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.createIntegration(for: self.id, with: options, then: completion)
+        with options: [String: String]
+    ) async throws {
+        try await self.swiftcord?.createIntegration(for: self.id, with: options)
     }
 
     /**
@@ -337,71 +328,63 @@ public class Guild: Updatable, Imageable {
      - **mentionable**: Whether or not this role is mentionable in chat
 
      - parameter options: Preset options to configure role with
-    */
+     */
     public func createRole(
-      with options: [String: Any],
-      then completion: ((Role?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.createRole(for: self.id, with: options, then: completion)
+        with options: [String: Any]
+    ) async throws -> Role? {
+        try await self.swiftcord?.createRole(for: self.id, with: options)
     }
-    
+
     /**
      Creates a scheduled event
 
      - parameter event: `ScheduledEvent` object with configured options
-    */
+     */
     public func createEvent(
-        _ event: ScheduledEvent,
-        then completion: ((ScheduledEvent?, RequestError?) -> Void)? = nil
-    ) {
+        _ event: ScheduledEvent
+    ) async throws -> ScheduledEvent? {
         let iso = ISO8601DateFormatter()
-        var body: [String:Any] = [
+        var body: [String: Any] = [
             "name": event.name,
             "privacy_level": 2,
             "scheduled_start_time": iso.string(from: event.scheduledStartTime!),
             "entity_type": event.eventType.rawValue
         ]
-    
+
         if let channelId = event.channelId {
             body["channel_id"] = channelId.rawValue
         } else {
             body["channel_id"] = nil
         }
-        
+
         if let endTime = event.scheduledEndTime {
             let time = iso.string(from: endTime)
             body["scheduled_end_time"] = time
         }
-        
+
         if let description = event.description {
             body["description"] = description
         }
-        
+
         if let metaData = event.location {
             body["entity_metadata"]  = ["location": metaData]
         }
-        
-                
-        self.swiftcord?.request(.createGuildScheduledEvent(self.id), body: body) { data, error in
-            if let error = error {
-              completion?(nil, error)
-            } else {
-                completion?(ScheduledEvent(self.swiftcord!, data as! [String:Any]), nil)
-            }
-        }
+
+        let data = try await self.swiftcord?.request(.createGuildScheduledEvent(self.id), body: body)
+
+        return ScheduledEvent(self.swiftcord!, data as! [String: Any])
     }
-    
+
     /**
      Deletes an emoji
 
      - parameter emojiId: ID of the Emoji you would like to delete
-    */
+     */
     public func deleteEmoji(
         _ emojiId: Snowflake,
-        reason: String,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.deleteGuildEmoji(self.id, emojiId: emojiId, reason: reason, then: completion)
+        reason: String
+    ) async throws {
+        try await self.swiftcord?.deleteGuildEmoji(self.id, emojiId: emojiId, reason: reason)
     }
 
     /**
@@ -410,14 +393,9 @@ public class Guild: Updatable, Imageable {
      - parameter integrationId: Integration to delete
      */
     public func deleteIntegration(
-        _ integrationId: Snowflake,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.deleteIntegration(
-            integrationId,
-            from: self.id,
-            then: completion
-        )
+        _ integrationId: Snowflake
+    ) async throws {
+        try await self.swiftcord?.deleteIntegration(integrationId, from: self.id)
     }
 
     /**
@@ -426,76 +404,63 @@ public class Guild: Updatable, Imageable {
      - parameter roleId: Role to delete
      */
     public func deleteRole(
-        _ roleId: Snowflake,
-        then completion: ((Role?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.deleteRole(roleId, from: self.id, then: completion)
+        _ roleId: Snowflake
+    ) async throws -> Role? {
+        return try await self.swiftcord?.deleteRole(roleId, from: self.id)
     }
 
     /// Deletes current guild
-    public func delete(then completion: ((Guild?, RequestError?) -> Void)? = nil) {
-        self.swiftcord?.deleteGuild(self.id, then: completion)
+    public func delete() async throws -> Guild? {
+        return try await self.swiftcord?.deleteGuild(self.id)
     }
 
     /**
      Get's this guild's audit logs
-   
+
      #### Options Params ####
-   
+
      - **user_id**: String of user to look for logs of
      - **action_type**: Integer of Audit Log Event. Refer to [Audit Log Events](https://discord.com/developers/docs/resources/audit-log#audit-log-entry-object-audit-log-events)
      - **before**: String of entry id to look before
      - **limit**: Integer of how many entries to return (default 50, minimum 1, maximum 100)
-   
+
      - parameter options: Optional flags to request for when getting audit logs
      */
     public func getAuditLog(
-        with options: [String: Any]? = nil,
-        then completion: @escaping (AuditLog?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getAuditLog(from: self.id, with: options, then: completion)
+        with options: [String: Any]? = nil
+    ) async throws -> AuditLog? {
+        return try await self.swiftcord?.getAuditLog(from: self.id, with: options)
     }
 
     /// Gets guild's bans
-    public func getBans(
-        then completion: @escaping ([User]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getBans(from: self.id, then: completion)
+    public func getBans() async throws -> [User]? {
+        return try await self.swiftcord?.getBans(from: self.id)
     }
 
     /// Gets the guild embed
-    public func getEmbed(
-        then completion: @escaping ([String: Any]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getGuildEmbed(from: self.id, then: completion)
+    public func getEmbed() async throws -> [String: Any]? {
+        return try await self.swiftcord?.getGuildEmbed(from: self.id)
     }
-    
+
     public func getEmoji(
-        emojiId: Snowflake,
-        then completion: @escaping (Emoji?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getGuildEmoji(from: self.id, with: emojiId, then: completion)
+        emojiId: Snowflake
+    ) async throws -> Emoji? {
+        return try await self.swiftcord?.getGuildEmoji(from: self.id, with: emojiId)
     }
-    
+
     /// Gets all the Emoji's an a guild
-    public func getEmojis(
-        then completion: @escaping ([Emoji]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getGuildEmojis(from: self.id, then: completion)
+    public func getEmojis() async throws -> [Emoji]? {
+        return try await self.swiftcord?.getGuildEmojis(from: self.id)
     }
 
     /// Gets guild's integrations
-    public func getIntegrations(
-        then completion: @escaping ([[String: Any]]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getIntegrations(from: self.id, then: completion)
+    public func getIntegrations() async throws -> [[String: Any]]? {
+        return try await self.swiftcord?.getIntegrations(from: self.id)
     }
 
     /// Gets guild's invites
-    public func getInvites(
-        then completion: @escaping ([[String: Any]]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getGuildInvites(from: self.id, then: completion)
+    public func getInvites() async throws -> [[String: Any]]? {
+        return try await self.swiftcord?.getGuildInvites(from: self.id)
     }
 
     /**
@@ -509,10 +474,9 @@ public class Guild: Updatable, Imageable {
      - parameter options: Dictionary containing optional optiond regarding what members are returned
      */
     public func getMembers(
-        with options: [String: Any]? = nil,
-        then completion: @escaping ([Member]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getMembers(from: self.id, with: options, then: completion)
+        with options: [String: Any]? = nil
+    ) async throws -> [Member]? {
+        return try await self.swiftcord?.getMembers(from: self.id, with: options)
     }
 
     /**
@@ -521,74 +485,56 @@ public class Guild: Updatable, Imageable {
      - parameter limit: Number of days to get prune count for
      */
     public func getPruneCount(
-        for limit: Int,
-        then completion: @escaping (Int?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getPruneCount(from: self.id, for: limit, then: completion)
+        for limit: Int
+    ) async throws -> Int? {
+        return try await self.swiftcord?.getPruneCount(from: self.id, for: limit)
     }
 
     /// Gets guild roles
-    public func getRoles(
-        then completion: @escaping ([Role]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getRoles(from: self.id, then: completion)
+    public func getRoles() async throws -> [Role]? {
+        return try await self.swiftcord?.getRoles(from: self.id)
     }
-    
+
     /// Gets all the scheduled events in this guild
-    public func getScheduledEvents(
-        then completion: @escaping ([ScheduledEvent]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.request(.getScheduledEvent(self.id)) { data, error in
-            if let error = error {
-              completion(nil, error)
-            } else {
-                if let json = data as? [[String:Any]] {
-                    var events: [ScheduledEvent] = []
-                    
-                    for event in json {
-                        events.append(ScheduledEvent(self.swiftcord!, event))
-                    }
-                    
-                    completion(events, nil)
-                } else {
-                    completion(nil, nil)
-                }
+    public func getScheduledEvents() async throws -> [ScheduledEvent]? {
+        let data = try await self.swiftcord?.request(.getScheduledEvent(self.id))
+
+        if let json = data as? [[String: Any]] {
+            var events: [ScheduledEvent] = []
+
+            for event in json {
+                events.append(ScheduledEvent(self.swiftcord!, event))
             }
-        }
+
+            return events
+        } else { return nil }
     }
-    
+
     /// Gets a sticker from this guild
     public func getSticker(
-        stickerId: Snowflake,
-        then completion: @escaping (Sticker?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getGuildSticker(from: self.id, stickerId: stickerId, then: completion)
+        stickerId: Snowflake
+    ) async throws -> Sticker? {
+        return try await self.swiftcord?.getGuildSticker(from: self.id, stickerId: stickerId)
     }
-    
+
     /// Gets all the stickers from this guild
-    public func getStickers(
-        then completion: @escaping ([Sticker]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getGuildStickers(from: self.id, then: completion)
+    public func getStickers() async throws -> [Sticker]? {
+        return try await self.swiftcord?.getGuildStickers(from: self.id)
     }
 
     /// Gets an array of voice regions from guild
-    public func getVoiceRegions(
-        then completion: @escaping ([[String: Any]]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getVoiceRegions(from: self.id, then: completion)
+    public func getVoiceRegions() async throws -> [[String: Any]]? {
+        return try await self.swiftcord?.getVoiceRegions(from: self.id)
     }
 
     /// Gets guild's webhooks
-    public func getWebhooks(
-        then completion: @escaping ([Webhook]?, RequestError?) -> Void
-    ) {
-        self.swiftcord?.getGuildWebhooks(from: self.id, then: completion)
+    public func getWebhooks() async throws -> [Webhook]? {
+        return try await self.swiftcord?.getGuildWebhooks(from: self.id)
     }
 
     /**
      Gets the link of the guild's icon
-   
+
      - parameter format: File extension of the avatar (default png)
      */
     public func imageUrl(format: FileExtension = .png) -> URL? {
@@ -606,10 +552,9 @@ public class Guild: Updatable, Imageable {
      */
     public func kick(
         _ userId: Snowflake,
-        for reason: String? = nil,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-      self.swiftcord?.kick(userId, from: self.id, for: reason, then: completion)
+        for reason: String? = nil
+    ) async throws {
+        try await self.swiftcord?.kick(userId, from: self.id, for: reason)
     }
 
     /**
@@ -630,10 +575,9 @@ public class Guild: Updatable, Imageable {
      - parameter options: Preconfigured options to modify guild with
      */
     public func modify(
-        with options: [String: Any],
-        then completion: ((Guild?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyGuild(self.id, with: options, then: completion)
+        with options: [String: Any]
+    ) async throws -> Guild? {
+        return try await self.swiftcord?.modifyGuild(self.id, with: options)
     }
 
     /**
@@ -649,14 +593,9 @@ public class Guild: Updatable, Imageable {
      - parameter options: Preconfigured options to set channel positions to
      */
     public func modifyChannelPositions(
-        with options: [[String: Any]],
-        then completion: (([GuildChannel]?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyChannelPositions(
-            for: self.id,
-               with: options,
-               then: completion
-        )
+        with options: [[String: Any]]
+    ) async throws -> [GuildChannel]? {
+        return try await self.swiftcord?.modifyChannelPositions(for: self.id, with: options)
     }
 
     /**
@@ -670,12 +609,11 @@ public class Guild: Updatable, Imageable {
      - parameter options: Dictionary of options to give embed
      */
     public func modifyEmbed(
-        with options: [String: Any],
-        then completion: (([String: Any]?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyEmbed(for: self.id, with: options, then: completion)
+        with options: [String: Any]
+    ) async throws -> [String: Any]? {
+        return try await self.swiftcord?.modifyEmbed(for: self.id, with: options)
     }
-    
+
     /**
      Modifes an emoji in this guild
 
@@ -689,12 +627,11 @@ public class Guild: Updatable, Imageable {
     public func modifyEmoji(
         emojiId: Snowflake,
         with options: [String: Any],
-        reason: String,
-        then completion: ((Emoji?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyEmoji(for: self.id, emojiId: emojiId, with: options, reason: reason, then: completion)
+        reason: String
+    ) async throws -> Emoji? {
+        return try await self.swiftcord?.modifyEmoji(for: self.id, emojiId: emojiId, with: options, reason: reason)
     }
-    
+
     /**
      Modifies an integration from this guild
 
@@ -709,15 +646,9 @@ public class Guild: Updatable, Imageable {
      */
     public func modifyIntegration(
         _ integrationId: Snowflake,
-        with options: [String: Any],
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyIntegration(
-            integrationId,
-            for: self.id,
-            with: options,
-            then: completion
-        )
+        with options: [String: Any]
+    ) async throws {
+        try await self.swiftcord?.modifyIntegration(integrationId, for: self.id, with: options)
     }
 
     /**
@@ -737,15 +668,9 @@ public class Guild: Updatable, Imageable {
      */
     public func modifyMember(
         _ userId: Snowflake,
-        with options: [String: Any],
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyMember(
-            userId,
-            in: self.id,
-            with: options,
-            then: completion
-        )
+        with options: [String: Any]
+    ) async throws {
+        try await self.swiftcord?.modifyMember(userId, in: self.id, with: options)
     }
 
     /**
@@ -764,15 +689,9 @@ public class Guild: Updatable, Imageable {
      */
     public func modifyRole(
         _ roleId: Snowflake,
-        with options: [String: Any],
-        then completion: ((Role?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyRole(
-            roleId,
-            for: self.id,
-            with: options,
-            then: completion
-        )
+        with options: [String: Any]
+    ) async throws -> Role? {
+        return try await self.swiftcord?.modifyRole(roleId, for: self.id, with: options)
     }
 
     /**
@@ -788,14 +707,9 @@ public class Guild: Updatable, Imageable {
      - parameter options: Preconfigured options to set role positions to
      */
     public func modifyRolePositions(
-        with options: [[String: Any]],
-        then completion: (([Role]?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyRolePositions(
-            for: self.id,
-               with: options,
-               then: completion
-        )
+        with options: [[String: Any]]
+    ) async throws -> [Role]? {
+        return try await self.swiftcord?.modifyRolePositions(for: self.id, with: options)
     }
 
     /**
@@ -805,10 +719,9 @@ public class Guild: Updatable, Imageable {
      */
     public func moveMember(
         _ userId: Snowflake,
-        to channelId: Snowflake,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.moveMember(userId, in: self.id, to: channelId, then: completion)
+        to channelId: Snowflake
+    ) async throws {
+        try await self.swiftcord?.moveMember(userId, in: self.id, to: channelId)
     }
 
     /**
@@ -817,21 +730,18 @@ public class Guild: Updatable, Imageable {
      - parameter limit: Amount of days for prunned users
      */
     public func pruneMembers(
-        for limit: Int,
-        then completion: ((Int?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.pruneMembers(in: self.id, for: limit, then: completion)
+        for limit: Int
+    ) async throws -> Int? {
+        return try await self.swiftcord?.pruneMembers(in: self.id, for: limit)
     }
-    
+
     public func removeTimeoutFromUser(
-        _ userId: Snowflake,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.modifyMember(
+        _ userId: Snowflake
+    ) async throws {
+        try await self.swiftcord?.modifyMember(
             userId,
             in: self.id,
-            with: ["communication_disabled_until": NSNull()],
-            then: completion
+            with: ["communication_disabled_until": NSNull()]
         )
     }
 
@@ -841,26 +751,23 @@ public class Guild: Updatable, Imageable {
      - parameter integrationId: Integration to sync
      */
     public func syncIntegration(
-        _ integrationId: Snowflake,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.syncIntegration(integrationId, for: self.id, then: completion)
+        _ integrationId: Snowflake
+    ) async throws {
+        try await self.swiftcord?.syncIntegration(integrationId, for: self.id)
     }
-    
+
     public func timeoutUser(
         _ userId: Snowflake,
         until: Date,
-        reason: String,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
+        reason: String
+    ) async throws {
         let iso = ISO8601DateFormatter()
-        
-        self.swiftcord?.modifyMember(
+
+        try await self.swiftcord?.modifyMember(
             userId,
             in: self.id,
             with: ["communication_disabled_until": iso.string(from: until)],
-            for: reason,
-            then: completion
+            for: reason
         )
     }
 
@@ -870,184 +777,155 @@ public class Guild: Updatable, Imageable {
      - parameter userId: User to unban
      */
     public func unbanMember(
-        _ userId: Snowflake,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.unbanMember(userId, from: self.id, then: completion)
+        _ userId: Snowflake
+    ) async throws {
+        try await self.swiftcord?.unbanMember(userId, from: self.id)
     }
-    
+
     public func uploadEmoji(
         name: String,
         emoji: Icon,
-        roles: [Role] = [],
-        then completion: ((Emoji?, RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.uploadEmoji(name: name, emoji: emoji, roles: roles, guildId: self.id, then: completion)
+        roles: [Role] = []
+    ) async throws -> Emoji? {
+        return try await self.swiftcord?.uploadEmoji(name: name, emoji: emoji, roles: roles, guildId: self.id)
     }
 
     public func uploadSlashCommand(
-        commandData: SlashCommandBuilder,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
+        commandData: SlashCommandBuilder
+    ) async throws {
         let jsonData = try! self.swiftcord?.encoder.encode(commandData)
 
-        self.swiftcord?.requestWithBodyAsData(.uploadGuildApplicationCommand(self.swiftcord!.user!.id, self.id), body: jsonData) { _, err in
-            if let error = err {
-                completion?(error)
-            } else {
-                completion?(nil)
-            }
-        }
+        _ = try await self.swiftcord?.requestWithBodyAsData(.uploadGuildApplicationCommand(self.swiftcord!.user!.id, self.id), body: jsonData)
     }
-    
+
     public func uploadUserCommand(
         commandData: UserCommandBuilder,
         then completion: ((RequestError?) -> Void)? = nil
-    ) {
+    ) async throws {
         let jsonData = try! self.swiftcord?.encoder.encode(commandData)
-        
-        self.swiftcord?.requestWithBodyAsData(.uploadGuildApplicationCommand(self.swiftcord!.user!.id, self.id), body: jsonData) { data, err in
-            if let error = err {
-                completion?(error)
-            } else {
-                completion?(nil)
-            }
-        }
+
+        _ = try await self.swiftcord?.requestWithBodyAsData(.uploadGuildApplicationCommand(self.swiftcord!.user!.id, self.id), body: jsonData)
     }
-    
+
     public func uploadMessageCommand(
-        commandData: MessageCommandBuilder,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
+        commandData: MessageCommandBuilder
+    ) async throws {
         let jsonData = try! self.swiftcord?.encoder.encode(commandData)
-        
-        self.swiftcord?.requestWithBodyAsData(.uploadGuildApplicationCommand(self.swiftcord!.user!.id, self.id), body: jsonData) { _, err in
-            if let error = err {
-                completion?(error)
-            } else {
-                completion?(nil)
-            }
-        }
+
+        _ = try await self.swiftcord?.requestWithBodyAsData(.uploadGuildApplicationCommand(self.swiftcord!.user!.id, self.id), body: jsonData)
     }
-    
+
     public func deleteApplicationCommand(
-        commandId: Snowflake,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
-        self.swiftcord?.request(.deleteGuildApplicationCommand(self.swiftcord!.user!.id, self.id, commandId)) { _, err in
-            if let error = err {
-                completion?(error)
-            } else {
-                completion?(nil)
-            }
-        }
+        commandId: Snowflake
+    ) async throws {
+        _ = try await self.swiftcord?.request(.deleteGuildApplicationCommand(self.swiftcord!.user!.id, self.id, commandId))
     }
 }
 
 extension Guild {
 
-  /// Guild features
-  public enum Feature: String {
+    /// Guild features
+    public enum Feature: String {
 
-    /// Custom image for invites
-    case inviteSplash = "INVITE_SPLASH"
+        /// Custom image for invites
+        case inviteSplash = "INVITE_SPLASH"
 
-    /// Custom url to join the guild with
-    case vanityUrl = "VANITY_URL"
+        /// Custom url to join the guild with
+        case vanityUrl = "VANITY_URL"
 
-    /// VIP voice channels for crisp audio
-    case vipRegions = "VIP_REGIONS"
+        /// VIP voice channels for crisp audio
+        case vipRegions = "VIP_REGIONS"
 
-    /// Is a verified discord
-    case verified = "VERIFIED"
-  }
+        /// Is a verified discord
+        case verified = "VERIFIED"
+    }
 
-  /// Level of verification for admisitrative actions for guild
-  public enum MFALevel: Int {
+    /// Level of verification for admisitrative actions for guild
+    public enum MFALevel: Int {
 
-    /// Admisitration actions don't require 2fa
-    case none
+        /// Admisitration actions don't require 2fa
+        case none
 
-    /// Admisitration actions require 2fa
-    case elevated
-  }
+        /// Admisitration actions require 2fa
+        case elevated
+    }
 
-  /// Level of verification for guild
-  public enum VerificationLevel: Int {
+    /// Level of verification for guild
+    public enum VerificationLevel: Int {
 
-    /// Unrestricted
-    case none
+        /// Unrestricted
+        case none
 
-    /// Must have a verified email on their Discord account
-    case low
+        /// Must have a verified email on their Discord account
+        case low
 
-    /// Low + must be a Discord user for longer than 5 minutes
-    case medium
+        /// Low + must be a Discord user for longer than 5 minutes
+        case medium
 
-    /// Medium + must be a member of guild for 10 minutes
-    case high
+        /// Medium + must be a member of guild for 10 minutes
+        case high
 
-    /// High + must have a verified phone number on their Discord account
-    case veryHigh
-  }
+        /// High + must have a verified phone number on their Discord account
+        case veryHigh
+    }
 
 }
 
 /// UnavailableGuild Type
 public struct UnavailableGuild {
 
-  // MARK: Properties
+    // MARK: Properties
 
-  /// ID of this guild
-  public let id: Snowflake
+    /// ID of this guild
+    public let id: Snowflake
 
-  /// ID of shard this guild is handled by
-  public let shard: Int
+    /// ID of shard this guild is handled by
+    public let shard: Int
 
-  // MARK: Initializer
+    // MARK: Initializer
 
-  /**
-   Creates an UnavailableGuild structure
-   
-   - parameter json: JSON representable as a dictionary
-   - parameter shard: Shard ID this guild is handled by
-   */
-  init(_ json: [String: Any], _ shard: Int) {
-    self.id = Snowflake(json["id"])!
-    self.shard = shard
-  }
+    /**
+     Creates an UnavailableGuild structure
+
+     - parameter json: JSON representable as a dictionary
+     - parameter shard: Shard ID this guild is handled by
+     */
+    init(_ json: [String: Any], _ shard: Int) {
+        self.id = Snowflake(json["id"])!
+        self.shard = shard
+    }
 
 }
 
 /// Similar to a Guild type, but provides bare minimal info
 public struct UserGuild {
 
-  // MARK: Properties
+    // MARK: Properties
 
-  /// The icon Base64 string
-  public let icon: String?
+    /// The icon Base64 string
+    public let icon: String?
 
-  /// The guild ID
-  public let id: Snowflake
+    /// The guild ID
+    public let id: Snowflake
 
-  /// Whether or not the current user owns this guild
-  public let isOwner: Bool
+    /// Whether or not the current user owns this guild
+    public let isOwner: Bool
 
-  /// The name of the guild
-  public let name: String
+    /// The name of the guild
+    public let name: String
 
-  /// The permission number that the current user has in this guild
-  public let permissions: Int
+    /// The permission number that the current user has in this guild
+    public let permissions: Int
 
-  // MARK: Initializer
+    // MARK: Initializer
 
-  /// Creates a UserGuild structure
-  init(_ json: [String: Any]) {
-    self.icon = json["icon"] as? String
-    self.id = Snowflake(json["id"])!
-    self.isOwner = json["owner"] as! Bool
-    self.name = json["name"] as! String
-    self.permissions = json["permissions"] as! Int
-  }
+    /// Creates a UserGuild structure
+    init(_ json: [String: Any]) {
+        self.icon = json["icon"] as? String
+        self.id = Snowflake(json["id"])!
+        self.isOwner = json["owner"] as! Bool
+        self.name = json["name"] as! String
+        self.permissions = json["permissions"] as! Int
+    }
 
 }

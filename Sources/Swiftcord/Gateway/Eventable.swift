@@ -11,7 +11,7 @@ public protocol Eventable: AnyObject {
 
     /// Event Listeners. For a better experience, use `ListenerAdapter`
     var listeners: [Event: [(Any) -> Void]] { get set }
-    
+
     /// Event listeners with `ListenerAdapter1`.
     var listenerAdaptors: [ListenerAdapter] { get set }
 
@@ -29,34 +29,34 @@ public protocol Eventable: AnyObject {
 
 extension Eventable {
 
-  /**
-   Listens for eventName
+    /**
+     Listens for eventName
 
-   - parameter event: Event to listen for
-  */
-  @discardableResult
-  public func on(_ event: Event, do function: @escaping (Any) -> Void) -> Int {
-    guard self.listeners[event] != nil else {
-      self.listeners[event] = [function]
-      return 0
+     - parameter event: Event to listen for
+     */
+    @discardableResult
+    public func on(_ event: Event, do function: @escaping (Any) -> Void) -> Int {
+        guard self.listeners[event] != nil else {
+            self.listeners[event] = [function]
+            return 0
+        }
+
+        self.listeners[event]!.append(function)
+
+        return self.listeners[event]!.count - 1
     }
 
-    self.listeners[event]!.append(function)
+    /**
+     Emits all listeners for eventName
 
-    return self.listeners[event]!.count - 1
-  }
+     - parameter event: Event to emit
+     - parameter data: Stuff to emit listener with
+     */
+    public func emit(_ event: Event, with data: Any = ()) {
+        guard let listeners = self.listeners[event] else { return }
 
-  /**
-   Emits all listeners for eventName
-
-   - parameter event: Event to emit
-   - parameter data: Stuff to emit listener with
-  */
-  public func emit(_ event: Event, with data: Any = ()) {
-    guard let listeners = self.listeners[event] else { return }
-
-    for listener in listeners {
-      listener(data)
+        for listener in listeners {
+            listener(data)
+        }
     }
-  }
 }

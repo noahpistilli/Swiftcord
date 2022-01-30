@@ -7,69 +7,71 @@
 //
 class ShardManager {
 
-  /// The gateway url to connect to
-  var gatewayUrl: String?
+    /// The gateway url to connect to
+    var gatewayUrl: String?
 
-  /// Array of Shard class
-  var shards = [Shard]()
+    /// Array of Shard class
+    var shards = [Shard]()
 
-  /// Parent Swiftcord class
-  weak var swiftcord: Swiftcord?
+    /// Parent Swiftcord class
+    weak var swiftcord: Swiftcord?
 
-  /**
-   Used to create a set amount of shards
-   - parameter amount: Number of shards to instantiate
-  */
-  func create(_ amount: Int) {
-    guard self.swiftcord != nil else { return }
-    guard self.shards.isEmpty else { return }
+    /**
+     Used to create a set amount of shards
+     - parameter amount: Number of shards to instantiate
+     */
+    func create(_ amount: Int) {
+        guard self.swiftcord != nil else { return }
+        guard self.shards.isEmpty else { return }
 
-    for id in 0 ..< amount {
-      let shard = Shard(self.swiftcord!, id, amount, self.gatewayUrl!)
-      self.shards.append(shard)
-      shard.start()
-    }
-  }
-
-  /// Disconnects all shards from the gateway
-  func disconnect() {
-    guard self.shards.count > 0 else { return }
-
-    for shard in self.shards {
-      shard.stop()
+        for id in 0 ..< amount {
+            let shard = Shard(self.swiftcord!, id, amount, self.gatewayUrl!)
+            self.shards.append(shard)
+            Task {
+                await shard.start()
+            }
+        }
     }
 
-    self.shards.removeAll()
-  }
+    /// Disconnects all shards from the gateway
+    func disconnect() {
+        guard self.shards.count > 0 else { return }
 
-  /**
-   Kills a specific shard from the gateway
-   - parameter id: Id of the shard to kill
-  */
-  func kill(_ id: Int) {
-      guard let index = self.shards.firstIndex(where: { $0.id == id }) else { return }
+        for shard in self.shards {
+            shard.stop()
+        }
 
-    let shard = self.shards.remove(at: index)
+        self.shards.removeAll()
+    }
 
-    shard.stop()
-  }
+    /**
+     Kills a specific shard from the gateway
+     - parameter id: Id of the shard to kill
+     */
+    func kill(_ id: Int) {
+        guard let index = self.shards.firstIndex(where: { $0.id == id }) else { return }
 
-  /**
-   Spawns a shard based off id
-   - parameter id: Id of shard to spawn
-  */
-  func spawn(_ id: Int) {
-    guard self.swiftcord != nil else { return }
-    guard self.shards.first(where: { $0.id == id }) == nil else { return }
-    guard self.gatewayUrl != nil else { return }
+        let shard = self.shards.remove(at: index)
 
-    let shard = Shard(
-      self.swiftcord!,
-      id,
-      self.swiftcord!.shardCount,
-      self.gatewayUrl!
-    )
-    self.shards.append(shard)
-  }
+        shard.stop()
+    }
+
+    /**
+     Spawns a shard based off id
+     - parameter id: Id of shard to spawn
+     */
+    func spawn(_ id: Int) {
+        guard self.swiftcord != nil else { return }
+        guard self.shards.first(where: { $0.id == id }) == nil else { return }
+        guard self.gatewayUrl != nil else { return }
+
+        let shard = Shard(
+            self.swiftcord!,
+            id,
+            self.swiftcord!.shardCount,
+            self.gatewayUrl!
+        )
+        self.shards.append(shard)
+    }
 
 }

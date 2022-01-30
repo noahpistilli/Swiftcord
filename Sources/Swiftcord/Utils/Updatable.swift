@@ -9,6 +9,6 @@
 /// Allows for a class to be updated at runtime
 protocol Updatable: AnyObject {
 
-  func update(_ json: [String: Any])
+    func update(_ json: [String: Any])
 
 }

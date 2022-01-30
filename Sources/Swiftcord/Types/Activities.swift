@@ -34,7 +34,7 @@ public struct Activities: Encodable {
             print("[Swiftcord] URL for activities requires either a Twitch or Youtube link. There will be no link to your stream in the RPC section.")
             return false
         }
-        
+
         return true
     }
 }

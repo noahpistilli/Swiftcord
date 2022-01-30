@@ -20,7 +20,7 @@ public struct Emoji: Imageable, Codable {
 
     /// Whether or not this emoji is managed
     public let isManaged: Bool?
-    
+
     /// The base64 encoded image
     private let image: String?
 
@@ -32,7 +32,7 @@ public struct Emoji: Imageable, Codable {
 
     /// Array of roles that can use this emoji
     public var rolesArray = [Role]()
-    
+
     /// Array of role Snowflakes
     private var roles = [Snowflake]()
 
@@ -49,7 +49,7 @@ public struct Emoji: Imageable, Codable {
 
     /**
      Creates an Emoji structure
-   
+
      - parameter json: JSON representable as a dictionary
      */
     init(_ json: [String: Any]) {
@@ -64,13 +64,13 @@ public struct Emoji: Imageable, Codable {
                 self.rolesArray.append(Role(role))
             }
         }
-        
+
         self.image = nil
     }
 
     /**
      Creates an Emoji structure for use with reactions
-   
+
      - parameter name: Emoji unicode character or name (if custom)
      - parameter id: Emoji snowflake ID if custom (nil if unicode)
      */
@@ -82,23 +82,23 @@ public struct Emoji: Imageable, Codable {
         self.requiresColons = nil
         self.image = nil
     }
-    
+
     /// This init is purely for uploading an emoji to Discord
     init(name: String, base64Image: String, roles: [Role] = []) {
         // Required fields
         self.name = name
         self.image = base64Image
         self.roles = roles.map { $0.id }
-        
+
         self.id = nil
         self.isAnimated = nil
         self.isManaged = nil
         self.requiresColons = nil
     }
-        
+
     /**
      Gets the link of the emoji's image
-   
+
      - parameter format: File extension of the avatar (default png)
      */
     public func imageUrl(format: FileExtension = .png) -> URL? {

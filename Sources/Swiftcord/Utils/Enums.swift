@@ -33,13 +33,14 @@ enum VoiceOP: Int {
          resume,
          hello,
          resumed,
-         clientDisconnect
+         clientDisconnect = 13
 }
 
 /// Organize all websocket close codes
 enum CloseOP: Int {
     case noInternet = 50,
          clean = 1000,
+         unexpectedServerError = 1011,
          unknownError = 4000,
          unknownOP,
          decodeError,
@@ -733,4 +734,9 @@ enum ResponseError: Error {
     case nonSuccessfulRequest(RequestError)
     case other(RequestError)
     case unknownResponse
+}
+
+enum VoiceEngineError: Error {
+    case creationFail
+    case encodeFail
 }

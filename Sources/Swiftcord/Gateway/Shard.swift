@@ -160,6 +160,11 @@ class Shard: Gateway {
         case .disallowedIntents:
             self.swiftcord.error("You tried to subscribe to an intent you are not authorized to use. Please remove that intent.")
             break
+            
+        case .unexpectedServerError:
+            self.swiftcord.warn("Unexpected server error, check your internet connection. Reconnecting in 10 seconds")
+            try! await Task.sleep(seconds: 10)
+            await self.reconnect()
 
         default:
             await self.reconnect()

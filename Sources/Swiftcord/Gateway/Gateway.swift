@@ -18,6 +18,8 @@ import NIOWebSocket
 import NIO
 
 protocol Gateway: AnyObject {
+    
+    var swiftcord: Swiftcord { get }
 
     var acksMissed: Int { get set }
 
@@ -61,7 +63,7 @@ extension Gateway {
 
         let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(loopgroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
 
-        wsClient.connect(
+        try! await wsClient.connect(
             scheme: url.scheme!,
             host: url.host!,
             port: url.port ?? 443,
@@ -91,16 +93,20 @@ extension Gateway {
             }
 
             print("[Swiftcord] Connected to Discord!")
-        }.whenComplete { _ in }
-
+        }.get()
+        
         let errorCode = try! await promise.futureResult.get()
-
+        
         switch errorCode {
         case .unknown(let int):
             // Unknown will the codes sent by Discord
             await self.handleDisconnect(for: Int(int))
+            
+        case .unexpectedServerError:
+            // Usually means the client lost their internet connection
+            await self.handleDisconnect(for: 1011)
         default:
-            print("[Swiftcord] Unknown Error Code: \(errorCode). Please restart the app.")
+            self.swiftcord.error("Unknown Error Code: \(errorCode). Please restart the app.")
         }
     }
 }

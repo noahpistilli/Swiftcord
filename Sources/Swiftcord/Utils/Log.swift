@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
 
-import Rainbow
+import Logging
 
 extension Swiftcord {
 
@@ -15,8 +15,8 @@ extension Swiftcord {
 
      - parameter message: Info to output
      */
-    func log(_ message: String) {
-        print("[Swiftcord] " + message.applyingCodes(Color.yellow))
+    func log(_ message: Logger.Message) {
+        self.logger.info(message)
     }
 
     /**
@@ -24,9 +24,8 @@ extension Swiftcord {
 
      - parameter message: Warning to output
      */
-    func warn(_ message: String) {
-        let prefix = "Warning: "
-        self.log(prefix + message + "\n".applyingCodes(Color.yellow))
+    func warn(_ message: Logger.Message) {
+        self.logger.warning(message)
     }
 
     /**
@@ -34,9 +33,8 @@ extension Swiftcord {
 
      - parameter message: Error to output
      */
-    func error(_ message: String) {
-        let prefix = "Error: "
-        self.log(prefix + message + "\n".applyingCodes(Color.red))
+    func error(_ message: Logger.Message) {
+        self.logger.error(message)
     }
 
 }

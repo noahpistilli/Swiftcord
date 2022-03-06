@@ -10,13 +10,13 @@ let package = Package(
   dependencies: [
     // WebSockets for Linux and macOS
     .package(url: "https://github.com/vapor/websocket-kit", .branch("main")),
-    // Coloured output for logging
-    .package(url: "https://github.com/onevcat/Rainbow", .upToNextMajor(from: "4.0.0"))
+    // Logging for Swift
+    .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
   ],
   targets: [
     .target(
       name: "Swiftcord",
-      dependencies: [.product(name: "WebSocketKit", package: "websocket-kit"), "Rainbow"]
+      dependencies: [.product(name: "WebSocketKit", package: "websocket-kit"), .product(name: "Logging", package: "swift-log")]
     ),
     .testTarget(
         name: "SwiftcordTests",

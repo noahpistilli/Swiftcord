@@ -35,9 +35,7 @@ extension Swiftcord {
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil
-    ) async throws -> Any? {
-        let sema = DispatchSemaphore(value: 0)
-
+    ) async -> Any? {
         let endpointInfo = endpoint.httpInfo
 
         var route = self.getRoute(for: endpointInfo.url)
@@ -56,9 +54,9 @@ extension Swiftcord {
 
         guard let url = URL(string: urlString) else {
             self.error(
-                "[Sword] Used an invalid URL: \"\(urlString)\". Please report this."
+                "Used an invalid URL: \"\(urlString)\". Please report this."
             )
-            throw ResponseError.invalidURL
+            return nil
         }
 
         var request = URLRequest(url: url)
@@ -117,95 +115,34 @@ extension Swiftcord {
             )
         }
         #endif
-
+        
+        var returnData: Any? = nil
         do {
-            let (data, resp) = try await URLSession.shared.data(for: request)
-
-            let response = resp as! HTTPURLResponse
-            let headers = response.allHeaderFields
-
-            if rateLimited {
-                self.handleRateLimitHeaders(
-                    headers["x-ratelimit-limit"],
-                    headers["x-ratelimit-reset"],
-                    (headers["Date"] as! String).httpDate.timeIntervalSince1970,
-                    route
-                )
-            }
-
-            if response.statusCode == 204 {
-                sema.signal()
-                return nil
-            }
-
-            let returnedData = try? JSONSerialization.jsonObject(
-                with: data,
-                options: .allowFragments
-            )
-
-            if response.statusCode != 200 && response.statusCode != 201 {
-
-                if response.statusCode == 429 {
-                    print(
-                        "[Sword] You're being rate limited. (This shouldn't happen, check your system clock)"
-                    )
-
-                    let retryAfter = Int(headers["retry-after"] as! String)!
-                    let global = headers["x-ratelimit-global"] as? Bool
-
-                    guard global == nil else {
-                        self.isGloballyLocked = true
-                        self.globalQueue.asyncAfter(
-                            deadline: DispatchTime.now() + .seconds(retryAfter)
-                        ) { [unowned self] in
-                            self.globalUnlock()
-                        }
-
-                        sema.signal()
-                        return nil
+            returnData = try await withCheckedThrowingContinuation({ continuation in
+                self.baseRequest(
+                    request,
+                    endpoint,
+                    route: route,
+                    params: params,
+                    body: body,
+                    file: file,
+                    authorization: authorization,
+                    rateLimited: rateLimited,
+                    reason: reason
+                ) { data, err in
+                    if let err = err {
+                        continuation.resume(throwing: err)
                     }
-
-                    self.globalQueue.asyncAfter(
-                        deadline: DispatchTime.now() + .seconds(retryAfter)
-                    ) { [unowned self] in
-                        Task {
-                            try await self.request(
-                                endpoint,
-                                body: body,
-                                file: file,
-                                authorization: authorization,
-                                rateLimited: rateLimited
-                            )
-                        }
-                    }
+                    
+                    continuation.resume(returning: data)
                 }
-
-                if response.statusCode >= 500 {
-                    self.globalQueue.asyncAfter(
-                        deadline: DispatchTime.now() + .seconds(3)
-                    ) { [unowned self] in
-                        Task {
-                            try await self.request(
-                                endpoint,
-                                body: body,
-                                file: file,
-                                authorization: authorization,
-                                rateLimited: rateLimited
-                            )
-                        }
-                    }
-
-                    sema.signal()
-                    return nil
-                }
-
-                sema.signal()
-                throw ResponseError.nonSuccessfulRequest(RequestError(response.statusCode, returnedData!))
-            }
-
-            sema.signal()
-            return returnedData
+            })
+        } catch {
+            self.error("An error has occured during the HTTP request: \(error.localizedDescription)")
         }
+        
+
+        return returnData
     }
 
     /**
@@ -228,9 +165,7 @@ extension Swiftcord {
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil
-    ) async throws -> Any? {
-        let sema = DispatchSemaphore(value: 0)
-
+    ) async -> Any? {
         let endpointInfo = endpoint.httpInfo
 
         var route = self.getRoute(for: endpointInfo.url)
@@ -251,7 +186,7 @@ extension Swiftcord {
             self.error(
                 "[Sword] Used an invalid URL: \"\(urlString)\". Please report this."
             )
-            throw ResponseError.invalidURL
+            return nil
         }
 
         var request = URLRequest(url: url)
@@ -284,93 +219,313 @@ extension Swiftcord {
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         }
 
+
+        var returnData: Any? = nil
         do {
-            let (data, resp) = try await URLSession.shared.data(for: request)
-
-            let response = resp as! HTTPURLResponse
-            let headers = response.allHeaderFields
-
-            if rateLimited {
-                self.handleRateLimitHeaders(
-                    headers["x-ratelimit-limit"],
-                    headers["x-ratelimit-reset"],
-                    (headers["Date"] as! String).httpDate.timeIntervalSince1970,
-                    route
-                )
-            }
-
-            if response.statusCode == 204 {
-                sema.signal()
-                return nil
-            }
-
-            let returnedData = try? JSONSerialization.jsonObject(
-                with: data,
-                options: .allowFragments
-            )
-
-            if response.statusCode != 200 && response.statusCode != 201 {
-
-                if response.statusCode == 429 {
-                    print(
-                        "[Sword] You're being rate limited. (This shouldn't happen, check your system clock)"
-                    )
-
-                    let retryAfter = Int(headers["retry-after"] as! String)!
-                    let global = headers["x-ratelimit-global"] as? Bool
-
-                    guard global == nil else {
-                        self.isGloballyLocked = true
-                        self.globalQueue.asyncAfter(
-                            deadline: DispatchTime.now() + .seconds(retryAfter)
-                        ) { [unowned self] in
-                            self.globalUnlock()
-                        }
-
-                        sema.signal()
-                        return nil
+            returnData = try await withCheckedThrowingContinuation({ continuation in
+                self.baseRequestWithData(
+                    request,
+                    endpoint,
+                    route: route,
+                    params: params,
+                    body: body,
+                    file: file,
+                    authorization: authorization,
+                    rateLimited: rateLimited,
+                    reason: reason
+                ) { data, err in
+                    if let err = err {
+                        continuation.resume(throwing: err)
                     }
-
-                    self.globalQueue.asyncAfter(
-                        deadline: DispatchTime.now() + .seconds(retryAfter)
-                    ) { [unowned self] in
-                        Task {
-                            try await self.requestWithBodyAsData(
-                                endpoint,
-                                body: body,
-                                file: file,
-                                authorization: authorization,
-                                rateLimited: rateLimited
-                            )
-                        }
-                    }
+                    
+                    continuation.resume(returning: data)
                 }
-
-                if response.statusCode >= 500 {
-                    self.globalQueue.asyncAfter(
-                        deadline: DispatchTime.now() + .seconds(3)
-                    ) { [unowned self] in
-                        Task {
-                            try await self.requestWithBodyAsData(
-                                endpoint,
-                                body: body,
-                                file: file,
-                                authorization: authorization,
-                                rateLimited: rateLimited
-                            )
-                        }
-                    }
-
-                    sema.signal()
-                    return nil
-                }
-
-                sema.signal()
-                throw ResponseError.nonSuccessfulRequest(RequestError(response.statusCode, returnedData!))
-            }
-
-            sema.signal()
-            return returnedData
+            })
+        } catch {
+            self.error("An error has occured during the HTTP request: \(error.localizedDescription)")
         }
+        
+
+        return returnData
+    }
+    
+    private func baseRequest
+    (
+        _ request: URLRequest,
+        _ endpoint: Endpoint,
+        route: String,
+        params: [String: Any]? = nil,
+        body: [String: Any]? = nil,
+        file: String? = nil,
+        authorization: Bool = true,
+        rateLimited: Bool = true,
+        reason: String? = nil,
+        completion: @escaping (Any?, ResponseError?) -> Void
+    ) {
+        let sema = DispatchSemaphore(value: 0)
+        
+        let task = self.session.dataTask(with: request) {
+          [unowned self, unowned sema] data, response, error in
+
+          let response = response as! HTTPURLResponse
+          let headers = response.allHeaderFields
+
+          if error != nil {
+            #if !os(Linux)
+            completion(nil, ResponseError.nonSuccessfulRequest(RequestError(error! as NSError)))
+            #else
+            completion(nil, ResponseError.nonSuccessfulRequest(RequestError(error as! NSError)))
+            #endif
+            sema.signal()
+            return
+          }
+
+          if rateLimited {
+            self.handleRateLimitHeaders(
+              headers["x-ratelimit-limit"],
+              headers["x-ratelimit-reset"],
+              (headers["Date"] as! String).httpDate.timeIntervalSince1970,
+              route
+            )
+          }
+
+          if response.statusCode == 204 {
+            completion(nil, nil)
+            sema.signal()
+            return
+          }
+
+          let returnedData = try? JSONSerialization.jsonObject(
+            with: data!,
+            options: .allowFragments
+          )
+
+          if response.statusCode != 200 && response.statusCode != 201 {
+
+            if response.statusCode == 429 {
+                self.warn("You're being rate limited. (This shouldn't happen, check your system clock)")
+
+              let retryAfter = Int(headers["retry-after"] as! String)!
+              let global = headers["x-ratelimit-global"] as? Bool
+
+              guard global == nil else {
+                self.isGloballyLocked = true
+                self.globalQueue.asyncAfter(
+                  deadline: DispatchTime.now() + .seconds(retryAfter)
+                ) { [unowned self] in
+                  self.globalUnlock()
+                }
+
+                sema.signal()
+                return
+              }
+
+              self.globalQueue.asyncAfter(
+                deadline: DispatchTime.now() + .seconds(retryAfter)
+              ) { [unowned self] in
+                  Task {
+                      await self.request(
+                        endpoint,
+                        body: body,
+                        file: file,
+                        authorization: authorization,
+                        rateLimited: rateLimited
+                      )
+                  }
+              }
+            }
+
+            if response.statusCode >= 500 {
+              self.globalQueue.asyncAfter(
+                deadline: DispatchTime.now() + .seconds(3)
+              ) { [unowned self] in
+                  Task {
+                      await self.request(
+                        endpoint,
+                        body: body,
+                        file: file,
+                        authorization: authorization,
+                        rateLimited: rateLimited
+                      )
+                  }
+              }
+
+              sema.signal()
+              return
+            }
+
+            completion(nil,ResponseError.nonSuccessfulRequest(RequestError(response.statusCode, returnedData!)))
+            sema.signal()
+            return
+          }
+
+          completion(returnedData, nil)
+
+          sema.signal()
+        }
+
+        let apiCall = { [unowned self] in
+          guard rateLimited, self.rateLimits[route] != nil else {
+            task.resume()
+
+            sema.wait()
+            return
+          }
+
+          let item = DispatchWorkItem {
+            task.resume()
+
+            sema.wait()
+          }
+
+          self.rateLimits[route]!.queue(item)
+        }
+
+        if !self.isGloballyLocked {
+          apiCall()
+        } else {
+          self.globalRequestQueue.append(apiCall)
+        }
+
+    }
+
+    private func baseRequestWithData
+    (
+        _ request: URLRequest,
+        _ endpoint: Endpoint,
+        route: String,
+        params: [String: Any]? = nil,
+        body: Data? = nil,
+        file: String? = nil,
+        authorization: Bool = true,
+        rateLimited: Bool = true,
+        reason: String? = nil,
+        completion: @escaping (Any?, ResponseError?) -> Void
+    ) {
+        let sema = DispatchSemaphore(value: 0)
+        
+        let task = self.session.dataTask(with: request) {
+          [unowned self, unowned sema] data, response, error in
+
+          let response = response as! HTTPURLResponse
+          let headers = response.allHeaderFields
+
+          if error != nil {
+            #if !os(Linux)
+            completion(nil, ResponseError.nonSuccessfulRequest(RequestError(error! as NSError)))
+            #else
+            completion(nil, ResponseError.nonSuccessfulRequest(RequestError(error as! NSError)))
+            #endif
+            sema.signal()
+            return
+          }
+
+          if rateLimited {
+            self.handleRateLimitHeaders(
+              headers["x-ratelimit-limit"],
+              headers["x-ratelimit-reset"],
+              (headers["Date"] as! String).httpDate.timeIntervalSince1970,
+              route
+            )
+          }
+
+          if response.statusCode == 204 {
+            completion(nil, nil)
+            sema.signal()
+            return
+          }
+
+          let returnedData = try? JSONSerialization.jsonObject(
+            with: data!,
+            options: .allowFragments
+          )
+
+          if response.statusCode != 200 && response.statusCode != 201 {
+
+            if response.statusCode == 429 {
+                self.warn("You're being rate limited. (This shouldn't happen, check your system clock)")
+
+              let retryAfter = Int(headers["retry-after"] as! String)!
+              let global = headers["x-ratelimit-global"] as? Bool
+
+              guard global == nil else {
+                self.isGloballyLocked = true
+                self.globalQueue.asyncAfter(
+                  deadline: DispatchTime.now() + .seconds(retryAfter)
+                ) { [unowned self] in
+                  self.globalUnlock()
+                }
+
+                sema.signal()
+                return
+              }
+
+              self.globalQueue.asyncAfter(
+                deadline: DispatchTime.now() + .seconds(retryAfter)
+              ) { [unowned self] in
+                  Task {
+                      await self.requestWithBodyAsData(
+                        endpoint,
+                        body: body,
+                        file: file,
+                        authorization: authorization,
+                        rateLimited: rateLimited
+                      )
+                  }
+              }
+            }
+
+            if response.statusCode >= 500 {
+              self.globalQueue.asyncAfter(
+                deadline: DispatchTime.now() + .seconds(3)
+              ) { [unowned self] in
+                  Task {
+                      await self.requestWithBodyAsData(
+                        endpoint,
+                        body: body,
+                        file: file,
+                        authorization: authorization,
+                        rateLimited: rateLimited
+                      )
+                  }
+              }
+
+              sema.signal()
+              return
+            }
+
+            completion(nil,ResponseError.nonSuccessfulRequest(RequestError(response.statusCode, returnedData!)))
+            sema.signal()
+            return
+          }
+
+          completion(returnedData, nil)
+
+          sema.signal()
+        }
+
+        let apiCall = { [unowned self] in
+          guard rateLimited, self.rateLimits[route] != nil else {
+            task.resume()
+
+            sema.wait()
+            return
+          }
+
+          let item = DispatchWorkItem {
+            task.resume()
+
+            sema.wait()
+          }
+
+          self.rateLimits[route]!.queue(item)
+        }
+
+        if !self.isGloballyLocked {
+          apiCall()
+        } else {
+          self.globalRequestQueue.append(apiCall)
+        }
+
     }
 }

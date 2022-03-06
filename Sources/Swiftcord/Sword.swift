@@ -11,6 +11,7 @@ import FoundationNetworking
 #endif
 import Foundation
 import Dispatch
+import Logging
 
 /// Main Class for Swiftcord
 open class Swiftcord: Eventable {
@@ -58,6 +59,8 @@ open class Swiftcord: Eventable {
 
     /// Event listeners
     public var listeners = [Event: [(Any) -> Void]]()
+    
+    let logger = Logger(label: "io.github.SketchMaster2001.Swiftcord")
 
     /// Optional options to apply to bot
     var options: SwiftcordOptions

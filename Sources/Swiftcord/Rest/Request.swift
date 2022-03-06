@@ -35,7 +35,7 @@ extension Swiftcord {
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil
-    ) async -> Any? {
+    ) async throws -> Any? {
         let endpointInfo = endpoint.httpInfo
 
         var route = self.getRoute(for: endpointInfo.url)
@@ -115,32 +115,29 @@ extension Swiftcord {
             )
         }
         #endif
-        
-        var returnData: Any? = nil
-        do {
-            returnData = try await withCheckedThrowingContinuation({ continuation in
-                self.baseRequest(
-                    request,
-                    endpoint,
-                    route: route,
-                    params: params,
-                    body: body,
-                    file: file,
-                    authorization: authorization,
-                    rateLimited: rateLimited,
-                    reason: reason
-                ) { data, err in
-                    if let err = err {
-                        continuation.resume(throwing: err)
-                    }
-                    
+
+        var returnData: Any?
+        returnData = try await withCheckedThrowingContinuation({ continuation in
+            self.baseRequest(
+                request,
+                endpoint,
+                route: route,
+                params: params,
+                body: body,
+                file: file,
+                authorization: authorization,
+                rateLimited: rateLimited,
+                reason: reason
+            ) { data, err in
+                if let err = err {
+                    continuation.resume(throwing: err)
+                }
+
+                if data != nil {
                     continuation.resume(returning: data)
                 }
-            })
-        } catch {
-            self.error("An error has occured during the HTTP request: \(error.localizedDescription)")
-        }
-        
+            }
+        })
 
         return returnData
     }
@@ -165,7 +162,7 @@ extension Swiftcord {
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil
-    ) async -> Any? {
+    ) async throws -> Any? {
         let endpointInfo = endpoint.httpInfo
 
         var route = self.getRoute(for: endpointInfo.url)
@@ -219,36 +216,30 @@ extension Swiftcord {
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         }
 
-
-        var returnData: Any? = nil
-        do {
-            returnData = try await withCheckedThrowingContinuation({ continuation in
-                self.baseRequestWithData(
-                    request,
-                    endpoint,
-                    route: route,
-                    params: params,
-                    body: body,
-                    file: file,
-                    authorization: authorization,
-                    rateLimited: rateLimited,
-                    reason: reason
-                ) { data, err in
-                    if let err = err {
-                        continuation.resume(throwing: err)
-                    }
-                    
-                    continuation.resume(returning: data)
+        var returnData: Any?
+        returnData = try await withCheckedThrowingContinuation({ continuation in
+            self.baseRequestWithData(
+                request,
+                endpoint,
+                route: route,
+                params: params,
+                body: body,
+                file: file,
+                authorization: authorization,
+                rateLimited: rateLimited,
+                reason: reason
+            ) { data, err in
+                if let err = err {
+                    continuation.resume(throwing: err)
                 }
-            })
-        } catch {
-            self.error("An error has occured during the HTTP request: \(error.localizedDescription)")
-        }
-        
+
+                continuation.resume(returning: data)
+            }
+        })
 
         return returnData
     }
-    
+
     private func baseRequest
     (
         _ request: URLRequest,
@@ -263,7 +254,7 @@ extension Swiftcord {
         completion: @escaping (Any?, ResponseError?) -> Void
     ) {
         let sema = DispatchSemaphore(value: 0)
-        
+
         let task = self.session.dataTask(with: request) {
           [unowned self, unowned sema] data, response, error in
 
@@ -279,6 +270,12 @@ extension Swiftcord {
             sema.signal()
             return
           }
+
+            if response.statusCode == 401 {
+                self.error("Bot token invalid.")
+                completion(nil, ResponseError.nonSuccessfulRequest(RequestError("Bot Token Invalid.")))
+                return
+            }
 
           if rateLimited {
             self.handleRateLimitHeaders(
@@ -324,7 +321,7 @@ extension Swiftcord {
                 deadline: DispatchTime.now() + .seconds(retryAfter)
               ) { [unowned self] in
                   Task {
-                      await self.request(
+                      try! await self.request(
                         endpoint,
                         body: body,
                         file: file,
@@ -340,7 +337,7 @@ extension Swiftcord {
                 deadline: DispatchTime.now() + .seconds(3)
               ) { [unowned self] in
                   Task {
-                      await self.request(
+                      try! await self.request(
                         endpoint,
                         body: body,
                         file: file,
@@ -354,7 +351,7 @@ extension Swiftcord {
               return
             }
 
-            completion(nil,ResponseError.nonSuccessfulRequest(RequestError(response.statusCode, returnedData!)))
+            completion(nil, ResponseError.nonSuccessfulRequest(RequestError(response.statusCode, returnedData!)))
             sema.signal()
             return
           }
@@ -403,7 +400,7 @@ extension Swiftcord {
         completion: @escaping (Any?, ResponseError?) -> Void
     ) {
         let sema = DispatchSemaphore(value: 0)
-        
+
         let task = self.session.dataTask(with: request) {
           [unowned self, unowned sema] data, response, error in
 
@@ -464,7 +461,7 @@ extension Swiftcord {
                 deadline: DispatchTime.now() + .seconds(retryAfter)
               ) { [unowned self] in
                   Task {
-                      await self.requestWithBodyAsData(
+                      try! await self.requestWithBodyAsData(
                         endpoint,
                         body: body,
                         file: file,
@@ -480,7 +477,7 @@ extension Swiftcord {
                 deadline: DispatchTime.now() + .seconds(3)
               ) { [unowned self] in
                   Task {
-                      await self.requestWithBodyAsData(
+                      try! await self.requestWithBodyAsData(
                         endpoint,
                         body: body,
                         file: file,
@@ -494,7 +491,7 @@ extension Swiftcord {
               return
             }
 
-            completion(nil,ResponseError.nonSuccessfulRequest(RequestError(response.statusCode, returnedData!)))
+            completion(nil, ResponseError.nonSuccessfulRequest(RequestError(response.statusCode, returnedData!)))
             sema.signal()
             return
           }

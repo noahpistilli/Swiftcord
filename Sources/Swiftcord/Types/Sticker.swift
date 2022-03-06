@@ -26,7 +26,7 @@ public struct Sticker: Codable {
 
     /// File format of the sticker
     public let format: StickerFormat?
-    
+
     /// Autocompletion tags for the sticker
     public let tags: String?
 
@@ -50,7 +50,7 @@ public struct Sticker: Codable {
         self.tags = json["tags"] as? String
         self.type = StickerTypes(rawValue: json["type"] as! Int)
     }
-    
+
     /**
      Creates a Sticker structure for uploading or editing
 
@@ -66,7 +66,7 @@ public struct Sticker: Codable {
         self.name = name
         self.description = description
         self.tags = tags
-        
+
         self.id = nil
         self.isAvailable = nil
         self.packId = nil

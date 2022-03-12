@@ -29,6 +29,7 @@ open class ListenerAdapter {
     open func onMessageCommandEvent(event: MessageCommandEvent) async {}
     open func onSlashCommandEvent(event: SlashCommandEvent) async {}
     open func onSelectMenuEvent(event: SelectMenuEvent) async {}
+    open func onTextInputEvent(event: TextInputEvent) async {}
     open func onUserCommandEvent(event: UserCommandEvent) async {}
 
     // Guild Events

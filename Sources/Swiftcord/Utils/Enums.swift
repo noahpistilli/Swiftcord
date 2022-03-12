@@ -657,6 +657,8 @@ public enum Event: String {
      ```
      */
     case messageCommandEvent = "MESSAGE_COMMAND_INTERACTION"
+    
+    case textInputEvent = "TEXT_INPUT_INTERACTION"
 }
 
 /// Value for Intents

@@ -18,7 +18,7 @@ import NIOWebSocket
 import NIO
 
 protocol Gateway: AnyObject {
-    
+
     var swiftcord: Swiftcord { get }
 
     var acksMissed: Int { get set }
@@ -94,14 +94,14 @@ extension Gateway {
 
             print("[Swiftcord] Connected to Discord!")
         }.get()
-        
+
         let errorCode = try! await promise.futureResult.get()
-        
+
         switch errorCode {
         case .unknown(let int):
             // Unknown will the codes sent by Discord
             await self.handleDisconnect(for: Int(int))
-            
+
         case .unexpectedServerError:
             // Usually means the client lost their internet connection
             await self.handleDisconnect(for: 1011)

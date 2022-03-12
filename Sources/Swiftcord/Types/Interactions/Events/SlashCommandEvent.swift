@@ -20,8 +20,8 @@ public class SlashCommandEvent: InteractionEvent {
     public let token: String
 
     /// Guild object for this channel
-    public var guild: Guild {
-        return self.swiftcord.getGuild(for: channelId)!
+    public var guild: Guild? {
+        return self.swiftcord.getGuild(for: channelId)
     }
 
     public let name: String
@@ -62,7 +62,30 @@ public class SlashCommandEvent: InteractionEvent {
         self.ephemeral = 0
         self.isDefered = false
 
-        self.member = Member(swiftcord, guild, data["member"] as! [String: Any])
+        self.member = nil
+        if let guild = guild {
+            self.member = Member(swiftcord, guild, data["member"] as! [String: Any])
+        }
+    }
+    
+    public func getOptionAsAttachment(optionName: String) -> Attachment? {
+        let options = self.data["data"] as! [String: Any]
+        var attachment: Attachment?
+        
+        if let optionData = options["resolved"] as! [String: Any]? {
+            for option in self.options {
+                if option.name == optionName {
+                    if option.type == .attatchment {
+                        let id = (options["options"] as! [Any])[0] as! [String:Any]
+                        let data = (optionData["attachments"] as! [String:Any])[id["value"] as! String] as! [String:Any]
+                        attachment = Attachment(data)
+                        break
+                    }
+                }
+            }
+        }
+        
+        return attachment
     }
 
     /// Returns the option data as a `Bool`.

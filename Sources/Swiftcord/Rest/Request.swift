@@ -231,9 +231,9 @@ extension Swiftcord {
             ) { data, err in
                 if let err = err {
                     continuation.resume(throwing: err)
+                } else {
+                    continuation.resume(returning: data)
                 }
-
-                continuation.resume(returning: data)
             }
         })
 

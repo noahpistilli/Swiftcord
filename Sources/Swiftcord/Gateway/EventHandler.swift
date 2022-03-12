@@ -486,7 +486,6 @@ extension Shard {
                 let initialType = data["type"] as! Int
 
                 let interactionDict = data["data"] as! [String: Any]
-
                 if initialType == 2 {
                     let type = interactionDict["type"] as! Int
                     // Application Command event
@@ -509,6 +508,8 @@ extension Shard {
                     } else if type == 3 {
                         await self.handleEvent(data, Event.selectMenuEvent.rawValue)
                     }
+                } else if initialType == 5 {
+                    await self.handleEvent(data, Event.textInputEvent.rawValue)
                 }
 
             case .slashCommandEvent:
@@ -534,6 +535,10 @@ extension Shard {
                 let event = MessageCommandEvent(swiftcord, data: data)
 
                 await listener.onMessageCommandEvent(event: event)
+            case .textInputEvent:
+                let event = TextInputEvent(swiftcord, data: data)
+                
+                await listener.onTextInputEvent(event: event)
             }
         }
     }

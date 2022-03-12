@@ -150,6 +150,24 @@ public extension InteractionEvent {
         }
     }
 
+    func replyModal(
+        modal: ModalBuilder
+    ) async throws {
+        if !isDefered {
+            let body = InteractionResponse(type: .modal, data: InteractionBody<TextInput>(flags: self.ephemeral, components: [ActionRow<TextInput>(components: modal.textInput)], modal: modal.modal))
+
+            let jsonData = try! self.swiftcord.encoder.encode(body)
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData)
+        } else {
+            let body = InteractionResponse(type: .modal, data: InteractionBody<TextInput>( components: [ActionRow<TextInput>(components: modal.textInput)], modal: modal.modal))
+
+            let jsonData = try! self.swiftcord.encoder.encode(body)
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.interactionId, self.token), body: jsonData)
+        }
+    }
+
     /**
      Replies to a slash command interaction with a select menu
 

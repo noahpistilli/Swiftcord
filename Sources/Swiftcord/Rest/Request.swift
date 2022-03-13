@@ -79,7 +79,7 @@ extension Swiftcord {
         }
 
         request.addValue(
-            "DiscordBot (https://github.com/SketchMaster2001/Sword, 0.9.0)",
+            "DiscordBot (https://github.com/SketchMaster2001/Swiftcord, 1.0.0)",
             forHTTPHeaderField: "User-Agent"
         )
 
@@ -181,7 +181,7 @@ extension Swiftcord {
 
         guard let url = URL(string: urlString) else {
             self.error(
-                "[Sword] Used an invalid URL: \"\(urlString)\". Please report this."
+                "Used an invalid URL: \"\(urlString)\". Please report this."
             )
             return nil
         }
@@ -206,7 +206,7 @@ extension Swiftcord {
         }
 
         request.addValue(
-            "DiscordBot (https://github.com/SketchMaster2001/Sword, 0.9.0)",
+            "DiscordBot (https://github.com/SketchMaster2001/Swiftcord, 1.0.0)",
             forHTTPHeaderField: "User-Agent"
         )
 

@@ -1,15 +1,19 @@
-import Sword
+import Swiftcord
 
-let options = ShieldOptions(
-  prefixes: ["!"]
-)
-
-let bot = Shield(token: "Super secret token here", shieldOptions: options)
-
-bot.register("ping", message: "Pong!")
-
-bot.register("echo") { msg, args in
-  msg.reply(with: args.joined(separator: " "))
+class MessageListener: ListenerAdapter {
+    override func onMessageCreate(event: Message) async {
+        if event.content == "+test" {
+            _ = try! await event.reply(with: "Testing Swiftcord!")
+        }
+    }
 }
+
+let bot = Swiftcord(token: "token")
+bot.setIntents(intents: .guildMessages)
+
+let activity = Activities(name: "with Swiftcord", type: .playing)
+bot.editStatus(status: .online, activity: activity)
+
+bot.addListeners(MessageListener())
 
 bot.connect()

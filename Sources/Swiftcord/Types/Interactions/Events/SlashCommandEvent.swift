@@ -44,8 +44,10 @@ public class SlashCommandEvent: InteractionEvent {
 
         self.name = options["name"] as! String
 
-        for option in options["options"] as! [Any] {
-            self.options.append(SlashCommandEventOptions(data: option as! [String: Any]))
+        if let eventOptions =  options["options"] as? [Any] {
+            for option in eventOptions {
+                self.options.append(SlashCommandEventOptions(data: option as! [String: Any]))
+            }
         }
 
         self.channelId = Snowflake(data["channel_id"])!

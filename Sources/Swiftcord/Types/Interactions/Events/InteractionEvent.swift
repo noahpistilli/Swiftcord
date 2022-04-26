@@ -16,252 +16,184 @@ public protocol InteractionEvent {
 }
 
 public extension InteractionEvent {
-    func delete(_ completion: ((RequestError?) -> Void)? = nil) {
-        self.swiftcord.requestWithBodyAsData(.deleteWebhook(self.swiftcord.user!.id, self.token)) { data, error in
-            if let error = error {
-              completion?(error)
-            } else {
-                completion?(nil)
-            }
-        }
+    func delete() async throws {
+        _ = try await self.swiftcord.requestWithBodyAsData(.deleteWebhook(self.swiftcord.user!.id, self.token))
     }
-    
+
     /// Shows the `Bot is thinking...` text
-    mutating func deferReply(_ completion: ((RequestError?) -> Void)? = nil) {
+    mutating func deferReply(_ completion: ((RequestError?) -> Void)? = nil) async throws {
         self.isDefered = true
-        
+
         let body = InteractionResponse(type: .defer, data: InteractionBody<Button>(flags: self.ephemeral))
-        
+
+        let jsonData = try self.swiftcord.encoder.encode(body)
+
+        _ = try await self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData)
+    }
+
+    func edit(
+        message: String
+    ) async throws -> Message {
+        let body = InteractionBody<Button>(content: message)
+
+        let jsonData = try self.swiftcord.encoder.encode(body)
+
+        let data = try await self.swiftcord.requestWithBodyAsData(.editWebhook(self.swiftcord.user!.id, self.token), body: jsonData)
+        return Message(self.swiftcord, data as! [String: Any])
+    }
+
+    func editWithButtons(
+        buttons: ButtonBuilder
+    ) async throws -> Message {
+        let body = InteractionBody<Button>(content: buttons.content, embeds: buttons.embeds, components: buttons.components)
+
+        let jsonData = try self.swiftcord.encoder.encode(body)
+
+        let data = try await self.swiftcord.requestWithBodyAsData(.editWebhook(self.swiftcord.user!.id, self.token), body: jsonData)
+        return Message(self.swiftcord, data as! [String: Any])
+    }
+
+    func editWithEmbeds(
+        embeds: EmbedBuilder...
+    ) async throws -> Message {
+        let body = InteractionBody<Button>(embeds: embeds)
+
+        let jsonData = try self.swiftcord.encoder.encode(body)
+
+        let data = try await self.swiftcord.requestWithBodyAsData(.editWebhook(self.swiftcord.user!.id, self.token), body: jsonData)
+
+        return Message(self.swiftcord, data as! [String: Any])
+    }
+
+    func editWithSelectMenu(
+        menu: SelectMenuBuilder
+    ) async throws -> Message {
+        let body = InteractionBody<SelectMenu>(content: menu.content, components: menu.components)
+
         let jsonData = try! self.swiftcord.encoder.encode(body)
 
-        self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData) { data, error in
-            if let error = error {
-              completion?(error)
-            } else {
-                completion?(nil)
-            }
-        }
+        let data = try await self.swiftcord.requestWithBodyAsData(.editWebhook(self.swiftcord.user!.id, self.token), body: jsonData)
+
+        return Message(self.swiftcord, data as! [String: Any])
     }
-    
-    func edit(
-        message: String,
-        then completion: ((Message?, RequestError?) -> Void)? = nil
-    ) {
-        let body = InteractionBody<Button>(content: message)
-            
-        let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-        self.swiftcord.requestWithBodyAsData(.editWebhook(self.swiftcord.user!.id, self.token), body: jsonData) { data, error in
-            if let error = error {
-                  completion?(nil, error)
-            } else {
-                completion?(Message(self.swiftcord, data as! [String: Any]), error)
-            }
-        }
-    }
-    
-    func editWithButtons(
-        buttons: ButtonBuilder,
-        then completion: ((Message?, RequestError?) -> Void)? = nil
-    ) {
-        let body = InteractionBody<Button>(content: buttons.content, embeds: buttons.embeds, components: buttons.components)
-        
-        let jsonData = try! self.swiftcord.encoder.encode(body)
-        
-        self.swiftcord.requestWithBodyAsData(.editWebhook(self.swiftcord.user!.id, self.token), body: jsonData) { data, error in
-            if let error = error {
-                  completion?(nil, error)
-            } else {
-                completion?(Message(self.swiftcord, data as! [String: Any]), error)
-            }
-        }
-    }
-    
-    func editWithEmbeds(
-        embeds: EmbedBuilder...,
-        then completion: ((Message?, RequestError?) -> Void)? = nil
-    ) {
-        let body = InteractionBody<Button>(embeds: embeds)
-        
-        let jsonData = try! self.swiftcord.encoder.encode(body)
-        
-        self.swiftcord.requestWithBodyAsData(.editWebhook(self.swiftcord.user!.id, self.token), body: jsonData) { data, error in
-            if let error = error {
-                  completion?(nil, error)
-            } else {
-                completion?(Message(self.swiftcord, data as! [String: Any]), error)
-            }
-        }
-    }
-    
-    func editWithSelectMenu(
-        menu: SelectMenuBuilder,
-        then completion: ((Message?, RequestError?) -> Void)? = nil
-    ) {
-        let body = InteractionBody<SelectMenu>(content: menu.content, components: menu.components)
-        
-        let jsonData = try! self.swiftcord.encoder.encode(body)
-        
-        self.swiftcord.requestWithBodyAsData(.editWebhook(self.swiftcord.user!.id, self.token), body: jsonData) { data, error in
-            if let error = error {
-                  completion?(nil, error)
-            } else {
-                completion?(Message(self.swiftcord, data as! [String: Any]), error)
-            }
-        }
-    }
-    
+
     /**
      Replies to a slash command interaction
-     
+
      - parameter message: Message to send to the channel
-    */
+     */
     func reply(
-        message: String,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
+        message: String
+    ) async throws {
         // Check if the bot defered the message. Replying to a defered message has an entirely different endpoint
         if !isDefered {
             // A component will never be passed in this response func, so we place a random Encodable struct.
             let body = InteractionResponse(type: .sendMessage, data: InteractionBody<Button>(content: message, flags: self.ephemeral))
-            
+
             let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-            self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData) { data, error in
-                if let error = error {
-                  completion?(error)
-                } else {
-                    completion?(nil)
-                }
-            }
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData)
         } else {
             let body = InteractionBody<Button>(content: message)
-            
+
             let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-            self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData) { data, error in
-                if let error = error {
-                  completion?(error)
-                } else {
-                    completion?(nil)
-                }
-            }
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData)
         }
     }
-    
+
     /**
      Replies to a slash command interaction with buttons
-     
+
      - parameter buttons: Buttons to send to the channel
-    */
+     */
     func replyButtons(
-        buttons: ButtonBuilder,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
+        buttons: ButtonBuilder
+    ) async throws {
         // Check if the bot defered the message. Replying to a defered message has an entirely different endpoint
         if !isDefered {
             let body = InteractionResponse(type: .sendMessage, data: InteractionBody<Button>(content: buttons.content, flags: self.ephemeral, components: buttons.components))
-            
+
             let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-            self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData) { data, error in
-                if let error = error {
-                  completion?(error)
-                } else {
-                    completion?(nil)
-                }
-            }
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData)
         } else {
             let body = InteractionBody<Button>(content: buttons.content, embeds: buttons.embeds, components: buttons.components)
-            
+
             let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-            self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData) { data, error in
-                if let error = error {
-                  completion?(error)
-                } else {
-                    completion?(nil)
-                }
-            }
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData)
         }
     }
-    
+
     /**
      Replies to a slash command interaction with embeds
-     
+
      - parameter buttons: Buttons to send to the channel
-    */
+     */
     func replyEmbeds(
-        embeds: EmbedBuilder...,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
+        embeds: EmbedBuilder...
+    ) async throws {
         // Check if the bot defered the message. Replying to a defered message has an entirely different endpoint
         if !isDefered {
             let body = InteractionResponse(type: .sendMessage, data: InteractionBody<Button>(flags: self.ephemeral, embeds: embeds))
-            
+
             let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-            self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData) { data, error in
-                if let error = error {
-                  completion?(error)
-                } else {
-                    completion?(nil)
-                }
-            }
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData)
         } else {
             let body = InteractionBody<Button>(embeds: embeds)
-            
+
             let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-            self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData) { data, error in
-                if let error = error {
-                  completion?(error)
-                } else {
-                    completion?(nil)
-                }
-            }
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData)
         }
     }
-    
+
+    func replyModal(
+        modal: ModalBuilder
+    ) async throws {
+        if !isDefered {
+            let body = InteractionResponse(type: .modal, data: InteractionBody<TextInput>(flags: self.ephemeral, components: [ActionRow<TextInput>(components: modal.textInput)], modal: modal.modal))
+
+            let jsonData = try! self.swiftcord.encoder.encode(body)
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData)
+        } else {
+            let body = InteractionResponse(type: .modal, data: InteractionBody<TextInput>( components: [ActionRow<TextInput>(components: modal.textInput)], modal: modal.modal))
+
+            let jsonData = try! self.swiftcord.encoder.encode(body)
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.interactionId, self.token), body: jsonData)
+        }
+    }
+
     /**
      Replies to a slash command interaction with a select menu
-     
+
      - parameter message: Message to send to the channel
-    */
+     */
     func replySelectMenu(
-        menu: SelectMenuBuilder,
-        then completion: ((RequestError?) -> Void)? = nil
-    ) {
+        menu: SelectMenuBuilder
+    ) async throws {
         // Check if the bot defered the message. Replying to a defered message has an entirely different endpoint
         if !isDefered {
             let body = InteractionResponse(type: .sendMessage, data: InteractionBody<SelectMenu>(content: menu.content, flags: self.ephemeral, components: menu.components))
-            
+
             let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-            self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData) { data, error in
-                if let error = error {
-                  completion?(error)
-                } else {
-                    completion?(nil)
-                }
-            }
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData)
         } else {
             let body = InteractionBody<SelectMenu>(content: menu.content, components: menu.components)
-            
+
             let jsonData = try! self.swiftcord.encoder.encode(body)
-            
-            self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData) { data, error in
-                if let error = error {
-                  completion?(error)
-                } else {
-                    completion?(nil)
-                }
-            }
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData)
         }
     }
-    
+
     /// Sets a flag to tell Discord to make the response hidden
-    mutating func setEphemeral(isEphermeral: Bool) {
+    mutating func setEphemeral(_ isEphermeral: Bool) {
         if isEphermeral {
             self.ephemeral = 64
         } else {

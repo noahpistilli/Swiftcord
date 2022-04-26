@@ -19,93 +19,94 @@ import NIO
 
 protocol Gateway: AnyObject {
 
-  var acksMissed: Int { get set }
-  
-  var gatewayUrl: String { get set }
+    var swiftcord: Swiftcord { get }
 
-  var heartbeatPayload: Payload { get }
-  
-  var heartbeatQueue: DispatchQueue! { get }
-  
-  var isConnected: Bool { get set }
-  
-  var session: WebSocket? { get set }
-  
-  func handleDisconnect(for code: Int)
-  
-  func handlePayload(_ payload: Payload)
-  
-  func heartbeat(at interval: Int)
-  
-  func reconnect()
-  
-  func send(_ text: String, presence: Bool)
-  
-  func start()
+    var acksMissed: Int { get set }
 
-  func stop()
+    var gatewayUrl: String { get set }
+
+    var heartbeatPayload: Payload { get }
+
+    var heartbeatQueue: DispatchQueue! { get }
+
+    var isConnected: Bool { get set }
+
+    var session: WebSocket? { get set }
+
+    func handleDisconnect(for code: Int) async
+
+    func handlePayload(_ payload: Payload) async
+
+    func heartbeat(at interval: Int) async
+
+    func reconnect() async
+
+    func send(_ text: String, presence: Bool)
+
+    func start() async
+
+    func stop()
 
 }
 
 extension Gateway {
-  
-  /// Starts the gateway connection
-  func start() {
-      let loopgroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
-      
-      self.acksMissed = 0
-      
-      let url = URL(string: self.gatewayUrl)!
-      let path = self.gatewayUrl.components(separatedBy: "/?")[1]
-      
-      let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(loopgroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
-      
-      wsClient.connect(
-        scheme: url.scheme!,
-        host: url.host!,
-        port: url.port ?? 443,
-        path: "/?" + path
-      ) { ws in
-          
-          self.session = ws
-          self.isConnected = true
-          self.webSocketEventHandlers()
-          print("[Swiftcord] Connected to Discord!")
-      }.whenComplete { _ in }
-  }
-    
-    func webSocketEventHandlers() {
-        self.session?.onText { _, text in
-            self.handlePayload(Payload(with: text))
-        }
-        
-        self.session?.onClose.whenSuccess {
-            self.isConnected = false
-        }
-        
-        self.session?.onClose.whenComplete { result in
-            switch result {
-            case .success():
-                self.isConnected = false
-                
-                // If it is nil we just do nothing
-                if let closeCode = self.session?.closeCode {
-                    switch closeCode {
-                    case .unknown(let int):
-                        // Unknown will the codes sent by Discord
-                        self.handleDisconnect(for: Int(int))
-                    default:
-                        break
-                    }
-                }
-                
-                break
-            case .failure(let err):
-                // I have never experienced this
-                self.isConnected = false
-                self.handleDisconnect(for: (err as NSError).code)
-            }
-        }
 
+    /// Starts the gateway connection
+    func start() async {
+        let loopgroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
+        let promise = loopgroup.next().makePromise(of: WebSocketErrorCode.self)
+
+        self.acksMissed = 0
+
+        let url = URL(string: self.gatewayUrl)!
+        let path = self.gatewayUrl.components(separatedBy: "/?")[1]
+
+        let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(loopgroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
+
+        try! await wsClient.connect(
+            scheme: url.scheme!,
+            host: url.host!,
+            port: url.port ?? 443,
+            path: "/?" + path
+        ) { ws in
+
+            self.session = ws
+            self.isConnected = true
+
+            self.session?.onText { _, text in
+                await self.handlePayload(Payload(with: text))
+            }
+
+            self.session?.onClose.whenComplete { result in
+                switch result {
+                case .success():
+                    self.isConnected = false
+
+                    // If it is nil we just do nothing
+                    if let closeCode = self.session?.closeCode {
+                        promise.succeed(closeCode)
+                    }
+                    break
+                case .failure(_):
+                    break
+                }
+            }
+
+            print("[Swiftcord] Connected to Discord!")
+        }.get()
+
+        let errorCode = try! await promise.futureResult.get()
+
+        switch errorCode {
+        case .unknown(let int):
+            // Unknown will the codes sent by Discord
+            await self.handleDisconnect(for: Int(int))
+
+        case .unexpectedServerError:
+            // Usually means the client lost their internet connection
+            await self.handleDisconnect(for: 1011)
+        default:
+            self.swiftcord.error("Unknown Error Code: \(errorCode). Please restart the app.")
+        }
     }
 }

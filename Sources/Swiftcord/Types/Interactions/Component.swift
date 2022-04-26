@@ -8,7 +8,7 @@
 import Foundation
 
 public enum ComponentTypes: Int, Encodable {
-    case actionRow = 1, button, selectMenu
+    case actionRow = 1, button, selectMenu, textInput
 }
 
 public protocol Component: Encodable {

@@ -11,7 +11,7 @@ import Foundation
 /// Message Type
 public struct Message {
 
-  // MARK: Properties
+    // MARK: Properties
 
     /// Array of Attachment structs that was sent with the message
     public internal(set) var attachments = [Attachment]()
@@ -112,7 +112,7 @@ public struct Message {
         } else {
             self.editedTimestamp = nil
         }
-        
+
         let embeds = json["embeds"] as! [[String: Any]]
         for embed in embeds {
             self.embeds.append(Embed(embed))
@@ -161,145 +161,128 @@ public struct Message {
         self.webhookId = Snowflake(json["webhook_id"])
     }
 
-  // MARK: Functions
+    // MARK: Functions
 
-  /**
-   Adds a reaction to self
+    /**
+     Adds a reaction to self
 
-   - parameter reaction: Either unicode or custom emoji to add to this message
-  */
-  public func addReaction(
-    _ reaction: String,
-    then completion: ((RequestError?) -> Void)? = nil
-  ) {
-    self.channel.addReaction(reaction, to: self.id, then: completion)
-  }
-
-  /// Deletes self
-  public func delete(then completion: ((RequestError?) -> Void)? = nil) {
-    self.channel.deleteMessage(self.id, then: completion)
-  }
-
-  /**
-   Deletes reaction from self
-
-   - parameter reaction: Either unicode or custom emoji reaction to remove
-   - parameter userId: If nil, delete from self else delete from userId
-  */
-  public func deleteReaction(
-    _ reaction: String,
-    from userId: Snowflake? = nil,
-    then completion: ((RequestError?) -> Void)? = nil
-  ) {
-    self.channel.deleteReaction(
-      reaction,
-      from: self.id,
-      by: userId ?? nil,
-      then: completion
-    )
-  }
-
-  /// Deletes all reactions from self
-  public func deleteReactions(then completion: ((RequestError?) -> Void)? = nil) {
-    guard let channel = self.channel as? GuildText else {
-      completion?(nil)
-      return
+     - parameter reaction: Either unicode or custom emoji to add to this message
+     */
+    public func addReaction(
+        _ reaction: String
+    ) async throws {
+        try await self.channel.addReaction(reaction, to: self.id)
     }
 
-    channel.deleteReactions(from: self.id, then: completion)
-  }
+    /// Deletes self
+    public func delete() async throws {
+        try await self.channel.deleteMessage(self.id)
+    }
 
-  /**
-   Edit self's content
+    /**
+     Deletes reaction from self
 
-   - parameter content: Content to edit from self
-  */
-  public func edit(
-    with options: [String: Any],
-    then completion: ((Message?, RequestError?) -> Void)? = nil
-  ) {
-    self.channel.editMessage(self.id, with: options, then: completion)
-  }
+     - parameter reaction: Either unicode or custom emoji reaction to remove
+     - parameter userId: If nil, delete from self else delete from userId
+     */
+    public func deleteReaction(
+        _ reaction: String,
+        from userId: Snowflake? = nil
+    ) async throws {
+        try await self.channel.deleteReaction(reaction, from: self.id, by: userId ?? nil)
+    }
 
-  /**
-   Get array of users from reaction
+    /// Deletes all reactions from self
+    public func deleteReactions() async throws {
+        guard let channel = self.channel as? GuildText else { return }
 
-   - parameter reaction: Either unicode or custom emoji reaction to get users from
-  */
-  public func getReaction(
-    _ reaction: String,
-    then completion: @escaping ([User]?, RequestError?) -> Void
-  ) {
-    self.channel.getReaction(reaction, from: self.id, then: completion)
-  }
+        try await channel.deleteReactions(from: self.id)
+    }
 
-  /// Pins self
-  public func pin(then completion: ((RequestError?) -> Void)? = nil) {
-    self.channel.pin(self.id, then: completion)
-  }
+    /**
+     Edit self's content
 
-  /**
-   Replies to a channel
-   
-   - parameter message: String to send to channel
-  */
-  public func reply(
-    with message: String,
-    then completion: ((Message?, RequestError?) -> Void)? = nil
-  ) {
-    self.channel.send(message, then: completion)
-  }
+     - parameter content: Content to edit from self
+     */
+    public func edit(
+        with options: [String: Any]
+    ) async throws -> Message? {
+        try await self.channel.editMessage(self.id, with: options)
+    }
 
-  /**
-   Replies to a channel
-   
-   #### Message Options ####
-   
-   Refer to Discord's documentation on the message body https://discord.com/developers/docs/resources/channel#create-message-json-params
-   
-   - parameter message: Dictionary containing information on the message
-  */
-  public func reply(
-    with message: [String: Any],
-    then completion: ((Message?, RequestError?) -> Void)? = nil
-  ) {
-    self.channel.send(message, then: completion)
-  }
+    /**
+     Get array of users from reaction
 
-  /**
-   Replies to a channel with an Embed
-   
-   - parameter message: Embed to send to channel
-  */
-  public func reply(
-    with message: EmbedBuilder,
-    then completion: ((Message?, RequestError?) -> Void)? = nil
-  ) {
-    self.channel.send(message, then: completion)
-  }
+     - parameter reaction: Either unicode or custom emoji reaction to get users from
+     */
+    public func getReaction(
+        _ reaction: String
+    ) async throws -> [User]? {
+        return try await self.channel.getReaction(reaction, from: self.id)
+    }
+
+    /// Pins self
+    public func pin() async throws {
+        return try await self.channel.pin(self.id)
+    }
+
+    /**
+     Replies to a channel
+
+     - parameter message: String to send to channel
+     */
+    public func reply(
+        with message: String
+    ) async throws -> Message? {
+        return try await self.swiftcord.send(message, to: self.channel.id)
+    }
+
+    /**
+     Replies to a channel
+
+     #### Message Options ####
+
+     Refer to Discord's documentation on the message body https://discord.com/developers/docs/resources/channel#create-message-json-params
+
+     - parameter message: Dictionary containing information on the message
+     */
+    public func reply(
+        with message: [String: Any]
+    ) async throws -> Message? {
+        return try await self.channel.send(message)
+    }
+
+    /**
+     Replies to a channel with an Embed
+
+     - parameter message: Embed to send to channel
+     */
+    public func reply(
+        with message: EmbedBuilder
+    ) async throws -> Message? {
+        return try await self.channel.send(message)
+    }
 
     /**
      Replies to a channel with a MessageBuilder instance
-     
+
      - parameter message: Buttons to send to channel
-    */
+     */
     public func reply(
-      with message: ButtonBuilder,
-      then completion: ((Message?, RequestError?) -> Void)? = nil
-    ) {
-      self.channel.send(message, then: completion)
+        with message: ButtonBuilder
+    ) async throws -> Message? {
+        try await self.channel.send(message)
     }
 
     /**
      Replies to a channel with a SelectMenuBuilder instance
-     
+
      - parameter message: Select Menu to send to channel
-    */
+     */
     public func reply(
-      with message: SelectMenuBuilder,
-      then completion: ((Message?, RequestError?) -> Void)? = nil
-    ) {
-      self.channel.send(message, then: completion)
+        with message: SelectMenuBuilder
+    ) async throws -> Message? {
+        return try await self.channel.send(message)
     }
 
 }
@@ -332,410 +315,410 @@ extension Message {
 
         /// Someone just joined the guild message
         case guildMemberJoin
-        
+
         /// A member boosted the server
         case memberBoost
-        
+
         /// A member boosted the server to level 1
         case memberBoostLvl1
 
         /// A member boosted the server to level 2
         case memberBoostLvl2
-        
+
         /// A member boosted the server to level 3
         case memberBoostLvl3
-        
+
         /// A member subscribed to a announcement channel
         case channelFollowAdd
-        
+
         /// ???
         case guildDiscoveryDisqualified = 14
-        
+
         /// ???
         case guildDiscoveryRequalified
-        
+
         /// ???
         case guildDiscoveryGracePeriodInitialWarning
-        
+
         /// ???
         case guildDiscoveryGracePeriodFinalWarning
-        
+
         /// A thread was created
         case threadCreated
-        
+
         /// A message that replied to another message
         case reply
-        
+
         /// ???
         case chatInputCommand
-        
+
         /// Message that started the thread
         case threadStarterMessage
-        
+
         /// ???
         case guildInviteReminder
-        
+
         /// A member used an either a User or Message command
         case contextMenuCommand
-  }
+    }
 
 }
 
 /// Attachment Type
 public struct Attachment {
 
-  // MARK: Properties
+    // MARK: Properties
 
-  /// The filename for this Attachment
-  public let filename: String
+    /// The filename for this Attachment
+    public let filename: String
 
-  /// Height of image (if image)
-  public let height: Int?
+    /// Height of image (if image)
+    public let height: Int?
 
-  /// ID of attachment
-  public let id: Snowflake
+    /// ID of attachment
+    public let id: Snowflake
 
-  /// The proxied URL for this attachment
-  public let proxyUrl: String
+    /// The proxied URL for this attachment
+    public let proxyUrl: String
 
-  /// Size of the file in bytes
-  public let size: Int
+    /// Size of the file in bytes
+    public let size: Int
 
-  /// The original URL of the attachment
-  public let url: String
+    /// The original URL of the attachment
+    public let url: String
 
-  /// Width of image (if image)
-  public let width: Int?
+    /// Width of image (if image)
+    public let width: Int?
 
-  // MARK: Initializer
+    // MARK: Initializer
 
-  /**
-   Creates an Attachment struct
-   
-   - parameter json: JSON to decode into Attachment struct
-   */
-  init(_ json: [String: Any]) {
-    self.filename = json["filename"] as! String
-    self.height = json["height"] as? Int
-    self.id = Snowflake(json["id"])!
-    self.proxyUrl = json["proxy_url"] as! String
-    self.size = json["size"] as! Int
-    self.url = json["url"] as! String
-    self.width = json["width"] as? Int
-  }
+    /**
+     Creates an Attachment struct
+
+     - parameter json: JSON to decode into Attachment struct
+     */
+    init(_ json: [String: Any]) {
+        self.filename = json["filename"] as! String
+        self.height = json["height"] as? Int
+        self.id = Snowflake(json["id"])!
+        self.proxyUrl = json["proxy_url"] as! String
+        self.size = json["size"] as! Int
+        self.url = json["url"] as! String
+        self.width = json["width"] as? Int
+    }
 
 }
 
 /// Embed Type
 public struct Embed {
 
-  // MARK: Properties
+    // MARK: Properties
 
-  /// Author dictionary from embed
-  public var author: Author?
+    /// Author dictionary from embed
+    public var author: Author?
 
-  /// Side panel color of embed
-  public var color: Int?
+    /// Side panel color of embed
+    public var color: Int?
 
-  /// Description of the embed
-  public var description: String?
+    /// Description of the embed
+    public var description: String?
 
-  /// Fields for the embed
-  public var fields: [Field]?
+    /// Fields for the embed
+    public var fields: [Field]?
 
-  /// Footer dictionary from embed
-  public var footer: Footer?
+    /// Footer dictionary from embed
+    public var footer: Footer?
 
-  /// Image data from embed
-  public var image: Image?
+    /// Image data from embed
+    public var image: Image?
 
-  /// Provider from embed
-  public let provider: Provider?
+    /// Provider from embed
+    public let provider: Provider?
 
-  /// Thumbnail data from embed
-  public var thumbnail: Thumbnail?
+    /// Thumbnail data from embed
+    public var thumbnail: Thumbnail?
 
-  /// Title of the embed
-  public var title: String?
+    /// Title of the embed
+    public var title: String?
 
-  /// Type of embed
-  public let type: String
+    /// Type of embed
+    public let type: String
 
-  /// URL of the embed
-  public var url: String?
+    /// URL of the embed
+    public var url: String?
 
-  /// Video data from embed
-  public let video: Video?
+    /// Video data from embed
+    public let video: Video?
 
-  // MARK: Initializers
+    // MARK: Initializers
 
-  /// Creates an Embed Structure
-  public init() {
-    self.provider = nil
-    self.type = "rich"
-    self.video = nil
-  }
-
-  /**
-   Creates an Embed Structure
-   
-   - parameter json: JSON representable as a dictionary
-  */
-  init(_ json: [String: Any]) {
-    self.author = json.keys.contains("author")
-      ? Author(json["author"] as! [String: Any]) : nil
-    self.color = json["color"] as? Int
-    self.description = json["description"] as? String
-
-    if json.keys.contains("fields") {
-      self.fields = [Field]()
-      let fields = json["fields"] as! [[String: Any]]
-      for field in fields {
-        self.fields?.append(Field(field))
-      }
-    } else {
-      self.fields = nil
+    /// Creates an Embed Structure
+    public init() {
+        self.provider = nil
+        self.type = "rich"
+        self.video = nil
     }
 
-    self.footer = json.keys.contains("footer")
-      ? Footer(json["footer"] as! [String: Any]) : nil
-    self.image = json.keys.contains("image")
-      ? Image(json["image"] as! [String: Any]) : nil
-    self.provider = json.keys.contains("provider")
-      ? Provider(json["provider"] as! [String: Any]) : nil
-    self.thumbnail = json.keys.contains("thumbnail")
-      ? Thumbnail(json["thumbnail"] as! [String: Any]) : nil
-    self.title = json["title"] as? String
-    self.type = json["type"] as! String
-    self.url = json["url"] as? String
-    self.video = json.keys.contains("video")
-      ? Video(json["video"] as! [String: Any]) : nil
-  }
+    /**
+     Creates an Embed Structure
 
-  /**
-   Adds a field to the embed
-   
-   - parameter name: Name to give field
-   - parameter value: Text that will be displayed underneath name
-   - parameter inline: Whether or not to keep this field inline with others
-  */
-  public mutating func addField(
-    _ name: String,
-    value: String,
-    isInline: Bool = false
-  ) {
-    if self.fields == nil {
-      self.fields = [Field]()
+     - parameter json: JSON representable as a dictionary
+     */
+    init(_ json: [String: Any]) {
+        self.author = json.keys.contains("author")
+            ? Author(json["author"] as! [String: Any]) : nil
+        self.color = json["color"] as? Int
+        self.description = json["description"] as? String
+
+        if json.keys.contains("fields") {
+            self.fields = [Field]()
+            let fields = json["fields"] as! [[String: Any]]
+            for field in fields {
+                self.fields?.append(Field(field))
+            }
+        } else {
+            self.fields = nil
+        }
+
+        self.footer = json.keys.contains("footer")
+            ? Footer(json["footer"] as! [String: Any]) : nil
+        self.image = json.keys.contains("image")
+            ? Image(json["image"] as! [String: Any]) : nil
+        self.provider = json.keys.contains("provider")
+            ? Provider(json["provider"] as! [String: Any]) : nil
+        self.thumbnail = json.keys.contains("thumbnail")
+            ? Thumbnail(json["thumbnail"] as! [String: Any]) : nil
+        self.title = json["title"] as? String
+        self.type = json["type"] as! String
+        self.url = json["url"] as? String
+        self.video = json.keys.contains("video")
+            ? Video(json["video"] as! [String: Any]) : nil
     }
 
-    self.fields?.append(Field(isInline: isInline, name: name, value: value))
-  }
+    /**
+     Adds a field to the embed
 
-  /// Converts embed to dictionary
-  public func encode() -> [String: Any] {
-    var embed = [String: Any]()
+     - parameter name: Name to give field
+     - parameter value: Text that will be displayed underneath name
+     - parameter inline: Whether or not to keep this field inline with others
+     */
+    public mutating func addField(
+        _ name: String,
+        value: String,
+        isInline: Bool = false
+    ) {
+        if self.fields == nil {
+            self.fields = [Field]()
+        }
 
-    if self.author != nil { embed["author"] = self.author!.encode() }
-    if self.color != nil { embed["color"] = self.color! }
-    if self.description != nil { embed["description"] = self.description! }
-    if self.fields != nil { embed["fields"] = self.fields!.map { $0.encode() } }
-    if self.footer != nil { embed["footer"] = self.footer!.encode() }
-    if self.image != nil { embed["image"] = self.image!.encode() }
-    if self.thumbnail != nil { embed["thumbnail"] = self.thumbnail!.encode() }
-    if self.title != nil { embed["title"] = self.title! }
-    if self.url != nil { embed["url"] = self.url! }
+        self.fields?.append(Field(isInline: isInline, name: name, value: value))
+    }
 
-    return embed
-  }
+    /// Converts embed to dictionary
+    public func encode() -> [String: Any] {
+        var embed = [String: Any]()
+
+        if self.author != nil { embed["author"] = self.author!.encode() }
+        if self.color != nil { embed["color"] = self.color! }
+        if self.description != nil { embed["description"] = self.description! }
+        if self.fields != nil { embed["fields"] = self.fields!.map { $0.encode() } }
+        if self.footer != nil { embed["footer"] = self.footer!.encode() }
+        if self.image != nil { embed["image"] = self.image!.encode() }
+        if self.thumbnail != nil { embed["thumbnail"] = self.thumbnail!.encode() }
+        if self.title != nil { embed["title"] = self.title! }
+        if self.url != nil { embed["url"] = self.url! }
+
+        return embed
+    }
 
 }
 
 extension Embed {
-  public struct Author {
-    public var iconUrl: String?
-    public var name: String
-    public var url: String?
+    public struct Author {
+        public var iconUrl: String?
+        public var name: String
+        public var url: String?
 
-    public init(iconUrl: String? = nil, name: String, url: String? = nil) {
-      self.iconUrl = iconUrl
-      self.name = name
-      self.url = url
+        public init(iconUrl: String? = nil, name: String, url: String? = nil) {
+            self.iconUrl = iconUrl
+            self.name = name
+            self.url = url
+        }
+
+        init(_ json: [String: Any]) {
+            self.iconUrl = json["icon_url"] as? String
+            self.name = json["name"] as! String
+            self.url = json["url"] as? String
+        }
+
+        func encode() -> [String: Any] {
+            var author = [String: Any]()
+
+            if self.iconUrl != nil { author["icon_url"] = self.iconUrl! }
+            author["name"] = self.name
+            if self.url != nil { author["url"] = self.url! }
+
+            return author
+        }
     }
 
-    init(_ json: [String: Any]) {
-      self.iconUrl = json["icon_url"] as? String
-      self.name = json["name"] as! String
-      self.url = json["url"] as? String
+    public struct Field {
+        public var isInline: Bool
+        public var name: String
+        public var value: String
+
+        public init(isInline: Bool = true, name: String = "", value: String = "") {
+            self.isInline = isInline
+            self.name = name
+            self.value = value
+        }
+
+        init(_ json: [String: Any]) {
+            self.isInline = json["inline"] as! Bool
+            self.name = json["name"] as! String
+            self.value = json["value"] as! String
+        }
+
+        func encode() -> [String: Any] {
+            var field = [String: Any]()
+
+            field["inline"] = self.isInline
+            field["name"] = self.name
+            field["value"] = self.value
+
+            return field
+        }
     }
 
-    func encode() -> [String: Any] {
-      var author = [String: Any]()
+    public struct Footer {
+        public var iconUrl: String?
+        public var proxyIconUrl: String?
+        public var text: String
 
-      if self.iconUrl != nil { author["icon_url"] = self.iconUrl! }
-      author["name"] = self.name
-      if self.url != nil { author["url"] = self.url! }
+        public init(
+            text: String,
+            iconUrl: String? = nil,
+            proxyIconUrl: String? = nil
+        ) {
+            self.text = text
+            self.iconUrl = iconUrl
+            self.proxyIconUrl = proxyIconUrl
+        }
 
-      return author
-    }
-  }
+        init(_ json: [String: Any]) {
+            self.iconUrl = json["icon_url"] as? String
+            self.proxyIconUrl = json["proxy_icon_url"] as? String
+            self.text = json["text"] as! String
+        }
 
-  public struct Field {
-    public var isInline: Bool
-    public var name: String
-    public var value: String
+        func encode() -> [String: Any] {
+            var footer = [String: Any]()
 
-    public init(isInline: Bool = true, name: String = "", value: String = "") {
-      self.isInline = isInline
-      self.name = name
-      self.value = value
-    }
+            footer["text"] = self.text
+            if self.iconUrl != nil { footer["icon_url"] = self.iconUrl! }
+            if self.proxyIconUrl != nil { footer["proxy_icon_url"] = self.proxyIconUrl! }
 
-    init(_ json: [String: Any]) {
-      self.isInline = json["inline"] as! Bool
-      self.name = json["name"] as! String
-      self.value = json["value"] as! String
-    }
-
-    func encode() -> [String: Any] {
-      var field = [String: Any]()
-
-      field["inline"] = self.isInline
-      field["name"] = self.name
-      field["value"] = self.value
-
-      return field
-    }
-  }
-
-  public struct Footer {
-    public var iconUrl: String?
-    public var proxyIconUrl: String?
-    public var text: String
-
-    public init(
-      text: String,
-      iconUrl: String? = nil,
-      proxyIconUrl: String? = nil
-    ) {
-      self.text = text
-      self.iconUrl = iconUrl
-      self.proxyIconUrl = proxyIconUrl
+            return footer
+        }
     }
 
-    init(_ json: [String: Any]) {
-      self.iconUrl = json["icon_url"] as? String
-      self.proxyIconUrl = json["proxy_icon_url"] as? String
-      self.text = json["text"] as! String
+    public struct Image {
+        public var height: Int
+        public var proxyUrl: String
+        public var url: String
+        public var width: Int
+
+        public init(height: Int, proxyUrl: String, url: String, width: Int) {
+            self.height = height
+            self.proxyUrl = proxyUrl
+            self.url = url
+            self.width = width
+        }
+
+        init(_ json: [String: Any]) {
+            self.height = json["height"] as! Int
+            self.proxyUrl = json["proxy_url"] as! String
+            self.url = json["url"] as! String
+            self.width = json["width"] as! Int
+        }
+
+        func encode() -> [String: Any] {
+            var image = [String: Any]()
+
+            image["height"] = self.height
+            image["proxy_url"] = self.proxyUrl
+            image["url"] = self.url
+            image["width"] = self.width
+
+            return image
+        }
     }
 
-    func encode() -> [String: Any] {
-      var footer = [String: Any]()
+    public struct Provider {
+        public var name: String
+        public var url: String?
 
-      footer["text"] = self.text
-      if self.iconUrl != nil { footer["icon_url"] = self.iconUrl! }
-      if self.proxyIconUrl != nil { footer["proxy_icon_url"] = self.proxyIconUrl! }
+        public init(name: String, url: String? = nil) {
+            self.name = name
+            self.url = url
+        }
 
-      return footer
-    }
-  }
+        init(_ json: [String: Any]) {
+            self.name = json["name"] as! String
+            self.url = json["url"] as? String
+        }
 
-  public struct Image {
-    public var height: Int
-    public var proxyUrl: String
-    public var url: String
-    public var width: Int
+        func encode() -> [String: Any] {
+            var provider = [String: Any]()
 
-    public init(height: Int, proxyUrl: String, url: String, width: Int) {
-      self.height = height
-      self.proxyUrl = proxyUrl
-      self.url = url
-      self.width = width
-    }
+            provider["name"] = self.name
+            if self.url != nil { provider["url"] = self.url! }
 
-    init(_ json: [String: Any]) {
-      self.height = json["height"] as! Int
-      self.proxyUrl = json["proxy_url"] as! String
-      self.url = json["url"] as! String
-      self.width = json["width"] as! Int
+            return provider
+        }
     }
 
-    func encode() -> [String: Any] {
-      var image = [String: Any]()
+    public struct Thumbnail {
+        public var height: Int
+        public var proxyUrl: String
+        public var url: String
+        public var width: Int
 
-      image["height"] = self.height
-      image["proxy_url"] = self.proxyUrl
-      image["url"] = self.url
-      image["width"] = self.width
+        public init(height: Int, proxyUrl: String, url: String, width: Int) {
+            self.height = height
+            self.proxyUrl = proxyUrl
+            self.url = url
+            self.width = width
+        }
 
-      return image
-    }
-  }
+        init(_ json: [String: Any]) {
+            self.height = json["height"] as! Int
+            self.proxyUrl = json["proxy_url"] as! String
+            self.url = json["url"] as! String
+            self.width = json["width"] as! Int
+        }
 
-  public struct Provider {
-    public var name: String
-    public var url: String?
+        func encode() -> [String: Any] {
+            var thumbnail = [String: Any]()
 
-    public init(name: String, url: String? = nil) {
-      self.name = name
-      self.url = url
-    }
+            thumbnail["height"] = self.height
+            thumbnail["proxy_url"] = self.proxyUrl
+            thumbnail["url"] = self.url
+            thumbnail["width"] = self.width
 
-    init(_ json: [String: Any]) {
-      self.name = json["name"] as! String
-      self.url = json["url"] as? String
-    }
-
-    func encode() -> [String: Any] {
-      var provider = [String: Any]()
-
-      provider["name"] = self.name
-      if self.url != nil { provider["url"] = self.url! }
-
-      return provider
-    }
-  }
-
-  public struct Thumbnail {
-    public var height: Int
-    public var proxyUrl: String
-    public var url: String
-    public var width: Int
-
-    public init(height: Int, proxyUrl: String, url: String, width: Int) {
-      self.height = height
-      self.proxyUrl = proxyUrl
-      self.url = url
-      self.width = width
+            return thumbnail
+        }
     }
 
-    init(_ json: [String: Any]) {
-      self.height = json["height"] as! Int
-      self.proxyUrl = json["proxy_url"] as! String
-      self.url = json["url"] as! String
-      self.width = json["width"] as! Int
+    public struct Video {
+        public var height: Int
+        public var url: String
+        public var width: Int
+
+        init(_ json: [String: Any]) {
+            self.height = json["height"] as! Int
+            self.url = json["url"] as! String
+            self.width = json["width"] as! Int
+        }
     }
-
-    func encode() -> [String: Any] {
-      var thumbnail = [String: Any]()
-
-      thumbnail["height"] = self.height
-      thumbnail["proxy_url"] = self.proxyUrl
-      thumbnail["url"] = self.url
-      thumbnail["width"] = self.width
-
-      return thumbnail
-    }
-  }
-
-  public struct Video {
-    public var height: Int
-    public var url: String
-    public var width: Int
-
-    init(_ json: [String: Any]) {
-      self.height = json["height"] as! Int
-      self.url = json["url"] as! String
-      self.width = json["width"] as! Int
-    }
-  }
 }

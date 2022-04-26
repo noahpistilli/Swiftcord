@@ -11,29 +11,29 @@ import Foundation
 public struct Stage {
     /// Main class
     public let swiftcord: Swiftcord
-    
+
     /// ID of the stage channel
     public let channelID: Snowflake
-    
+
     /// Guild this stage instance is from
     public var guild: Guild? {
         return self.swiftcord.getGuild(for: channelID)
     }
-    
+
     /// ID of the stage instance
     public let id: Snowflake
-    
+
     /// Whether or not Stage Discovery is disabled
     public var isDiscoveryDisabled: Bool
-    
+
     public var privacyLevel: StagePrivacyLevel
-    
+
     /// Topic of the stage channel
     public let topic: String
-    
-    init(_ swiftcord: Swiftcord, data: [String:Any]) {
+
+    init(_ swiftcord: Swiftcord, data: [String: Any]) {
         self.swiftcord = swiftcord
-        
+
         self.channelID = Snowflake(data["channel_id"])!
         self.id = Snowflake(data["id"])!
         self.isDiscoveryDisabled = data["discoverable_disabled"] as! Bool
@@ -46,7 +46,7 @@ public struct Stage {
 public enum StagePrivacyLevel: Int {
     /// Deprecated but the docs still show it
     case `public` = 1
-    
+
     /// Can only be accessed by members of the guild; default
     case guildOnly
 }

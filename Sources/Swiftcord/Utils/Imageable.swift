@@ -9,6 +9,6 @@
 import Foundation
 
 public protocol Imageable {
-  /// Returns URL of this type
-  func imageUrl(format: FileExtension) -> URL?
+    /// Returns URL of this type
+    func imageUrl(format: FileExtension) -> URL?
 }

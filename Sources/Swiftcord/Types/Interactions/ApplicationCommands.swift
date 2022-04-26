@@ -12,7 +12,7 @@ public enum ApplicationType: Int, Encodable {
 }
 
 public enum ApplicationCommandType: Int, Encodable {
-    case subCommand = 1, subCommandGroup, string, int, bool, user, channel, role, mentionable, number
+    case subCommand = 1, subCommandGroup, string, int, bool, user, channel, role, mentionable, number, attatchment
 }
 
 public enum InteractionCallbackType: Int, Encodable {
@@ -21,6 +21,7 @@ public enum InteractionCallbackType: Int, Encodable {
     case `defer`
     case deferSilently
     case updateMessage
+    case modal = 9
 }
 
 /// Options for Application commands

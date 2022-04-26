@@ -13,9 +13,9 @@ public struct ActionRow<T: Component>: Component {
     public let components: [T]
 
     enum CodingKeys: String, CodingKey {
-         case type
-         case components
-     }
+        case type
+        case components
+    }
 
     public init(components: T...) {
         self.type = .actionRow
@@ -26,5 +26,5 @@ public struct ActionRow<T: Component>: Component {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.type, forKey: .type)
         try container.encode(self.components, forKey: .components)
-     }
+    }
 }

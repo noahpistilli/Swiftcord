@@ -8,51 +8,50 @@
 import Foundation
 
 public class SelectMenuEvent: InteractionEvent {
-    
+
     public var channelId: Snowflake
-    
+
     public let interactionId: Snowflake
-    
+
     public let swiftcord: Swiftcord
-    
+
     /// Guild object for this channel
     public var guild: Guild {
-      return self.swiftcord.getGuild(for: channelId)!
+        return self.swiftcord.getGuild(for: channelId)!
     }
-    
+
     public let token: String
-    
+
     public var member: Member?
-    
+
     public let user: User
-    
+
     public let selectedValue: SelectMenuComponentData
-    
+
     public var ephemeral: Int
-    
+
     public var isDefered: Bool
-    
-    
-    init(_ swiftcord: Swiftcord, data: [String : Any]) {
+
+    init(_ swiftcord: Swiftcord, data: [String: Any]) {
         self.swiftcord = swiftcord
         self.token = data["token"] as! String
-        
+
         self.channelId = Snowflake(data["channel_id"])!
-                
+
         self.interactionId = Snowflake(data["id"] as! String)!
 
         let inter = data["data"] as! [String: Any]
         let componentData = SelectMenuComponentData(componentType: inter["component_type"] as! Int, customId: inter["custom_id"] as! String, value: (inter["values"] as! [String])[0])
         self.selectedValue = componentData
-        
-        var userJson = data["member"] as! [String:Any]
-        userJson = userJson["user"] as! [String:Any]
+
+        var userJson = data["member"] as! [String: Any]
+        userJson = userJson["user"] as! [String: Any]
         self.user = User(swiftcord, userJson)
-        
+
         self.ephemeral = 0
         self.isDefered = false
-        
-        self.member = Member(swiftcord, guild, data["member"] as! [String:Any])
+
+        self.member = Member(swiftcord, guild, data["member"] as! [String: Any])
     }
 }
 

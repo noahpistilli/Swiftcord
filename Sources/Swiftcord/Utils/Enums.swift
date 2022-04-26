@@ -88,204 +88,86 @@ public enum Event: String {
 
     /**
      Fired when audio data is received from voice connection
-
-     ### Usage ###
-     ```swift
-     connection.on(.audioData) { data in
-     let audioData = data as! Data
-     }
-     ```
      */
     case audioData
 
     /**
      Fired when a channel is created
-
-     ### Usage ###
-     ```swift
-     bot.on(.channelCreate) { data in
-     let channel = data as! Channel
-     }
      */
     case channelCreate = "CHANNEL_CREATE"
 
     /**
      Fired when a channel is deleted
-
-     ### Usage ###
-     ```swift
-     bot.on(.channelDelete) { data in
-     let channel = data as! Channel
-     }
-     ```
      */
     case channelDelete = "CHANNEL_DELETE"
 
     /**
      Fired when a channel adds a pin or removes a pin
-
-     ### Usage ###
-     ```swift
-     bot.on(.channelPinsUpdate) { data in
-     let (channel, timestamp) = data as! (TextChannel, Date?)
-     }
-     ```
      */
     case channelPinsUpdate = "CHANNEL_PINS_UPDATE"
 
     /**
      Fired when a channel is updated
-
-     ### Usage ###
-     ```swift
-     bot.on(.channelUpdate) { data in
-     let channel = data as! Channel
-     }
-     ```
      */
     case channelUpdate = "CHANNEL_UPDATE"
 
     /**
      Fired when voice connection dies (self emitted)
-
-     ### Usage ###
-     ```swift
-     connection.on(.connectionClose) { _ in
-     kill(process.processIdentifier, SIGKILL)
-     }
-     ```
      */
     case connectionClose
 
     /**
      Fired when a shard is disconnected from the gateway
-
-     ### Usage ###
-     ```swift
-     bot.on(.disconnect) { data in
-     let shardNumber = data as! Int
-     }
-     ```
      */
     case disconnect
 
     /**
      Fired when a guild is available (This is not guildCreate)
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildAvailable) { data in
-     let guild = data as! Guild
-     }
-     ```
      */
     case guildAvailable
 
     /**
      Fired when a member of a guild is banned
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildBanAdd) { data in
-     let (guild, user) = data as! (Guild, User)
-     }
-     ```
      */
     case guildBanAdd = "GUILD_BAN_ADD"
 
     /**
      Fired when a member of a guild is unbanned
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildBanRemove) { data in
-     let (guild, user) = data as! (Guild, User)
-     }
-     ```
      */
     case guildBanRemove = "GUILD_BAN_REMOVE"
 
     /**
      Fired when a guild is created
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildCreate) { data in
-     let guild = data as! Guild
-     }
-     ```
      */
     case guildCreate = "GUILD_CREATE"
 
     /**
      Fired when a guild is deleted
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildDelete) { data in
-     let guild = data as! Guild
-     }
-     ```
      */
     case guildDelete = "GUILD_DELETE"
 
     /**
      Fired when a guild's custom emojis are created/deleted/updated
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildEmojisUpdate) { data in
-     let (guild, emojis) = data as! (Guild, [Emoji])
-     }
-     ```
      */
     case guildEmojisUpdate = "GUILD_EMOJIS_UPDATE"
 
     /**
      Fired when a guild updates it's integrations
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildIntegrationsUpdate) { data in
-     let guild = data as! Guild
-     }
-     ```
      */
     case guildIntegrationsUpdate = "GUILD_INTEGRATIONS_UPDATE"
 
     /**
      Fired when a user joins a guild
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildMemberAdd) { data in
-     let (guild, member) = data as! (Guild, Member)
-     }
-     ```
      */
     case guildMemberAdd = "GUILD_MEMBER_ADD"
 
     /**
      Fired when a member leaves a guild
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildMemberRemove) { data in
-     let (guild, user) = data as! (Guild, User)
-     }
-     ```
      */
     case guildMemberRemove = "GUILD_MEMBER_REMOVE"
 
     /**
      Fired when a member of a guild is updated
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildMemberUpdate) { data in
-     let member = data as! Member
-     }
-     ```
      */
     case guildMemberUpdate = "GUILD_MEMBER_UPDATE"
 
@@ -294,185 +176,77 @@ public enum Event: String {
 
     /**
      Fired when a role is created in a guild
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildRoleCreate) { data in
-     let (guild, role) = data as! (Guild, Role)
-     }
-     ```
      */
     case guildRoleCreate = "GUILD_ROLE_CREATE"
 
     /**
      Fired when a role is deleted in a guild
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildRoleDelete) { data in
-     let (guild, role) = data as! (Guild, Role)
-     }
      ```
      */
     case guildRoleDelete = "GUILD_ROLE_DELETE"
 
     /**
      Fired when a role is updated in a guild
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildRoleUpdate) { data in
-     let (guild, role) = data as! (Guild, Role)
-     }
-     ```
      */
     case guildRoleUpdate = "GUILD_ROLE_UPDATE"
 
     /**
      Fired when a guild becomes unavailable
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildUnavailable) { data in
-     let guild = data as! UnavailableGuild
-     }
-     ```
      */
     case guildUnavailable
 
     /**
      Fired when a guild is updated
-
-     ### Usage ###
-     ```swift
-     bot.on(.guildUpdate) { data in
-     let guild = data as! Guild
-     }
-     ```
      */
     case guildUpdate = "GUILD_UPDATE"
 
     /**
      Fired when a message is created
-
-     ### Usage ###
-     ```swift
-     bot.on(.messageCreate) { data in
-     let msg = data as! Message
-     }
-     ```
      */
     case messageCreate = "MESSAGE_CREATE"
 
     /**
      Fired when a message is deleted
-
-     ### Usage ###
-     ```swift
-     bot.on(.messageDelete) { data in
-     guard let (msg, channel) = data as? (Message, TextChannel) else {
-     // data has returned a MessageID
-     let (messageID, channel) = data as! (MessageID, TextChannel)
-     return
-     }
-     }
-     ```
      */
     case messageDelete = "MESSAGE_DELETE"
 
     /**
      Fired when a large chunk of messages are deleted
-
-     ### Usage ###
-     ```swift
-     bot.on(.messageDeleteBulk) { data in
-     let (messageIDs, channel) = data as! ([MessageID], TextChannel)
-     }
-     ```
      */
     case messageDeleteBulk = "MESSAGE_DELETE_BULK"
 
     /**
      Fired when a message's reactions are all removed
-
-     ### Usage ###
-     ```swift
-     bot.on(.messageReactionRemoveAll) { data in
-     let (messageID, channel) = data as! (MessageID, TextChannel)
-     }
-     ```
      */
     case messageReactionRemoveAll = "MESSAGE_REACTION_REMOVE_ALL"
 
     /**
      Fired when a message is updated
-
-     ### Usage ###
-     ```swift
-     bot.on(.messageUpdate) { data in
-     let (messageID, channel) = data as! (MessageID, TextChannel)
-     }
-     ```
      */
     case messageUpdate = "MESSAGE_UPDATE"
 
     /**
      Fired when a payload is received through the gateway
-
-     ### Usage ###
-     ```swift
-     bot.on(.payload) { data, in
-     let message = data as! String
-     }
-     ```
      */
     case payload
 
     /**
      Fired when a user's presences is updated
-
-     ### Usage ###
-     ```swift
-     bot.on(.presenceUpdate) { data in
-     let (userID, presence) = data as! (UserID, Presence)
-     }
-     ```
      */
     case presenceUpdate = "PRESENCE_UPDATE"
 
     /**
      Fired when the bot is ready to receive events
-
-     ### Usage ###
-     ```swift
-     bot.on(.ready) { data in
-     let user = data as! User
-     }
-     ```
      */
     case ready = "READY"
 
     /**
      Fired when a reaction is added to a message
-
-     ### Usage ###
-     ```swift
-     bot.on(.reactionAdd) { data in
-     let (channel, userID, messageID, emoji) = data as! (TextChannel, UserID, MessageID, Emoji)
-     }
-     ```
      */
     case reactionAdd = "MESSAGE_REACTION_ADD"
 
     /**
      Fired when a reaction is removed from a message
-
-     ### Usage ###
-     ```swift
-     bot.on(.reactionRemove) { data in
-     let (channel, userID, messageID, emoji) = data as! (TextChannel, UserID, MessageID, Emoji)
-     }
-     ```
      */
     case reactionRemove = "MESSAGE_REACTION_REMOVE"
 
@@ -484,180 +258,87 @@ public enum Event: String {
 
     /**
      Fired when a shard becomes ready
-
-     ### Usage ###
-     ```swift
-     bot.on(.shardReady) { data in
-     let shardID = data as! Int
-     }
-     ```
      */
     case shardReady
 
     /**
      Fired when a thread is created
-
-     ### Usage ###
-     ```swift
-     bot.on(.threadCreate) { data in
-     let thread = data as! ThreadChannel
-     }
-     ```
      */
     case threadCreate = "THREAD_CREATE"
 
     /**
      Fired when a thread is deleted
-
-     ### Usage ###
-     ```swift
-     bot.on(.threadDelete) { data in
-     let thread = data as! ThreadChannel
-     }
-     ```
      */
     case threadDelete = "THREAD_DELETE"
 
     /**
      Fired when a thread is updated
-
-     ### Usage ###
-     ```swift
-     bot.on(.threadUpdate) { data in
-     let thread = data as! ThreadChannel
-     }
-     ```
      */
     case threadUpdate = "THREAD_UPDATE"
 
     /**
      Fired when someone starts typing a message
-
-     ### Usage ###
-     ```swift
-     bot.on(.typingStart) { data in
-     let (channel, userID, timestamp) = data as! (TextChannel, UserID, Date)
-     }
-     ```
      */
     case typingStart = "TYPING_START"
 
     /**
      Fired when a user updates their info
-
-     ### Usage ###
-     ```swift
-     bot.on(.userUpdate) { data in
-     let user = data as! User
-     }
-     ```
      */
     case userUpdate = "USER_UPDATE"
 
     /**
      Fired when someone joins a voice channel
-
-     ### Usage ###
-     ```swift
-     bot.on(.voiceChannelJoin) { data in
-     let (userID, voiceState) = data as! (UserID, VoiceState)
-     }
-     ```
      */
     case voiceChannelJoin
 
     /**
      Fired when someone leaves a voice channel
-
-     ### Usage ###
-     ```swift
-     bot.on(.voiceChannelLeave) { data in
-     let userID = data as! UserID
-     }
-     ```
      */
     case voiceChannelLeave
 
     /**
      Fired when someone joins/leaves/moves a voice channel
-
-     ### Usage ###
-     ```swift
-     bot.on(.voiceStateUpdate) { data in
-     let userID = data as! UserID
-     }
-     ```
      */
     case voiceStateUpdate = "VOICE_STATE_UPDATE"
 
     /// :nodoc:
     case voiceServerUpdate = "VOICE_SERVER_UPDATE"
 
-    /// Generic Interaction event
-    /// This should never be handled by the user. Its soul purpose is for the library to distinguish the different types of interactions
-    /// As they all send this event.
+    /**
+     Generic Interaction event
+     This should never be handled by the user. Its soul purpose is for the library to distinguish the different types of interactions
+     As they all send this event.
+    */
     case interaction = "INTERACTION_CREATE"
-
+    
     /**
      Fired when a button is clicked
-
-     ### Usage ###
-     ```swift
-     bot.on(.buttonEvent) { data in
-     let event = data as! ButtonEvent
-     }
-     ```
      */
     case buttonEvent = "BUTTON_INTERACTION"
 
     /**
      Fired when a Select Menu is selected
-
-     ### Usage ###
-     ```swift
-     bot.on(.selectMenuEvent) { data in
-     let event = data as! SelectMenuEvent
-     }
-     ```
      */
     case selectMenuEvent = "SELECT_BOX_INTERACTION"
 
     /**
      Fired when a slash command is used
-
-     ### Usage ###
-     ```swift
-     bot.on(.slashCommandEvent) { data in
-     let event = data as! SlashCommandEvent
-     }
-     ```
      */
     case slashCommandEvent = "SLASH_COMMAND_INTERACTION"
 
     /**
      Fired when a user command is used
-
-     ### Usage ###
-     ```swift
-     bot.on(.userCommandEvent) { data in
-     let event = data as! UserCommandEvent
-     }
-     ```
      */
     case userCommandEvent = "USER_COMMAND_INTERACTION"
 
     /**
      Fired when a message command is used
-
-     ### Usage ###
-     ```swift
-     bot.on(.messageCommandEvent) { data in
-     let event = data as! MessageCommandEvent
-     }
-     ```
      */
     case messageCommandEvent = "MESSAGE_COMMAND_INTERACTION"
     
+    /**
+     Fired when a text input is used
+     */
     case textInputEvent = "TEXT_INPUT_INTERACTION"
 }
 
@@ -738,7 +419,92 @@ enum ResponseError: Error {
     case unknownResponse
 }
 
-enum VoiceEngineError: Error {
-    case creationFail
-    case encodeFail
+/// Permission enum to prevent wrong permission checks
+public enum Permission: Int {
+
+    /// Allows creation of instant invites
+    case createInstantInvite = 0x1
+
+    /// Allows kicking members
+    case kickMembers = 0x2
+
+    /// Allows banning members
+    case banMembers = 0x4
+
+    /// Allows all permissions and bypasses channel permission overwrites
+    case administrator = 0x8
+
+    /// Allows management and editing of channels
+    case manageChannels = 0x10
+
+    /// Allows management and editing of the guild
+    case manageGuild = 0x20
+
+    /// Allows for the addition of reactions to messages
+    case addReactions = 0x40
+
+    /// Allows for the user to view a server's audit log
+    case viewAuditLog = 0x80
+
+    /// Allows viewing of a channel. The channel will not appear for users without this permission
+    case viewChannel = 0x400
+
+    /// Allows for sending messages in a channel.
+    case sendMessages = 0x800
+
+    /// Allows for sending of /tts messages
+    case sendTTSMessages = 0x1000
+
+    /// Allows for deletion of other users messages
+    case manageMessages = 0x2000
+
+    /// Links sent by this user will be auto-embedded
+    case embedLinks = 0x4000
+
+    /// Allows for uploading images and files
+    case attachFiles = 0x8000
+
+    /// Allows for reading of message history
+    case readMessageHistory = 0x10000
+
+    /// Allows for using the @everyone tag to notify all users in a channel, and the @here tag to notify all online users in a channel
+    case mentionEveryone = 0x20000
+
+    /// Allows the usage of custom emojis from other servers
+    case useExternalEmojis = 0x40000
+
+    /// Allows for joining of a voice channel
+    case connect = 0x100000
+
+    /// Allows for speaking in a voice channel
+    case speak = 0x200000
+
+    /// Allows for muting members in a voice channel
+    case muteMembers = 0x400000
+
+    /// Allows for deafening of members in a voice channel
+    case deafenMembers = 0x800000
+
+    /// llows for moving of members between voice channels
+    case moveMembers = 0x1000000
+
+    /// Allows for using voice-activity-detection in a voice channel
+    case useVad = 0x2000000
+
+    /// Allows for modification of own nickname
+    case changeNickname = 0x4000000
+
+    /// Allows for modification of other users nicknames
+    case manageNicknames = 0x8000000
+
+    /// Allows management and editing of roles
+    case manageRoles = 0x10000000
+
+    /// Allows management and editing of webhooks
+    case manageWebhooks = 0x20000000
+
+    /// Allows management and editing of emojis
+    case manageEmojis = 0x40000000
+
 }
+

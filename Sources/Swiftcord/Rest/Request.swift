@@ -258,18 +258,18 @@ extension Swiftcord {
         let task = self.session.dataTask(with: request) {
           [unowned self, unowned sema] data, response, error in
 
+            if error != nil {
+              #if !os(Linux)
+              completion(nil, ResponseError.nonSuccessfulRequest(RequestError(error! as NSError)))
+              #else
+              completion(nil, ResponseError.nonSuccessfulRequest(RequestError(error as! NSError)))
+              #endif
+              sema.signal()
+              return
+            }
+            
           let response = response as! HTTPURLResponse
           let headers = response.allHeaderFields
-
-          if error != nil {
-            #if !os(Linux)
-            completion(nil, ResponseError.nonSuccessfulRequest(RequestError(error! as NSError)))
-            #else
-            completion(nil, ResponseError.nonSuccessfulRequest(RequestError(error as! NSError)))
-            #endif
-            sema.signal()
-            return
-          }
 
             if response.statusCode == 401 {
                 self.error("Bot token invalid.")

@@ -122,7 +122,8 @@ class Shard: Gateway {
         self.isReconnecting = true
 
         self.swiftcord.emit(.disconnect, with: self.id)
-
+        self.swiftcord.warn("status of the bot to disconnected")
+        
         guard let closeCode = CloseOP(rawValue: code) else {
             self.swiftcord.log("Connection closed with unrecognized response \(code).")
 
@@ -257,6 +258,7 @@ class Shard: Gateway {
     func reconnect() async {
         if self.isConnected {
             _ = try? await self.session?.close()
+            self.swiftcord.warn("Connection successfully closed")
         }
 
         self.isConnected = false

@@ -60,7 +60,7 @@ open class Swiftcord: Eventable {
     /// Event listeners
     public var listeners = [Event: [(Any) -> Void]]()
 
-    let logger = Logger(label: "io.github.SketchMaster2001.Swiftcord")
+    var logger = Logger(label: "io.github.SketchMaster2001.Swiftcord")
 
     /// Optional options to apply to bot
     var options: SwiftcordOptions
@@ -119,6 +119,7 @@ open class Swiftcord: Eventable {
     public init(token: String, options: SwiftcordOptions = SwiftcordOptions()) {
         self.options = options
         self.token = token
+        self.logger.logLevel = .info
     }
 
     // MARK: Functions

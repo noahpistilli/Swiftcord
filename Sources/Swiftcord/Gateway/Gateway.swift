@@ -104,8 +104,12 @@ extension Gateway {
         let errorCode = try! await promise.futureResult.get()
         self.swiftcord.warn("Got errorCode successfully")
         
-        loopgroup.shutdownGracefully()
-        self.swiftcord.warn("loopgroup shutdown successfully")
+        do {
+            try await loopgroup.shutdownGracefully()
+            self.swiftcord.warn("loopgroup shutdown successfully")
+        } catch {
+            self.swiftcord.warn("loopgroup not shutdown")
+        }
         
         switch errorCode {
         case .unknown(let int):

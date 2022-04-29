@@ -258,6 +258,7 @@ class Shard: Gateway {
 
     /// Used to reconnect to gateway
     func reconnect() async {
+        self.swiftcord.warn("Status of isConnected: \(self.isConnected)")
         if self.isConnected {
             _ = try? await self.session?.close()
             self.swiftcord.warn("Connection successfully closed")

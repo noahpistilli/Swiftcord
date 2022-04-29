@@ -114,13 +114,20 @@ extension Gateway {
         switch errorCode {
         case .unknown(let int):
             // Unknown will the codes sent by Discord
+            self.swiftcord.warn("Discord error code: \(errorCode). Trying to reconnect")
             await self.handleDisconnect(for: Int(int))
-
+            break
+        case .goingAway:
+            self.swiftcord.warn("Websocket error code: \(errorCode). Trying to reconnect")
+            await self.handleDisconnect(for: 1001)
+            break
         case .unexpectedServerError:
             // Usually means the client lost their internet connection
             await self.handleDisconnect(for: 1011)
+            break
         default:
             self.swiftcord.error("Unknown Error Code: \(errorCode). Please restart the app.")
+            break;
         }
     }
 }

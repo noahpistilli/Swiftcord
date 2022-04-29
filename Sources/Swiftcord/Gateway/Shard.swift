@@ -166,7 +166,9 @@ class Shard: Gateway {
             self.swiftcord.warn("Unexpected server error, check your internet connection. Reconnecting in 10 seconds")
             try! await Task.sleep(seconds: 10)
             await self.reconnect()
-
+        case .goingAway:
+            self.swiftcord.warn("Going away: The server has moved or the browser is going away")
+            await self.reconnect()
         default:
             await self.reconnect()
         }

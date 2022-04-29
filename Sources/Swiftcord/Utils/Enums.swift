@@ -40,6 +40,7 @@ enum VoiceOP: Int {
 enum CloseOP: Int {
     case noInternet = 50,
          clean = 1000,
+         goingAway = 1001,
          unexpectedServerError = 1011,
          unknownError = 4000,
          unknownOP,

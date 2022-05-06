@@ -6,12 +6,13 @@
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
 
-#if !os(Linux)
-import Foundation
-
-#if !os(macOS)
-import MobileCoreServices
+#if os(Linux)
+import FoundationNetworking
 #endif
+
+import Foundation
+import MimeType
+
 
 /// Image Handler
 extension Swiftcord {
@@ -19,17 +20,15 @@ extension Swiftcord {
     /**
      Creates HTTP Body for file uploads
 
-     - parameter parameters: Optional data to send
-     - parameter fileKey: Key for the file
-     - parameter paths: Array of URLS to get file data from
+     - parameter payloadJson: JSON body
+     - parameter fileData: Array of `AttachmentBuilder` structs
      - parameter boundary: UUID Boundary
      */
     func createMultipartBody(
         with payloadJson: String?,
-        fileUrl: String,
+        fileData: [AttachmentBuilder],
         boundary: String
-    ) throws -> Data {
-
+    ) -> Data {
         var body = Data()
 
         body.append("--\(boundary)\r\n")
@@ -38,56 +37,70 @@ extension Swiftcord {
             body.append(
                 "Content-Disposition: form-data; name=\"payload_json\"\r\nContent-Type: application/json\r\n\r\n"
             )
-            body.append("\(payloadJson)\r\n")
+            body.append(payloadJson)
+            body.append("\r\n")
         }
 
-        let url = URL(string: fileUrl)!
-        let filename = url.lastPathComponent
-        let data = try Data(contentsOf: url)
-        let mimetype = mimeType(for: fileUrl)
-
-        body.append("--\(boundary)\r\n")
-        body.append(
-            "Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n"
-        )
-        body.append("Content-Type: \(mimetype)\r\n\r\n")
-        body.append(data)
-        body.append("\r\n")
+        for (i, attachment) in fileData.enumerated() {
+            let mimetype = MimeType(path: attachment.filename).value
+            
+            body.append("--\(boundary)\r\n")
+            body.append(
+                "Content-Disposition: form-data; name=\"files[\(i)]\"; filename=\"\(attachment.filename)\"\r\n"
+            )
+            body.append("Content-Type: data:\(mimetype)\r\n\r\n")
+            body.append(attachment.data)
+            body.append("\r\n")
+        }
 
         body.append("--\(boundary)--\r\n")
         return body
+    }
+    
+    /**
+     Creates HTTP Body for file uploads
 
+     - parameter payloadJson: JSON body
+     - parameter fileData: Array of `AttachmentBuilder` structs
+     - parameter boundary: UUID Boundary
+     */
+    func createMultipartBody(
+        with payloadJson: Data?,
+        fileData: [AttachmentBuilder],
+        boundary: String
+    )  -> Data {
+        var body = Data()
+
+        body.append("--\(boundary)\r\n")
+
+        if let payloadJson = payloadJson {
+            body.append(
+                "Content-Disposition: form-data; name=\"payload_json\"\r\nContent-Type: application/json\r\n\r\n"
+            )
+            body.append(payloadJson)
+            body.append("\r\n")
+        }
+
+        for (i, attachment) in fileData.enumerated() {
+            let mimetype = MimeType(path: attachment.filename).value
+            
+            body.append("--\(boundary)\r\n")
+            body.append(
+                "Content-Disposition: form-data; name=\"files[\(i)]\"; filename=\"\(attachment.filename)\"\r\n"
+            )
+            body.append("Content-Type: data:\(mimetype)\r\n\r\n")
+            body.append(attachment.data)
+            body.append("\r\n")
+        }
+
+        body.append("--\(boundary)--\r\n")
+        return body
     }
 
 }
 
 /// Creates a unique boundary for form data
 func createBoundary() -> String {
-    return "Boundary-\(NSUUID().uuidString)"
+    return "Boundary-\(UUID().uuidString)"
 }
 
-/**
- Gets mimeType for URL
-
- - parameter path: URL to get mimeType for
- */
-func mimeType(for path: String) -> String {
-
-    let url = NSURL(string: path)!
-    let pathExtension = url.pathExtension
-
-    if let uti = UTTypeCreatePreferredIdentifierForTag(
-        kUTTagClassFilenameExtension,
-        pathExtension! as NSString, nil
-    )?.takeRetainedValue() {
-        if let mimetype = UTTypeCopyPreferredTagWithClass(
-            uti,
-            kUTTagClassMIMEType
-        )?.takeRetainedValue() {
-            return mimetype as String
-        }
-    }
-
-    return "application/octet-stream"
-}
-#endif

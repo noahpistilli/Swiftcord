@@ -21,7 +21,7 @@ public extension InteractionEvent {
     }
 
     /// Shows the `Bot is thinking...` text
-    mutating func deferReply(_ completion: ((RequestError?) -> Void)? = nil) async throws {
+    mutating func deferReply() async throws {
         self.isDefered = true
 
         let body = InteractionResponse(type: .defer, data: InteractionBody<Button>(flags: self.ephemeral))
@@ -99,6 +99,33 @@ public extension InteractionEvent {
             let jsonData = try! self.swiftcord.encoder.encode(body)
 
             _ = try await self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData)
+        }
+    }
+    
+    /**
+     Replies to a slash command interaction
+
+     - parameter message: Message to send to the channel
+     - parameter attachments: Attachment(s) to send to the channel
+     */
+    func reply(
+        message: String,
+        attachments: AttachmentBuilder...
+    ) async throws {
+        // Check if the bot defered the message. Replying to a defered message has an entirely different endpoint
+        if !isDefered {
+            // A component will never be passed in this response func, so we place a random Encodable struct.
+            let body = InteractionResponse(type: .sendMessage, data: InteractionBody<Button>(content: message, flags: self.ephemeral, attachments: attachments))
+
+            let jsonData = try! self.swiftcord.encoder.encode(body)
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToInteraction(self.interactionId, self.token), body: jsonData, files: attachments)
+        } else {
+            let body = InteractionBody<Button>(content: message, attachments: attachments)
+
+            let jsonData = try! self.swiftcord.encoder.encode(body)
+
+            _ = try await self.swiftcord.requestWithBodyAsData(.replyToDeferedInteraction(self.swiftcord.user!.id, self.token), body: jsonData, files: attachments)
         }
     }
 

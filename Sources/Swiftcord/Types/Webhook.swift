@@ -86,11 +86,11 @@ public struct Webhook {
 
      - parameter content: String or dictionary containing message content
      */
-    public func execute(
+    /*public func execute(
         with content: Any
     ) async throws {
         try await self.swiftcord?.executeWebhook(self.id, token: self.token, with: content)
-    }
+    }*/
 
     /**
      Executs a slack style webhook

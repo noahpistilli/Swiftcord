@@ -648,7 +648,7 @@ open class Swiftcord: Eventable {
         _ = try await self.request(.executeSlackWebhook(webhookId, webhookToken), body: content)
     }
 
-    /**
+    /*/**
      Executes a webhook
 
      #### Content Params ####
@@ -682,7 +682,7 @@ open class Swiftcord: Eventable {
         }
 
         _ = try await self.request(.executeWebhook(webhookId, webhookToken), body: message, file: file)
-    }
+    } */
 
     /**
      Get's a guild's audit logs
@@ -1651,37 +1651,6 @@ open class Swiftcord: Eventable {
         to channelId: Snowflake
     ) async throws -> Message {
         let data = try await self.request(.createMessage(channelId), body: ["content": content])
-        return Message(self, data as! [String: Any])
-    }
-
-    /**
-     Sends a message to channel
-
-     #### Content Dictionary Params ####
-
-     - **content**: Message to send
-     - **username**: The username the webhook will send with the message
-     - **avatar_url**: The url of the user the webhook will send
-     - **tts**: Whether or not this message is tts
-     - **file**: The url of the image to send
-     - **embed**: The embed object to send. Refer to [Embed structure](https://discord.com/developers/docs/resources/channel#embed-object)
-
-     - parameter content: Dictionary containing info on message
-     - parameter channelId: Channel to send message to
-     */
-    public func send(
-        _ content: [String: Any],
-        to channelId: Snowflake
-    ) async throws -> Message {
-        var content = content
-        var file: String?
-
-        if let messageFile = content["file"] as? String {
-            file = messageFile
-            content.removeValue(forKey: "file")
-        }
-
-        let data = try await self.request(.createMessage(channelId), body: !content.isEmpty ? content : nil, file: file)
         return Message(self, data as! [String: Any])
     }
 

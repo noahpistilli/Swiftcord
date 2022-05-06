@@ -238,21 +238,6 @@ public struct Message {
     }
 
     /**
-     Replies to a channel
-
-     #### Message Options ####
-
-     Refer to Discord's documentation on the message body https://discord.com/developers/docs/resources/channel#create-message-json-params
-
-     - parameter message: Dictionary containing information on the message
-     */
-    public func reply(
-        with message: [String: Any]
-    ) async throws -> Message? {
-        return try await self.channel.send(message)
-    }
-
-    /**
      Replies to a channel with an Embed
 
      - parameter message: Embed to send to channel
@@ -362,6 +347,41 @@ extension Message {
         case contextMenuCommand
     }
 
+}
+
+/// `AttachmentBuilder` aids in creating a form body for uploading attachments
+public struct AttachmentBuilder: Encodable {
+        
+    var id: Int
+    
+    let filename: String
+    
+    private let description: String?
+    
+    let data: Data
+    
+    public init(
+        filename: String,
+        description: String? = nil,
+        data: Data
+    ) {
+        // Need to adjust later
+        self.id = 0
+        self.filename = filename
+        self.description = description
+        self.data = data
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case id, filename, description
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.id, forKey: .id)
+        try container.encode(self.filename, forKey: .filename)
+        try container.encode(self.description, forKey: .description)
+    }
 }
 
 /// Attachment Type

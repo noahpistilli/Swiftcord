@@ -46,6 +46,8 @@ protocol Gateway: AnyObject {
     func start() async
 
     func stop()
+    
+    var eventLoopGroup: EventLoopGroup { get }
 
 }
 
@@ -53,19 +55,18 @@ extension Gateway {
 
     /// Starts the gateway connection
     func start() async {
-        self.swiftcord.warn("Before creating loopgroup")
-        let loopgroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
-        let promise = loopgroup.next().makePromise(of: WebSocketErrorCode.self)
+        self.swiftcord.trace("Before creating loopgroup")
+        let promise = eventLoopGroup.next().makePromise(of: WebSocketErrorCode.self)
 
         self.acksMissed = 0
-        self.swiftcord.warn("Before force unwrapping URL")
+        self.swiftcord.trace("Before force unwrapping URL")
         let url = URL(string: self.gatewayUrl)!
         let path = self.gatewayUrl.components(separatedBy: "/?")[1]
 
-        self.swiftcord.warn("Create websocketclient")
-        let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(loopgroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
+        self.swiftcord.trace("Create websocketclient")
+        let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(eventLoopGroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
 
-        self.swiftcord.warn("Before connecting to the websocket")
+        self.swiftcord.trace("Before connecting to the websocket")
         try! await wsClient.connect(
             scheme: url.scheme!,
             host: url.host!,
@@ -77,53 +78,50 @@ extension Gateway {
             self.isConnected = true
 
             self.session?.onText { _, text in
-                self.swiftcord.error("Handle incoming payload: \(text)")
+                self.swiftcord.trace("Handle incoming payload: \(text)")
                 await self.handlePayload(Payload(with: text))
             }
 
             self.session?.onClose.whenComplete { result in
-                self.swiftcord.warn("onclose.whencomplete")
+                self.swiftcord.trace("onclose.whencomplete")
                 switch result {
                 case .success():
                     self.isConnected = false
-                    self.swiftcord.warn("Successfull onclose")
+                    self.swiftcord.trace("Successfull onclose")
                     // If it is nil we just do nothing
                     if let closeCode = self.session?.closeCode {
                         promise.succeed(closeCode)
-                        self.swiftcord.warn("promise succeeded with closeCode")
+                        self.swiftcord.trace("promise succeeded with closeCode")
                     }
                     break
                 case .failure(_):
-                    self.swiftcord.warn("session onclose failed")
+                    self.swiftcord.trace("session onclose failed")
                     break
                 }
             }
 
-            print("[Swiftcord] Connected to Discord!")
+            self.swiftcord.log("[Swiftcord] Connected to Discord!")
         }.get()
 
         let errorCode = try! await promise.futureResult.get()
-        self.swiftcord.warn("Got errorCode successfully")
-        
-        do {
-            try await loopgroup.shutdownGracefully()
-            self.swiftcord.warn("loopgroup shutdown successfully")
-        } catch {
-            self.swiftcord.warn("loopgroup not shutdown")
-        }
+        self.swiftcord.debug("Got errorCode successfully")
         
         switch errorCode {
         case .unknown(let int):
             // Unknown will the codes sent by Discord
-            self.swiftcord.warn("Discord error code: \(errorCode). Trying to reconnect")
+            self.swiftcord.debug("Discord error code: \(errorCode). Trying to reconnect")
             await self.handleDisconnect(for: Int(int))
         case .goingAway:
-            self.swiftcord.warn("Websocket error code: \(errorCode). Trying to reconnect")
+            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
             await self.handleDisconnect(for: 1001)
         case .unexpectedServerError:
             // Usually means the client lost their internet connection
-            self.swiftcord.warn("Websocket error code: \(errorCode). Trying to reconnect")
+            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
             await self.handleDisconnect(for: 1011)
+        case .normalClosure:
+            // We always want to keep the bot alive so reconnect
+            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
+            await self.handleDisconnect(for: 1000)
         default:
             self.swiftcord.error("Unknown Error Code: \(errorCode). Please restart the app.")
         }

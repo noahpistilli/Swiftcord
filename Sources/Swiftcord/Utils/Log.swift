@@ -36,5 +36,13 @@ extension Swiftcord {
     func error(_ message: Logger.Message) {
         self.logger.error(message)
     }
+    
+    func debug(_ message: Logger.Message) {
+        self.logger.debug(message)
+    }
+    
+    func trace(_ message: Logger.Message) {
+        self.logger.trace(message)
+    }
 
 }

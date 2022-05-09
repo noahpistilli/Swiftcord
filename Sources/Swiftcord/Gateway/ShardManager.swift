@@ -5,6 +5,8 @@
 //  Created by Alejandro Alonso
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
+
+import NIOCore
 class ShardManager {
 
     /// The gateway url to connect to
@@ -12,9 +14,15 @@ class ShardManager {
 
     /// Array of Shard class
     var shards = [Shard]()
+    
+    var eventLoopGroup: EventLoopGroup?
 
     /// Parent Swiftcord class
     weak var swiftcord: Swiftcord?
+    
+    init(eventLoopGroup: EventLoopGroup?) {
+        self.eventLoopGroup = eventLoopGroup
+    }
 
     /**
      Used to create a set amount of shards
@@ -25,7 +33,7 @@ class ShardManager {
         guard self.shards.isEmpty else { return }
 
         for id in 0 ..< amount {
-            let shard = Shard(self.swiftcord!, id, amount, self.gatewayUrl!)
+            let shard = Shard(self.swiftcord!, id, amount, self.gatewayUrl!, eventLoopGroup: self.eventLoopGroup)
             self.shards.append(shard)
             Task {
                 await shard.start()
@@ -69,7 +77,8 @@ class ShardManager {
             self.swiftcord!,
             id,
             self.swiftcord!.shardCount,
-            self.gatewayUrl!
+            self.gatewayUrl!,
+            eventLoopGroup: self.eventLoopGroup
         )
         self.shards.append(shard)
     }

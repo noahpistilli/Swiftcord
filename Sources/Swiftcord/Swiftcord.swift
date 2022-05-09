@@ -12,6 +12,7 @@ import FoundationNetworking
 import Foundation
 import Dispatch
 import Logging
+import NIOCore
 
 /// Main Class for Swiftcord
 open class Swiftcord: Eventable {
@@ -60,7 +61,7 @@ open class Swiftcord: Eventable {
     /// Event listeners
     public var listeners = [Event: [(Any) -> Void]]()
 
-    let logger = Logger(label: "io.github.SketchMaster2001.Swiftcord")
+    var logger = Logger(label: "io.github.SketchMaster2001.Swiftcord")
 
     /// Optional options to apply to bot
     var options: SwiftcordOptions
@@ -85,13 +86,15 @@ open class Swiftcord: Eventable {
     public internal(set) var shardCount = 1
 
     /// Shard Handler
-    lazy var shardManager = ShardManager()
+    lazy var shardManager = ShardManager(eventLoopGroup: self.eventLoopGroup)
 
     /// How many shards are ready
     var shardsReady = 0
 
     /// The bot token
     let token: String
+    
+    let eventLoopGroup: EventLoopGroup?
 
     /// Array of unavailable guilds the bot is currently connected to
     public internal(set) var unavailableGuilds = [Snowflake: UnavailableGuild]()
@@ -116,9 +119,15 @@ open class Swiftcord: Eventable {
      - parameter token: The bot token
      - parameter options: Options to give bot (sharding, offline members, etc)
      */
-    public init(token: String, options: SwiftcordOptions = SwiftcordOptions()) {
+    public init(token: String, options: SwiftcordOptions = SwiftcordOptions(), logger: Logger? = nil, eventLoopGroup: EventLoopGroup?) {
         self.options = options
         self.token = token
+        if let logger = logger {
+            self.logger = logger
+        } else {
+            self.logger.logLevel = .info
+        }
+        self.eventLoopGroup = eventLoopGroup
     }
 
     // MARK: Functions
@@ -192,22 +201,22 @@ open class Swiftcord: Eventable {
                     let arguments = CommandLine.arguments
 
                     guard arguments.count > 1 else {
-                        print("[Swiftcord] Insufficient argument count.")
+                        self.logger.error("[Swiftcord] Insufficient argument count.")
                         return
                     }
 
                     guard arguments.contains("--shard") else {
-                        print("[Swiftcord] Must specify shard with '--shard'")
+                        self.logger.error("[Swiftcord] Must specify shard with '--shard'")
                         return
                     }
 
                     guard arguments.firstIndex(of: "--shard")! != arguments.count - 1 else {
-                        print("[Swiftcord] '--shard' must not be the last argument. Correct syntax is '--shard {id here}'")
+                        self.logger.error("[Swiftcord] '--shard' must not be the last argument. Correct syntax is '--shard {id here}'")
                         return
                     }
 
                     guard let shardId = Int(arguments[arguments.firstIndex(of: "--shard")! + 1]) else {
-                        print("[Swiftcord] Shard ID could not be recognized.")
+                        self.logger.error("[Swiftcord] Shard ID could not be recognized.")
                         return
                     }
 

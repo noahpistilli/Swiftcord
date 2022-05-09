@@ -75,7 +75,7 @@ func mimeType(for path: String) -> String {
 
     let url = NSURL(string: path)!
     let pathExtension = url.pathExtension
-
+    
     if let uti = UTTypeCreatePreferredIdentifierForTag(
         kUTTagClassFilenameExtension,
         pathExtension! as NSString, nil

@@ -9,6 +9,8 @@ import Foundation
 import Dispatch
 
 import WebSocketKit
+import NIOPosix
+import NIOCore
 
 /// WS class
 class Shard: Gateway {
@@ -57,6 +59,9 @@ class Shard: Gateway {
 
     /// Number of missed heartbeat ACKs
     var acksMissed = 0
+    
+    let eventLoopGroup: EventLoopGroup
+    let eventLoopGroupProvided: Bool
 
     // MARK: Initializer
     /**
@@ -65,11 +70,19 @@ class Shard: Gateway {
      - parameter id: ID of the current shard
      - parameter shardCount: Total number of shards bot needs to be connected to
      */
-    init(_ swiftcord: Swiftcord, _ id: Int, _ shardCount: Int, _ gatewayUrl: String) {
+    init(_ swiftcord: Swiftcord, _ id: Int, _ shardCount: Int, _ gatewayUrl: String, eventLoopGroup: EventLoopGroup?) {
         self.swiftcord = swiftcord
         self.id = id
         self.shardCount = shardCount
         self.gatewayUrl = gatewayUrl
+        
+        if let eventLoopGroup = eventLoopGroup {
+            self.eventLoopGroupProvided = true
+            self.eventLoopGroup = eventLoopGroup
+        } else {
+            self.eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
+            self.eventLoopGroupProvided = false
+        }
 
         self.heartbeatQueue = DispatchQueue(
             label: "io.github.SketchMaster2001.Swiftcord.shard.\(id).heartbeat",
@@ -87,6 +100,12 @@ class Shard: Gateway {
             limit: 5,
             interval: 60
         )
+    }
+    
+    deinit {
+        if !eventLoopGroupProvided {
+            try? eventLoopGroup.syncShutdownGracefully()
+        }
     }
 
     // MARK: Functions
@@ -122,7 +141,8 @@ class Shard: Gateway {
         self.isReconnecting = true
 
         self.swiftcord.emit(.disconnect, with: self.id)
-
+        self.swiftcord.debug("status of the bot to disconnected")
+        
         guard let closeCode = CloseOP(rawValue: code) else {
             self.swiftcord.log("Connection closed with unrecognized response \(code).")
 
@@ -142,7 +162,7 @@ class Shard: Gateway {
 
         case .noInternet:
             try! await Task.sleep(seconds: 10)
-            self.swiftcord.warn("Detected a loss of internet...")
+            self.swiftcord.debug("Detected a loss of internet...")
             await self.reconnect()
 
         case .shardingRequired:
@@ -162,10 +182,12 @@ class Shard: Gateway {
             break
 
         case .unexpectedServerError:
-            self.swiftcord.warn("Unexpected server error, check your internet connection. Reconnecting in 10 seconds")
+            self.swiftcord.debug("Unexpected server error, check your internet connection. Reconnecting in 10 seconds")
             try! await Task.sleep(seconds: 10)
             await self.reconnect()
-
+        case .goingAway:
+            self.swiftcord.debug("Going away: The server has moved or the browser is going away")
+            await self.reconnect()
         default:
             await self.reconnect()
         }
@@ -255,8 +277,10 @@ class Shard: Gateway {
 
     /// Used to reconnect to gateway
     func reconnect() async {
+        self.swiftcord.warn("Status of isConnected: \(self.isConnected)")
         if self.isConnected {
             _ = try? await self.session?.close()
+            self.swiftcord.warn("Connection successfully closed")
         }
 
         self.isConnected = false

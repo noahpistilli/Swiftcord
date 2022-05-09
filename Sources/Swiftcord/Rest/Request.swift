@@ -31,7 +31,7 @@ extension Swiftcord {
         _ endpoint: Endpoint,
         params: [String: Any]? = nil,
         body: [String: Any]? = nil,
-        file: String? = nil,
+        files: [AttachmentBuilder]? = nil,
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil
@@ -94,7 +94,7 @@ extension Swiftcord {
         }
 
         #if os(macOS)
-        if let file = file {
+        if let file = files {
             let boundary = createBoundary()
 
             let payloadJson: String?
@@ -105,10 +105,7 @@ extension Swiftcord {
                 payloadJson = body?.encode()
             }
 
-            request.httpBody = try? self.createMultipartBody(
-                with: payloadJson,
-                fileUrl: file, boundary: boundary
-            )
+            request.httpBody = self.createMultipartBody(with: payloadJson, fileData: file, boundary: boundary)
             request.addValue(
                 "multipart/form-data; boundary=\(boundary)",
                 forHTTPHeaderField: "Content-Type"
@@ -124,7 +121,7 @@ extension Swiftcord {
                 route: route,
                 params: params,
                 body: body,
-                file: file,
+                files: files,
                 authorization: authorization,
                 rateLimited: rateLimited,
                 reason: reason
@@ -158,7 +155,7 @@ extension Swiftcord {
         _ endpoint: Endpoint,
         params: [String: Any]? = nil,
         body: Data? = nil,
-        file: String? = nil,
+        files: [AttachmentBuilder]? = nil,
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil
@@ -215,6 +212,18 @@ extension Swiftcord {
 
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         }
+        
+        if let file = files {
+            let boundary = createBoundary()
+
+            request.httpBody = self.createMultipartBody(with: body, fileData: file, boundary: boundary)
+            
+            request.setValue(
+                "multipart/form-data; boundary=\(boundary)",
+                forHTTPHeaderField: "Content-Type"
+            )
+        }
+
 
         var returnData: Any?
         returnData = try await withCheckedThrowingContinuation({ continuation in
@@ -224,7 +233,7 @@ extension Swiftcord {
                 route: route,
                 params: params,
                 body: body,
-                file: file,
+                files: files,
                 authorization: authorization,
                 rateLimited: rateLimited,
                 reason: reason
@@ -247,7 +256,7 @@ extension Swiftcord {
         route: String,
         params: [String: Any]? = nil,
         body: [String: Any]? = nil,
-        file: String? = nil,
+        files: [AttachmentBuilder]? = nil,
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil,
@@ -324,7 +333,7 @@ extension Swiftcord {
                       try! await self.request(
                         endpoint,
                         body: body,
-                        file: file,
+                        files: files,
                         authorization: authorization,
                         rateLimited: rateLimited
                       )
@@ -340,7 +349,7 @@ extension Swiftcord {
                       try! await self.request(
                         endpoint,
                         body: body,
-                        file: file,
+                        files: files,
                         authorization: authorization,
                         rateLimited: rateLimited
                       )
@@ -393,7 +402,7 @@ extension Swiftcord {
         route: String,
         params: [String: Any]? = nil,
         body: Data? = nil,
-        file: String? = nil,
+        files: [AttachmentBuilder]? = nil,
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil,
@@ -464,7 +473,7 @@ extension Swiftcord {
                       try! await self.requestWithBodyAsData(
                         endpoint,
                         body: body,
-                        file: file,
+                        files: files,
                         authorization: authorization,
                         rateLimited: rateLimited
                       )
@@ -480,7 +489,7 @@ extension Swiftcord {
                       try! await self.requestWithBodyAsData(
                         endpoint,
                         body: body,
-                        file: file,
+                        files: files,
                         authorization: authorization,
                         rateLimited: rateLimited
                       )

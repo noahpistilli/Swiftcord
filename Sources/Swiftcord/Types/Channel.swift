@@ -184,18 +184,6 @@ public extension TextChannel {
     /**
      Sends a message to channel
 
-     - parameter message: Dictionary containing info on message to send
-     */
-    func send(
-        _ message: [String: Any],
-        then completion: ((Message?, RequestError?) -> Void)? = nil
-    ) async throws -> Message? {
-        return try await self.swiftcord?.send(message, to: self.id)
-    }
-
-    /**
-     Sends a message to channel
-
      - parameter message: Embed to send as message
      */
     func send(

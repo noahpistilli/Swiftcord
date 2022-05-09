@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "MimeType",
+        "repositoryURL": "https://github.com/SketchMaster2001/MimeType.git",
+        "state": {
+          "branch": "master",
+          "revision": "102b3769ea8dc7ed0bd50b932bdd21cd4e89215c",
+          "version": null
+        }
+      },
+      {
         "package": "swift-log",
         "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {

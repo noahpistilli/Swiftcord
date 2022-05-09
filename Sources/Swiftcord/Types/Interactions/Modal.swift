@@ -8,6 +8,11 @@
 public struct ModalBuilder {
     public let modal: Modal
     public let textInput: TextInput
+    
+    public init(modal: Modal, textInput: TextInput) {
+        self.modal = modal
+        self.textInput = textInput
+    }
 }
 
 public struct Modal: Encodable {

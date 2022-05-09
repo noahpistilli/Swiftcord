@@ -18,7 +18,7 @@ extension Gateway {
 
         guard self.acksMissed < 3 else {
             Task {
-                print("[Swiftcord] Did not receive ACK from server, reconnecting...")
+                self.swiftcord.debug("[Swiftcord] Did not receive ACK from server, reconnecting...")
                 await self.reconnect()
             }
             return

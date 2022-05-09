@@ -103,4 +103,3 @@ extension Swiftcord {
 func createBoundary() -> String {
     return "Boundary-\(UUID().uuidString)"
 }
-

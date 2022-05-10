@@ -92,10 +92,12 @@ extension Gateway {
                     if let closeCode = self.session?.closeCode {
                         promise.succeed(closeCode)
                         self.swiftcord.trace("promise succeeded with closeCode")
+                    } else {
+                        self.swiftcord.trace("No closeCode provided by session closure")
                     }
                     break
-                case .failure(_):
-                    self.swiftcord.trace("session onclose failed")
+                case .failure(let error):
+                    self.swiftcord.error("Session failed to close: \(error)")
                     break
                 }
             }
@@ -103,27 +105,31 @@ extension Gateway {
             self.swiftcord.log("[Swiftcord] Connected to Discord!")
         }.get()
 
-        let errorCode = try! await promise.futureResult.get()
-        self.swiftcord.debug("Got errorCode successfully")
-        
-        switch errorCode {
-        case .unknown(let int):
-            // Unknown will the codes sent by Discord
-            self.swiftcord.debug("Discord error code: \(errorCode). Trying to reconnect")
-            await self.handleDisconnect(for: Int(int))
-        case .goingAway:
-            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
-            await self.handleDisconnect(for: 1001)
-        case .unexpectedServerError:
-            // Usually means the client lost their internet connection
-            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
-            await self.handleDisconnect(for: 1011)
-        case .normalClosure:
-            // We always want to keep the bot alive so reconnect
-            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
-            await self.handleDisconnect(for: 1000)
-        default:
-            self.swiftcord.error("Unknown Error Code: \(errorCode). Please restart the app.")
+        do {
+            let errorCode = try await promise.futureResult.get()
+            self.swiftcord.debug("Got errorCode successfully")
+            
+            switch errorCode {
+            case .unknown(let int):
+                // Unknown will the codes sent by Discord
+                self.swiftcord.debug("Discord error code: \(errorCode). Trying to reconnect")
+                await self.handleDisconnect(for: Int(int))
+            case .goingAway:
+                self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
+                await self.handleDisconnect(for: 1001)
+            case .unexpectedServerError:
+                // Usually means the client lost their internet connection
+                self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
+                await self.handleDisconnect(for: 1011)
+            case .normalClosure:
+                // We always want to keep the bot alive so reconnect
+                self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
+                await self.handleDisconnect(for: 1000)
+            default:
+                self.swiftcord.error("Unknown Error Code: \(errorCode). Please restart the app.")
+            }
+        } catch let error {
+            self.swiftcord.trace("Failed to retrieve errorcode: \(error)")
         }
     }
 }

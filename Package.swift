@@ -18,9 +18,9 @@ let package = Package(
       name: "Swiftcord",
       dependencies: [.product(name: "WebSocketKit", package: "websocket-kit"), .product(name: "Logging", package: "swift-log")]
     ),
-    .testTarget(
-        name: "SwiftcordTests",
-        dependencies: [.target(name: "Swiftcord")]
-    )
+//    .testTarget(
+//        name: "SwiftcordTests",
+//        dependencies: [.target(name: "Swiftcord")]
+//    )
   ]
 )

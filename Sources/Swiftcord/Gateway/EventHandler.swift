@@ -458,6 +458,29 @@ extension Shard {
                 }
 
             case .voiceServerUpdate:
+                var sessionId = ""
+                
+                for shard in self.swiftcord.shardManager.shards where shard.id == self.swiftcord.getShard(for: Snowflake(data["guild_id"])!) {
+                    sessionId = shard.sessionId!
+                }
+                
+                do {
+                    let voiceClient = try VoiceClient(
+                        self.swiftcord,
+                        gatewayUrl: "wss://\(data["endpoint"] as! String)",
+                        token: data["token"] as! String,
+                        guildId: Snowflake(data["guild_id"])!,
+                        sessionId: sessionId,
+                        eventLoopGroup: self.eventLoopGroup
+                    )
+                    
+                    // Start the voice client.
+                    await voiceClient.start()
+                } catch {
+                    self.swiftcord.error("No suitable networking interface found. Swiftcord cannot start the voice client without one.")
+                }
+            
+                // We cannot dispatch the VoiceClient to the user quite yet.
                 return
             case .audioData:
                 return

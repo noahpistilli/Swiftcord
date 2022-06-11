@@ -129,7 +129,6 @@ class Shard: Gateway {
         }
 
         await self.handleEvent(payload.d as! [String: Any], payload.t!)
-        self.swiftcord.emit(.payload, with: payload.encode())
     }
 
     /**
@@ -140,7 +139,6 @@ class Shard: Gateway {
     func handleDisconnect(for code: Int) async {
         self.isReconnecting = true
 
-        self.swiftcord.emit(.disconnect, with: self.id)
         self.swiftcord.debug("status of the bot to disconnected")
         
         guard let closeCode = CloseOP(rawValue: code) else {

@@ -46,14 +46,15 @@ bot.editStatus(status: .online, activity: activity)
 // Set intents which are required
 bot.setIntents(intents: .guildMessages)
 
-bot.on(.messageCreate) { data in
-  let msg = data as! Message
-
-  if msg.content == "!ping" {
-    msg.reply(with: "Pong!")
+class MyBot: ListenerAdapter {
+  override func onMessageCreate(event: Message) async {
+    if msg.content == "!ping" {
+      try! await msg.reply(with: "Pong!")
+    }
   }
 }
 
+bot.addListeners(MyBot())
 bot.connect()
 ```
 For more examples, look in the examples folder or in the Wiki.

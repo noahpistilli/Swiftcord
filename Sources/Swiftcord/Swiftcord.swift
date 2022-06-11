@@ -15,7 +15,7 @@ import Logging
 import NIOCore
 
 /// Main Class for Swiftcord
-open class Swiftcord: Eventable {
+open class Swiftcord {
     // MARK: Properties
 
     /// Collection of DMChannels mapped by user id

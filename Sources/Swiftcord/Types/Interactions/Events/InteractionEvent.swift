@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol InteractionEvent {
+public protocol InteractionEvent: AnyObject {
     var interactionId: Snowflake { get }
     var swiftcord: Swiftcord { get }
     var token: String { get }
@@ -21,7 +21,7 @@ public extension InteractionEvent {
     }
 
     /// Shows the `Bot is thinking...` text
-    mutating func deferReply() async throws {
+    func deferReply() async throws {
         self.isDefered = true
 
         let body = InteractionResponse(type: .defer, data: InteractionBody<Button>(flags: self.ephemeral))
@@ -220,7 +220,7 @@ public extension InteractionEvent {
     }
 
     /// Sets a flag to tell Discord to make the response hidden
-    mutating func setEphemeral(_ isEphermeral: Bool) {
+    func setEphemeral(_ isEphermeral: Bool) {
         if isEphermeral {
             self.ephemeral = 64
         } else {

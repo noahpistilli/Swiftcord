@@ -34,9 +34,9 @@ public struct ApplicationCommand: Decodable {
 	public let application_id: Snowflake
 	public let guild_id: Snowflake?
 	public let name: String
-	public let name_localizations: [String:String]?
+	public let name_localizations: [String: String]?
 	public let description: String
-	public let description_localizations: [String:String]?
+	public let description_localizations: [String: String]?
 	public let options: [ApplicationCommandOptions]?
 	public let default_member_permissions: String?
 	public let dm_permission: Bool?
@@ -87,7 +87,7 @@ public class ApplicationCommandOptions: Codable {
 public struct ApplicationChoices: Codable {
     public let name: String
     public let value: String
-    
+
     public init(name: String, value: String) {
         self.name = name
         self.value = value

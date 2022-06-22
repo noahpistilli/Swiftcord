@@ -55,7 +55,7 @@ open class Swiftcord {
     /// Global JSONEncoder
     var encoder = JSONEncoder()
     
-    var decoder = JSONDecoder();
+    var decoder = JSONDecoder()
 
     /// Event listeners with the `ListenerAdapter` class
     public var listenerAdaptors = [ListenerAdapter]()
@@ -1837,16 +1837,13 @@ open class Swiftcord {
     ) async throws {
         _ = try await self.request(.deleteGlobalSlashCommand(self.user!.id, commandId))
     }
-    
-    public func getApplicationCommands() async throws -> [ApplicationCommand]
-    {
+
+    public func getApplicationCommands() async throws -> [ApplicationCommand] {
 		if let appCommandResponse = try await self.request(.getGlobalSlashCommands(self.user!.id), returnJSONData: true) as? Data {
-			return try self.decoder.decode([ApplicationCommand].self, from: appCommandResponse);
+			return try self.decoder.decode([ApplicationCommand].self, from: appCommandResponse)
 		} else {
-			self.log("Request response was not Data when trying to get application commands.");
-			return [];
+			self.log("Request response was not Data when trying to get application commands.")
+			return []
 		}
     }
-    
-    
 }

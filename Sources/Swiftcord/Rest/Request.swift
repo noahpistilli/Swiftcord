@@ -306,10 +306,10 @@ extension Swiftcord {
             return
           }
 
-			let returnedData: Any?;
+			let returnedData: Any?
           
-			if (returnJSONData) {
-				returnedData = data;
+			if returnJSONData {
+				returnedData = data
 			} else {
 				returnedData = try? JSONSerialization.jsonObject(
 					with: data!,
@@ -454,10 +454,10 @@ extension Swiftcord {
             return
           }
 
-          let returnedData: Any?;
+          let returnedData: Any?
           
-			if (returnJSONData) {
-				returnedData = data;
+			if returnJSONData {
+				returnedData = data
 			} else {
 				returnedData = try? JSONSerialization.jsonObject(
 					with: data!,

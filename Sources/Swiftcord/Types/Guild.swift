@@ -820,14 +820,13 @@ public class Guild: Updatable, Imageable {
     ) async throws {
         _ = try await self.swiftcord?.request(.deleteGuildApplicationCommand(self.swiftcord!.user!.id, self.id, commandId))
     }
-    
-    public func getApplicationCommands() async throws -> [ApplicationCommand]
-    {
+
+    public func getApplicationCommands() async throws -> [ApplicationCommand] {
 		if let appCommandResponse = try await self.swiftcord!.request(.getGuildSlashCommands(self.swiftcord!.user!.id, self.id), returnJSONData: true) as? Data {
-			return try self.swiftcord!.decoder.decode([ApplicationCommand].self, from: appCommandResponse);
+			return try self.swiftcord!.decoder.decode([ApplicationCommand].self, from: appCommandResponse)
 		} else {
-			self.swiftcord!.log("Request response was not Data when trying to get application commands.");
-			return [];
+			self.swiftcord!.log("Request response was not Data when trying to get application commands.")
+			return []
 		}
     }
 }

@@ -146,6 +146,12 @@ extension Endpoint {
         case .getCurrentUserGuilds:
             return (.get, "/users/@me/guilds")
 
+        case let .getGlobalSlashCommands(applicationId):
+            return (.get, "/applications/\(applicationId)/commands")
+			
+        case let .getGuildSlashCommands(applicationId, guildId):
+            return (.get, "/applications/\(applicationId)/guilds/\(guildId)/commands")
+
         case let .getGuild(guild):
             return (.get, "/guilds/\(guild)")
 

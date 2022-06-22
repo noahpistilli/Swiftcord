@@ -25,6 +25,7 @@ extension Swiftcord {
      - parameter authorization: Whether or not the Authorization header is required by Discord
      - parameter method: Type of HTTP Method
      - parameter rateLimited: Whether or not the HTTP request needs to be rate limited
+     - parameter returnJSONData: If true, data returned is raw JSON data, rather than JSONSerialization of JSON string
      - parameter reason: Optional for when user wants to specify audit-log reason
      */
     func request(
@@ -34,6 +35,7 @@ extension Swiftcord {
         files: [AttachmentBuilder]? = nil,
         authorization: Bool = true,
         rateLimited: Bool = true,
+        returnJSONData: Bool = false,
         reason: String? = nil
     ) async throws -> Any? {
         let endpointInfo = endpoint.httpInfo
@@ -124,15 +126,14 @@ extension Swiftcord {
                 files: files,
                 authorization: authorization,
                 rateLimited: rateLimited,
-                reason: reason
+                reason: reason,
+                returnJSONData: returnJSONData
             ) { data, err in
                 if let err = err {
                     continuation.resume(throwing: err)
-                }
-
-                if data != nil {
-                    continuation.resume(returning: data)
-                }
+                } else {
+					continuation.resume(returning: data)
+				}
             }
         })
 
@@ -149,6 +150,7 @@ extension Swiftcord {
      - parameter authorization: Whether or not the Authorization header is required by Discord
      - parameter method: Type of HTTP Method
      - parameter rateLimited: Whether or not the HTTP request needs to be rate limited
+     - parameter returnJSONData: If true, data returned is raw JSON data, rather than JSONSerialization of JSON string
      - parameter reason: Optional for when user wants to specify audit-log reason
      */
     func requestWithBodyAsData(
@@ -158,6 +160,7 @@ extension Swiftcord {
         files: [AttachmentBuilder]? = nil,
         authorization: Bool = true,
         rateLimited: Bool = true,
+        returnJSONData: Bool = false,
         reason: String? = nil
     ) async throws -> Any? {
         let endpointInfo = endpoint.httpInfo
@@ -236,7 +239,8 @@ extension Swiftcord {
                 files: files,
                 authorization: authorization,
                 rateLimited: rateLimited,
-                reason: reason
+                reason: reason,
+                returnJSONData: returnJSONData                
             ) { data, err in
                 if let err = err {
                     continuation.resume(throwing: err)
@@ -260,6 +264,7 @@ extension Swiftcord {
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil,
+        returnJSONData: Bool = false,
         completion: @escaping (Any?, ResponseError?) -> Void
     ) {
         let sema = DispatchSemaphore(value: 0)
@@ -301,11 +306,16 @@ extension Swiftcord {
             return
           }
 
-          let returnedData = try? JSONSerialization.jsonObject(
-            with: data!,
-            options: .allowFragments
-          )
-
+			let returnedData: Any?
+          
+			if returnJSONData {
+				returnedData = data
+			} else {
+				returnedData = try? JSONSerialization.jsonObject(
+					with: data!,
+					options: .allowFragments
+				)
+			}
           if response.statusCode != 200 && response.statusCode != 201 {
 
             if response.statusCode == 429 {
@@ -335,7 +345,8 @@ extension Swiftcord {
                         body: body,
                         files: files,
                         authorization: authorization,
-                        rateLimited: rateLimited
+                        rateLimited: rateLimited,
+                        returnJSONData: returnJSONData
                       )
                   }
               }
@@ -351,7 +362,8 @@ extension Swiftcord {
                         body: body,
                         files: files,
                         authorization: authorization,
-                        rateLimited: rateLimited
+                        rateLimited: rateLimited,
+                        returnJSONData: returnJSONData
                       )
                   }
               }
@@ -406,6 +418,7 @@ extension Swiftcord {
         authorization: Bool = true,
         rateLimited: Bool = true,
         reason: String? = nil,
+        returnJSONData: Bool = false,
         completion: @escaping (Any?, ResponseError?) -> Void
     ) {
         let sema = DispatchSemaphore(value: 0)
@@ -441,10 +454,16 @@ extension Swiftcord {
             return
           }
 
-          let returnedData = try? JSONSerialization.jsonObject(
-            with: data!,
-            options: .allowFragments
-          )
+          let returnedData: Any?
+          
+			if returnJSONData {
+				returnedData = data
+			} else {
+				returnedData = try? JSONSerialization.jsonObject(
+					with: data!,
+					options: .allowFragments
+				)
+			}
 
           if response.statusCode != 200 && response.statusCode != 201 {
 
@@ -475,7 +494,8 @@ extension Swiftcord {
                         body: body,
                         files: files,
                         authorization: authorization,
-                        rateLimited: rateLimited
+                        rateLimited: rateLimited,
+                        returnJSONData: returnJSONData
                       )
                   }
               }
@@ -491,7 +511,8 @@ extension Swiftcord {
                         body: body,
                         files: files,
                         authorization: authorization,
-                        rateLimited: rateLimited
+                        rateLimited: rateLimited,
+                        returnJSONData: returnJSONData
                       )
                   }
               }

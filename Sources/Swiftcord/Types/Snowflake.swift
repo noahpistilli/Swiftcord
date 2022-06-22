@@ -35,6 +35,27 @@ public struct Snowflake: Codable {
     public var workerId: Int {
         return Int((rawValue & 0x3E0000) >> 17)
     }
+    
+	/// Need to implement out own decoder, since the Snowflake IDs come in as Strings from the API. Also check for UInt64 just to be complete.
+	/// Sets the rawValue to 0 in the event the string value can't be made into a UInt64.
+	/// - Parameter decoder: The dcoder to decode with.
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.singleValueContainer()
+
+		if let idString = try? container.decode(String.self) {
+			if let intVal = UInt64(idString) {
+				self.rawValue = intVal
+			} else {
+				self.rawValue = 0
+			}
+		} else {
+			if let idInt = try? container.decode(UInt64.self) {
+				self.rawValue = idInt
+			} else {
+				self.rawValue = 0
+			}
+		}
+	}
 
     /// Initialize from a UInt64
     public init(_ snowflake: UInt64) {

@@ -92,6 +92,10 @@ enum Endpoint {
 
     case getCurrentUserGuilds
 
+    case getGlobalSlashCommands(Snowflake)
+    
+    case getGuildSlashCommands(Snowflake, Snowflake)
+
     case getGuild(Snowflake)
 
     case getGuildAuditLogs(Snowflake)

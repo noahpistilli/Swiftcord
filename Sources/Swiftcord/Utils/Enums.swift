@@ -413,7 +413,7 @@ public enum Status: String {
     case invisible = "invisible"
 }
 
-enum ResponseError: Error {
+public enum ResponseError: Error {
     case invalidURL
     case nonSuccessfulRequest(RequestError)
     case other(RequestError)

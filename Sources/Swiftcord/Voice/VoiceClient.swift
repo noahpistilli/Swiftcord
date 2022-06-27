@@ -148,8 +148,6 @@ public class VoiceClient: VoiceGateway {
             "token": self.token,
         ]
         
-        print(self.sessionId)
-
         let identity = VoicePayload(
             op: .identify,
             data: data
@@ -247,7 +245,6 @@ public class VoiceClient: VoiceGateway {
         let data = Data(packet)
         
         try await self.sendToUDP(data: data)
-        print(self.sequence)
         self.checkedAdd(&self.timestamp, value: 960, limit: 4294967295)
     }
 }

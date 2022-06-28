@@ -33,6 +33,7 @@ enum VoiceOP: Int {
          resume,
          hello,
          resumed,
+         clientConnect = 12,
          clientDisconnect = 13
 }
 
@@ -56,6 +57,16 @@ enum CloseOP: Int {
          invalidAPIVersion,
          invalidIntents,
          disallowedIntents
+}
+
+enum SpeakingState: Int {
+    case none
+    
+    case voice
+    
+    case soundShare
+    
+    case priority = 4
 }
 
 /// Organize all the different http methods
@@ -414,10 +425,24 @@ public enum Status: String {
 }
 
 enum ResponseError: Error {
+    
+    /// An invalid URL was passed.
     case invalidURL
+    
+    /// A request returned a code <= 400.
     case nonSuccessfulRequest(RequestError)
+    
+    /// An error that does not fit in with our generic errors.
     case other(RequestError)
+    
+    /// A response we cannot handle was sent back
     case unknownResponse
+}
+
+enum VoiceError: Error {
+    
+    /// No suitable networking interface was found.
+    case noNetworkingInterfaceFound
 }
 
 /// Permission enum to prevent wrong permission checks

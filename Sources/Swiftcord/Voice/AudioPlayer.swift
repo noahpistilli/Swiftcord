@@ -9,7 +9,7 @@ import Foundation
 
 public class AudioPlayer {
     
-    private let client: VoiceClient
+    public let client: VoiceClient
     
     /// Current state of the audio stream
     private var isDone = false

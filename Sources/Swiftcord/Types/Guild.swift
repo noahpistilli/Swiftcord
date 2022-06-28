@@ -556,6 +556,26 @@ public class Guild: Updatable, Imageable {
     ) async throws {
         try await self.swiftcord?.kick(userId, from: self.id, for: reason)
     }
+    
+    /**
+     Joins a voice channel in this guild
+
+     - parameter channelId: ID of the channel you would like to join
+     */
+    func joinVoiceChannel(_ channelId: Snowflake) {
+        for shard in self.swiftcord!.shardManager.shards where shard.id == self.swiftcord!.getShard(for: self.id) {
+            shard.joinVoiceChannel(channelId, in: self.id)
+        }
+    }
+    
+    /**
+     Leaves a voice channel in this guild if we are in one
+     */
+    func leaveVoiceChannel() {
+        for shard in self.swiftcord!.shardManager.shards where shard.id == self.swiftcord!.getShard(for: self.id) {
+            shard.leaveVoiceChannel(in: self.id)
+        }
+    }
 
     /**
      Modifies current guild

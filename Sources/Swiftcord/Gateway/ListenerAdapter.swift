@@ -68,6 +68,7 @@ open class ListenerAdapter {
     // Voice Events
     open func onVoiceChannelJoin(userId: Snowflake, state: VoiceState) async {}
     open func onVoiceChannelLeave(userId: Snowflake) async {}
+    open func onVoiceServerUpdate(player: AudioPlayer) async {}
 
     // Generic Events
     open func onPresenceUpdate(member: Member?, presence: Presence) async {}

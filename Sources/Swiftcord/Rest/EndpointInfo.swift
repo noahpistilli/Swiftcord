@@ -18,6 +18,9 @@ extension Endpoint {
         case let .addPinnedChannelMessage(channel, message):
             return (.post, "/channels/\(channel)/pins/\(message)")
 
+		case let .addRoleToGuildMember(guild, member, role):
+			return (.put, "/guilds/\(guild)/members/\(member)/roles/\(role)")
+
         case let .beginGuildPrune(guild):
             return (.post, "/guilds/\(guild)/prune")
 
@@ -285,6 +288,9 @@ extension Endpoint {
 
         case let .removeGuildMember(guild, user):
             return (.delete, "/guilds/\(guild)/members/\(user)")
+
+		case let .removeRoleFromGuildMember(guild, member, role):
+			return (.delete, "/guilds/\(guild)/members/\(member)/roles/\(role)")
 
         case let .replyToInteraction(interactionId, token):
             return (.post, "/interactions/\(interactionId)/\(token)/callback")

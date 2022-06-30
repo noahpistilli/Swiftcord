@@ -10,6 +10,8 @@ enum Endpoint {
 
     case gateway
 
+	case addRoleToGuildMember(Snowflake, Snowflake, Snowflake)
+
     case addPinnedChannelMessage(Snowflake, Snowflake)
 
     case beginGuildPrune(Snowflake)
@@ -179,6 +181,8 @@ enum Endpoint {
     case removeGuildBan(Snowflake, Snowflake)
 
     case removeGuildMember(Snowflake, Snowflake)
+
+	case removeRoleFromGuildMember(Snowflake, Snowflake, Snowflake)
 
     case replyToInteraction(Snowflake, String)
 

@@ -27,6 +27,7 @@ public enum InteractionCallbackType: Int, Encodable {
 public enum ApplicationCommandSetupError: Error {
 	case tooManyElements(errorMsg: String)
 	case valueTooLong(errorMsg: String)
+    case invalidOptionType(errorMsg: String)
 }
 
 /// Existing ApplicationCommands, retrieved with GetApplicationCommands().

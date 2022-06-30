@@ -46,6 +46,16 @@ public class SlashCommandBuilder: Encodable {
 		guard self.options.count < 25 else {
 			throw ApplicationCommandSetupError.tooManyElements(errorMsg: "Command '\(self.name)' already has the maximum of 25 options assigned to it. Cannot add option '\(option.name)'.")
 		}
+        
+        if ((option.type == .subCommandGroup) || (option.type == .subCommand)) && !self.options.isEmpty {
+            if self.options.contains(where: { $0.type != .subCommandGroup && $0.type != .subCommand }) {
+                throw ApplicationCommandSetupError.invalidOptionType(errorMsg: "Command '\(self.name)' can't have subCommand or subCommandGroup type of options.")
+            }
+        } else {
+            if self.options.contains(where: { ($0.type == .subCommandGroup) || ($0.type == .subCommand) }) {
+                throw ApplicationCommandSetupError.invalidOptionType(errorMsg: "Command '\(self.name)' can only have subCommand or subCommandGroup type of options.")
+            }
+        }
 
         self.options.append(option)
         return self

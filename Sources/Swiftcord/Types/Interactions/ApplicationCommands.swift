@@ -130,6 +130,10 @@ public class ApplicationCommandOptions: Codable {
     }
     
     public func addOption(_ option: ApplicationCommandOptions) throws -> Self {
+        guard self.options?.count ?? 0 < 25 else {
+            throw ApplicationCommandSetupError.tooManyElements(errorMsg: "Command '\(self.name)' already has the maximum of 25 options assigned to it. Cannot add option '\(option.name)'.")
+        }
+        
         switch self.type {
         case .subCommand where (option.type != .subCommand && option.type != .subCommandGroup):
             self.options == nil ? self.options = [option] : self.options!.append(option)

@@ -92,7 +92,7 @@ public class ApplicationCommandOptions: Codable {
         self.choices = (type == .subCommandGroup || type == .subCommand) ? nil : []
         self.channelTypes = nil
         self.autoComplete = (type == .subCommandGroup || type == .subCommand) ? nil : false
-        self.options = (type == .subCommandGroup || type == .subCommand) ? [] : nil
+        self.options = nil
     }
 
     public func addChoice(name: String, value: String) throws -> Self {

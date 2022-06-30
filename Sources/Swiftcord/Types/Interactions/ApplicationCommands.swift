@@ -73,25 +73,26 @@ public class ApplicationCommandOptions: Codable {
     public var description: String
     public var required: Bool?
     public var choices: [ApplicationChoices]?
-    // TODO: Subcommands
     public var channelTypes: Int?
     public var autoComplete: Bool?
+    public var options: [ApplicationCommandOptions]?
 
     public init(name: String, description: String, type: ApplicationCommandType) throws {
-		guard description.count <= 100 else {
-			throw ApplicationCommandSetupError.valueTooLong(errorMsg: "Application Command Option '\(description)' description is too long (\(description.count) characters, max is 100).")
-		}
-		guard name.count <= 32 else {
-			throw ApplicationCommandSetupError.valueTooLong(errorMsg: "Application Command Option '\(name)' name is too long (\(name.count) characters, max is 32).")
-		}
+        guard description.count <= 100 else {
+            throw ApplicationCommandSetupError.valueTooLong(errorMsg: "Application Command Option '\(description)' description is too long (\(description.count) characters, max is 100).")
+        }
+        guard name.count <= 32 else {
+            throw ApplicationCommandSetupError.valueTooLong(errorMsg: "Application Command Option '\(name)' name is too long (\(name.count) characters, max is 32).")
+        }
 
         self.type = type
         self.name = name
         self.description = description
-        self.required = true
-        self.choices = []
+        self.required = (type == .subCommandGroup || type == .subCommand) ? nil : true
+        self.choices = (type == .subCommandGroup || type == .subCommand) ? nil : []
         self.channelTypes = nil
-        self.autoComplete = false
+        self.autoComplete = (type == .subCommandGroup || type == .subCommand) ? nil : false
+        self.options = (type == .subCommandGroup || type == .subCommand) ? [] : nil
     }
 
     public func addChoice(name: String, value: String) throws -> Self {
@@ -117,6 +118,22 @@ public class ApplicationCommandOptions: Codable {
     public func setRequired(required: Bool) -> Self {
         self.required = required
 
+        return self
+    }
+    
+    public func addOption(_ option: ApplicationCommandOptions) throws -> Self {
+        switch self.type {
+        case .subCommand where (option.type != .subCommand && option.type != .subCommandGroup):
+            self.options == nil ? self.options = [option] : self.options!.append(option)
+            
+        case .subCommandGroup where option.type == .subCommandGroup:
+            self.options == nil ? self.options = [option] : self.options!.append(option)
+            
+        default:
+            throw ApplicationCommandSetupError.invalidOptionType(errorMsg: "Application Command Option '\(self.name)' is not allow to have a \(option.type) type option")
+            
+        }
+        
         return self
     }
 }

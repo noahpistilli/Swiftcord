@@ -134,7 +134,7 @@ public class ApplicationCommandOptions: Codable {
         case .subCommand where (option.type != .subCommand && option.type != .subCommandGroup):
             self.options == nil ? self.options = [option] : self.options!.append(option)
             
-        case .subCommandGroup where option.type == .subCommandGroup:
+        case .subCommandGroup where option.type == .subCommand:
             self.options == nil ? self.options = [option] : self.options!.append(option)
             
         default:

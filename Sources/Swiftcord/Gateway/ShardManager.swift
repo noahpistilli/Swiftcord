@@ -28,16 +28,14 @@ class ShardManager {
      Used to create a set amount of shards
      - parameter amount: Number of shards to instantiate
      */
-    func create(_ amount: Int) {
+    func create(_ amount: Int) async {
         guard self.swiftcord != nil else { return }
         guard self.shards.isEmpty else { return }
 
         for id in 0 ..< amount {
             let shard = Shard(self.swiftcord!, id, amount, self.gatewayUrl!, eventLoopGroup: self.eventLoopGroup)
             self.shards.append(shard)
-            Task {
-                await shard.start()
-            }
+            await shard.start()
         }
     }
 

@@ -180,65 +180,63 @@ open class Swiftcord: Eventable {
     }
 
     /// Starts the bot
-    public func connect() {
+    public func connect() async {
         // Convert all our keys to snake case
         self.encoder.keyEncodingStrategy = .convertToSnakeCase
         self.shardManager.swiftcord = self
 
         if self.options.willShard {
-            Task {
-                do {
-                    let data = try await self.getGateway()
+            do {
+                let data = try await self.getGateway()
 
-                    self.shardManager.gatewayUrl = "\(data["url"] as! String)/?v=9&encoding=json"
-                    self.shardCount = data["shards"] as! Int
+                self.shardManager.gatewayUrl = "\(data["url"] as! String)/?v=9&encoding=json"
+                self.shardCount = data["shards"] as! Int
 
-                    guard self.options.isDistributed else {
-                        self.shardManager.create(self.shardCount)
-                        return
-                    }
-
-                    let arguments = CommandLine.arguments
-
-                    guard arguments.count > 1 else {
-                        self.logger.error("[Swiftcord] Insufficient argument count.")
-                        return
-                    }
-
-                    guard arguments.contains("--shard") else {
-                        self.logger.error("[Swiftcord] Must specify shard with '--shard'")
-                        return
-                    }
-
-                    guard arguments.firstIndex(of: "--shard")! != arguments.count - 1 else {
-                        self.logger.error("[Swiftcord] '--shard' must not be the last argument. Correct syntax is '--shard {id here}'")
-                        return
-                    }
-
-                    guard let shardId = Int(arguments[arguments.firstIndex(of: "--shard")! + 1]) else {
-                        self.logger.error("[Swiftcord] Shard ID could not be recognized.")
-                        return
-                    }
-
-                    self.shardManager.spawn(shardId)
-                } catch ResponseError.nonSuccessfulRequest(let resp) {
-                    guard resp.statusCode == 401 else {
-                        sleep(3)
-                        self.connect()
-                        return
-                    }
-
-                    self.error("Bot token invalid.")
+                guard self.options.isDistributed else {
+                    await self.shardManager.create(self.shardCount)
                     return
                 }
+
+                let arguments = CommandLine.arguments
+
+                guard arguments.count > 1 else {
+                    self.logger.error("[Swiftcord] Insufficient argument count.")
+                    return
+                }
+
+                guard arguments.contains("--shard") else {
+                    self.logger.error("[Swiftcord] Must specify shard with '--shard'")
+                    return
+                }
+
+                guard arguments.firstIndex(of: "--shard")! != arguments.count - 1 else {
+                    self.logger.error("[Swiftcord] '--shard' must not be the last argument. Correct syntax is '--shard {id here}'")
+                    return
+                }
+
+                guard let shardId = Int(arguments[arguments.firstIndex(of: "--shard")! + 1]) else {
+                    self.logger.error("[Swiftcord] Shard ID could not be recognized.")
+                    return
+                }
+
+                self.shardManager.spawn(shardId)
+            } catch ResponseError.nonSuccessfulRequest(let resp) {
+                guard resp.statusCode == 401 else {
+                    sleep(3)
+                    await self.connect()
+                    return
+                }
+
+                self.error("Bot token invalid.")
+                return
+            } catch {
+                self.error("A fatal error has occured while starting up the bot: \(error.localizedDescription)")
+                return
             }
         } else {
             self.shardCount = 1
-
-            self.shardManager.create(self.shardCount)
+            await self.shardManager.create(self.shardCount)
         }
-
-        RunLoop.current.run()
     }
 
     /**

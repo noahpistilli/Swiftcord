@@ -30,8 +30,9 @@ final class SwiftCordTests: XCTestCase {
     }
     
     /// Sets up the `Swiftcord` object needed across functions
-    func setUpBot() -> Swiftcord {
-        let bot = Swiftcord(token: "")
+    func setUpBot() async -> Swiftcord {
+        let bot = Swiftcord(token: "", eventLoopGroup: nil)
+        
         bot.setIntents(intents: .guildMessages)
         
         let activity = Activities(name: "WiiLink Championships", type: .competing)
@@ -40,23 +41,23 @@ final class SwiftCordTests: XCTestCase {
         return bot
     }
     
-    func testStartBot() {
-        let bot = self.setUpBot()
+    func testStartBot() async {
+        let bot = await self.setUpBot()
         
-        bot.connect()
+        await bot.connect()
     }
     
-    func testMessageCommand() {
-        let bot = self.setUpBot()
+    func testMessageCommand() async {
+        let bot = await self.setUpBot()
         bot.addListeners(TestMessageSend())
         
-        bot.connect()
+        await bot.connect()
     }
     
-    func testSendEmbed() {
-        let bot = self.setUpBot()
+    func testSendEmbed() async {
+        let bot = await self.setUpBot()
         bot.addListeners(TestEmbedSend())
                 
-        bot.connect()
+        await bot.connect()
     }
 }

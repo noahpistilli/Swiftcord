@@ -32,85 +32,14 @@ extension Shard {
 
             /// CHANNEL_CREATE
             case .channelCreate:
-                switch data["type"] as! Int {
-                case 0:
-                    let channel = GuildText(self.swiftcord, data)
-                    await listener.onChannelCreate(event: channel)
-
-                case 1:
-                    let dm = DM(self.swiftcord, data)
-                    await listener.onChannelCreate(event: dm)
-
-                case 2:
-                    let channel = GuildVoice(self.swiftcord, data)
-                    await listener.onVoiceChannelCreate(event: channel)
-
-                case 3:
-                    let group = GroupDM(self.swiftcord, data)
-                    await listener.onChannelCreate(event: group)
-
-                case 4:
-                    let category = GuildCategory(self.swiftcord, data)
-                    await listener.onCategoryCreate(event: category)
-
-                default: return
-                }
-
-                return
+                await self.swiftcord.customGatewayEventHandler.onChannelCreate(swiftcord, data)
 
             case .channelDelete:
-                let type = data["type"] as! Int
-                switch type {
-                case 0, 2, 4:
-                    let guildId = Snowflake(data["guild_id"])!
-                    guard let guild = self.swiftcord.guilds[guildId] else {
-                        return
-                    }
-
-                    let channelId = Snowflake(data["id"])!
-                    guard guild.channels.removeValue(forKey: channelId) != nil else {
-                        return
-                    }
-
-                    // We made the case this broad so we can remove from our cache. We must now pass the proper type to the ListenerAdapter
-                    if type == 0 {
-                        // Text
-                        await listener.onChannelDelete(event: GuildText(self.swiftcord, data))
-                    } else if type == 2 {
-                        // Voice
-                        await listener.onVoiceChannelDelete(event: GuildVoice(self.swiftcord, data))
-                    } else {
-                        // Category
-                        await listener.onCategoryDelete(event: GuildCategory(self.swiftcord, data))
-                    }
-
-                case 1:
-                    let recipient = (data["recipients"] as! [[String: Any]])[0]
-                    let userId = Snowflake(recipient["id"])!
-                    guard let dm = self.swiftcord.dms.removeValue(forKey: userId) else {
-                        return
-                    }
-                    await listener.onChannelDelete(event: dm)
-
-                case 3:
-                    let channelId = Snowflake(data["id"])!
-                    guard let group = self.swiftcord.groups.removeValue(forKey: channelId) else {
-                        return
-                    }
-                    await listener.onChannelDelete(event: group)
-
-                default: return
-                }
+                await self.swiftcord.customGatewayEventHandler.onChannelDelete(swiftcord, data)
 
             /// CHANNEL_PINS_UPDATE
             case .channelPinsUpdate:
-                let channelId = Snowflake(data["channel_id"])!
-                let timestamp = data["last_pin_timestamp"] as? String
-                guard let channel = self.swiftcord.getChannel(for: channelId) else {
-                    return
-                }
-
-                await listener.onChannelPinUpdate(event: channel, lastPin: timestamp?.date)
+                await self.swiftcord.customGatewayEventHandler.onChannelPinsUpdate(swiftcord, data)
 
             /// CHANNEL_UPDATE
             case .channelUpdate:
@@ -302,13 +231,7 @@ extension Shard {
 
             /// MESSAGE_CREATE
             case .messageCreate:
-                let msg = Message(self.swiftcord, data)
-
-                if let channel = msg.channel as? GuildText {
-                    channel.lastMessageId = msg.id
-                }
-
-                await listener.onMessageCreate(event: msg)
+                await self.swiftcord.customGatewayEventHandler.onMessageCreate(swiftcord, data)
 
             /// MESSAGE_DELETE
             case .messageDelete:
@@ -436,52 +359,10 @@ extension Shard {
 
             /// VOICE_STATE_UPDATE
             case .voiceStateUpdate:
-                let guildId = Snowflake(data["guild_id"])!
-                guard let guild = self.swiftcord.guilds[guildId] else {
-                    return
-                }
-                let channelId = Snowflake(data["channel_id"])
-                let userId = Snowflake(data["user_id"])!
-
-                if channelId != nil {
-                    let voiceState = VoiceState(data)
-
-                    guild.voiceStates[userId] = voiceState
-                    guild.members[userId]?.voiceState = voiceState
-
-                    await listener.onVoiceChannelJoin(userId: userId, state: voiceState)
-                } else {
-                    guild.voiceStates.removeValue(forKey: userId)
-                    guild.members[userId]?.voiceState = nil
-
-                    await listener.onVoiceChannelLeave(userId: userId)
-                }
+                await self.swiftcord.customGatewayEventHandler.onVoiceStateUpdate(swiftcord, data)
 
             case .voiceServerUpdate:
-                var sessionId = ""
-                
-                for shard in self.swiftcord.shardManager.shards where shard.id == self.swiftcord.getShard(for: Snowflake(data["guild_id"])!) {
-                    sessionId = shard.sessionId!
-                }
-                
-                do {
-                    let voiceClient = try VoiceClient(
-                        self.swiftcord,
-                        gatewayUrl: "wss://\(data["endpoint"] as! String)",
-                        token: data["token"] as! String,
-                        guildId: Snowflake(data["guild_id"])!,
-                        sessionId: sessionId,
-                        eventLoopGroup: self.eventLoopGroup
-                    )
-                    
-                    // Start the voice client.
-                    await voiceClient.start()
-                } catch {
-                    self.swiftcord.error("No suitable networking interface found. Swiftcord cannot start the voice client without one.")
-                }
-            
-                // We cannot dispatch the VoiceClient to the user quite yet.
-                return
+                await self.swiftcord.customGatewayEventHandler.onVoiceServerUpdate(swiftcord, data)
             case .audioData:
                 return
             case .connectionClose:

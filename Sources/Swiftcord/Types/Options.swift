@@ -10,6 +10,9 @@
 public struct SwiftcordOptions {
 
     // MARK: Properties
+    
+    /// Used if the user wants to access gateway payloads using the `CustomGatewayEventHandler` class.
+    public var customGatewayEventHandler: CustomGatewayEventHandler = DefaultGatewayEventHandler()
 
     /// Whether or not the application is a bot or oauth bearer
     public var isBot = true
@@ -30,12 +33,14 @@ public struct SwiftcordOptions {
 
     /// Creates a default SwiftcordOptions
     public init(
+        customGatewayEventHandler: CustomGatewayEventHandler = DefaultGatewayEventHandler(),
         isBot: Bool = true,
         isDistributed: Bool = false,
         willCacheAllMembers: Bool = false,
         willLog: Bool = false,
         willShard: Bool = true
     ) {
+        self.customGatewayEventHandler = customGatewayEventHandler
         self.isBot = isBot
         self.isDistributed = isDistributed
         self.willCacheAllMembers = willCacheAllMembers

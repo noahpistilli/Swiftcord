@@ -18,6 +18,9 @@ import NIOCore
 open class Swiftcord: Eventable {
     // MARK: Properties
 
+    /// Used if the user wants to access gateway payloads using the `CustomGatewayEventHandler` class.
+    public var customGatewayEventHandler: CustomGatewayEventHandler = DefaultGatewayEventHandler()
+    
     /// Collection of DMChannels mapped by user id
     public internal(set) var dms = [Snowflake: DM]() {
         didSet {
@@ -120,6 +123,7 @@ open class Swiftcord: Eventable {
      - parameter options: Options to give bot (sharding, offline members, etc)
      */
     public init(token: String, options: SwiftcordOptions = SwiftcordOptions(), logger: Logger? = nil, eventLoopGroup: EventLoopGroup?) {
+        self.customGatewayEventHandler = options.customGatewayEventHandler
         self.options = options
         self.token = token
         if let logger = logger {

@@ -96,9 +96,13 @@ public class ApplicationCommandOptions: Codable {
     }
 
     public func addChoice(name: String, value: String) throws -> Self {
-		guard self.choices!.count < 25 else {
-			throw ApplicationCommandSetupError.tooManyElements(errorMsg: "Application Command Option '\(self.name)' already has the maximum of 25 choices assigned to it. Cannot add choice '\(name)'.")
-		}
+        guard self.type != .subCommand && self.type != .subCommandGroup else {
+            throw ApplicationCommandSetupError.invalidOptionType(errorMsg: "Application Command Option '\(self.name)' is \(self.type) type which does not support choices.")
+        }
+        
+        guard self.choices!.count < 25 else {
+            throw ApplicationCommandSetupError.tooManyElements(errorMsg: "Application Command Option '\(self.name)' already has the maximum of 25 choices assigned to it. Cannot add choice '\(name)'.")
+        }
 
         try self.choices!.append(ApplicationChoices(name: name, value: value)) // Force-unwrap since if we're adding choices then this should have been made with init(), not decoded.
 
@@ -106,9 +110,13 @@ public class ApplicationCommandOptions: Codable {
     }
 
     public func addChoices(choices: ApplicationChoices...) throws -> Self {
-		guard (self.choices!.count + choices.count) <= 25 else {
-			throw ApplicationCommandSetupError.tooManyElements(errorMsg: "Application Command Option '\(self.name)' already has too many choices assigned to it (\(self.choices!.count)) to be able to add \(choices.count) additional ones.")
-		}
+        guard self.type != .subCommand && self.type != .subCommandGroup else {
+            throw ApplicationCommandSetupError.invalidOptionType(errorMsg: "Application Command Option '\(self.name)' is \(self.type) type which does not support choices.")
+        }
+        
+        guard (self.choices!.count + choices.count) <= 25 else {
+            throw ApplicationCommandSetupError.tooManyElements(errorMsg: "Application Command Option '\(self.name)' already has too many choices assigned to it (\(self.choices!.count)) to be able to add \(choices.count) additional ones.")
+        }
 
         self.choices! += choices // Force-unwrap since if we're adding choices then this should have been made with init(), not decoded.
 

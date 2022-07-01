@@ -81,7 +81,7 @@ public class SlashCommandEvent: InteractionEvent, OptionsGettable {
     
 }
 
-public class SlashCommandEventOptions: OptionsGettable {
+public struct SlashCommandEventOptions: OptionsGettable {
     public let name: String
     public let type: ApplicationCommandType
     public let value: String?

@@ -562,7 +562,7 @@ public class Guild: Updatable, Imageable {
 
      - parameter channelId: ID of the channel you would like to join
      */
-    func joinVoiceChannel(_ channelId: Snowflake) {
+    public func joinVoiceChannel(_ channelId: Snowflake) {
         for shard in self.swiftcord!.shardManager.shards where shard.id == self.swiftcord!.getShard(for: self.id) {
             shard.joinVoiceChannel(channelId, in: self.id)
         }
@@ -571,7 +571,7 @@ public class Guild: Updatable, Imageable {
     /**
      Leaves a voice channel in this guild if we are in one
      */
-    func leaveVoiceChannel() {
+    public func leaveVoiceChannel() {
         for shard in self.swiftcord!.shardManager.shards where shard.id == self.swiftcord!.getShard(for: self.id) {
             shard.leaveVoiceChannel(in: self.id)
         }

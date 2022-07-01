@@ -12,6 +12,8 @@ import Foundation
 /// or to change the way an event is handled. An example is Swiftlink, which requires the
 /// 
 open class CustomGatewayEventHandler {
+    public init() {}
+    
     open func onChannelCreate(_ swiftcord: Swiftcord, _ payload: [String : Any]) async {
         for listener in swiftcord.listenerAdaptors {
             switch payload["type"] as! Int {

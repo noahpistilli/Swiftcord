@@ -52,9 +52,12 @@ public class SlashCommandEvent: InteractionEvent {
 
         self.channelId = Snowflake(data["channel_id"])!
 
-        var userJson = data["member"] as! [String: Any]
-        userJson = userJson["user"] as! [String: Any]
-        self.user = User(swiftcord, userJson)
+        if let userJson = data["member"] as? [String: Any] {
+            self.user = User(swiftcord, userJson["user"] as! [String: Any])
+        } else {
+            self.user = User(swiftcord, data["user"] as! [String: Any])
+        }
+
 
         self.swiftcord = swiftcord
         self.token = data["token"] as! String

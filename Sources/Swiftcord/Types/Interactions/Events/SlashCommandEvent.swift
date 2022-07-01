@@ -7,11 +7,19 @@
 
 import Foundation
 
-public class SlashCommandEvent: InteractionEvent {
+public protocol OptionsGettable {
+    var options: [SlashCommandEventOptions] { get }
+    
+    var data: [String: Any] { get }
+    
+    var swiftcord: Swiftcord { get }
+}
+
+public class SlashCommandEvent: InteractionEvent, OptionsGettable {
 
     public var channelId: Snowflake
 
-    private let data: [String: Any]
+    public let data: [String: Any]
 
     public let interactionId: Snowflake
 
@@ -46,7 +54,7 @@ public class SlashCommandEvent: InteractionEvent {
 
         if let eventOptions =  options["options"] as? [Any] {
             for option in eventOptions {
-                self.options.append(SlashCommandEventOptions(data: option as! [String: Any]))
+                self.options.append(SlashCommandEventOptions(data: option as! [String: Any], swiftcord: swiftcord))
             }
         }
 
@@ -70,7 +78,53 @@ public class SlashCommandEvent: InteractionEvent {
         }
     }
     
-    public func getOptionAsAttachment(optionName: String) -> Attachment? {
+    
+}
+
+public class SlashCommandEventOptions: OptionsGettable {
+    public let name: String
+    public let type: ApplicationCommandType
+    public let value: String?
+    public let data: [String: Any]
+    public let options: [SlashCommandEventOptions]
+    public let swiftcord: Swiftcord
+
+    init(data: [String: Any], swiftcord: Swiftcord) {
+        self.name = data["name"] as! String
+        self.type = ApplicationCommandType(rawValue: data["type"] as! Int)!
+        self.data = data
+        self.swiftcord = swiftcord
+
+        if self.type == .int {
+            self.value = String(data["value"] as! Int)
+        } else if self.type == .bool {
+            self.value = String(data["value"] as! Bool)
+        } else if self.type != .subCommand && self.type != .subCommandGroup {
+            self.value = (data["value"] as! String)
+        } else {
+            self.value = nil
+            
+            if let eventOptions = data["options"] as? [Any] {
+                self.options = {
+                    var result = [SlashCommandEventOptions]()
+                    
+                    for option in eventOptions {
+                        result.append(SlashCommandEventOptions(data: option as! [String: Any], swiftcord: swiftcord))
+                    }
+                    
+                    return result
+                }()
+                
+                return
+            }
+        }
+        
+        self.options = [SlashCommandEventOptions]()
+    }
+}
+
+public extension OptionsGettable {
+    func getOptionAsAttachment(optionName: String) -> Attachment? {
         let options = self.data["data"] as! [String: Any]
         var attachment: Attachment?
         
@@ -91,7 +145,7 @@ public class SlashCommandEvent: InteractionEvent {
     }
 
     /// Returns the option data as a `Bool`.
-    public func getOptionAsBool(optionName: String) -> Bool? {
+    func getOptionAsBool(optionName: String) -> Bool? {
         var bool: Bool?
 
         for option in self.options {
@@ -110,7 +164,7 @@ public class SlashCommandEvent: InteractionEvent {
     }
 
     /// Returns the data from the given option in the Channel protocol. The developer must cast this value to the absolute type.
-    public func getOptionAsChannel(optionName: String) -> Channel? {
+    func getOptionAsChannel(optionName: String) -> Channel? {
         let options = self.data["data"] as! [String: Any]
 
         // Options can be nil, as such we return an optional value
@@ -121,7 +175,7 @@ public class SlashCommandEvent: InteractionEvent {
                 if option.name == optionName {
                     if option.type == .channel {
                         var channelDict = optionData["channels"] as! [String: Any]
-                        channelDict = channelDict[option.value] as! [String: Any]
+                        channelDict = channelDict[option.value!] as! [String: Any]
                         channel = GuildText(self.swiftcord, channelDict)
                     } else {
                         self.swiftcord.warn("The option \(optionName) is not a channel!")
@@ -135,13 +189,13 @@ public class SlashCommandEvent: InteractionEvent {
     }
 
     /// Returns the option data as a `Double`. Discord considers this type as a `Number`
-    public func getOptionAsDouble(optionName: String) -> Double? {
+    func getOptionAsDouble(optionName: String) -> Double? {
         var double: Double?
 
         for option in self.options {
             if option.name == optionName {
                 if option.type == .number {
-                    double = Double(option.value)
+                    double = Double(option.value!)
                 }
             }
         }
@@ -150,13 +204,13 @@ public class SlashCommandEvent: InteractionEvent {
     }
 
     /// Returns the option data as an `Int`.
-    public func getOptionAsInt(optionName: String) -> Int? {
+    func getOptionAsInt(optionName: String) -> Int? {
         var int: Int?
 
         for option in self.options {
             if option.name == optionName {
                 if option.type == .int {
-                    int = Int(option.value)
+                    int = Int(option.value!)
                 }
             }
         }
@@ -165,7 +219,7 @@ public class SlashCommandEvent: InteractionEvent {
     }
 
     /// Returns the option data as `Member` object.
-    public func getOptionAsMember(optionName: String) -> Member? {
+    func getOptionAsMember(optionName: String) -> Member? {
         let options = self.data["data"] as! [String: Any]
 
         var member: Member?
@@ -175,7 +229,7 @@ public class SlashCommandEvent: InteractionEvent {
                 if option.name == optionName {
                     if option.type == .user {
                         var memberDict = optionData["members"] as! [String: Any]
-                        memberDict = memberDict[option.value] as! [String: Any]
+                        memberDict = memberDict[option.value!] as! [String: Any]
                         member = Member(self.swiftcord, self.swiftcord.getGuild(for: Snowflake(data["channel_id"] as! String)!)!, memberDict)
                         break
                     }
@@ -187,7 +241,7 @@ public class SlashCommandEvent: InteractionEvent {
     }
 
     /// Returns the option data as a `Role` object.
-    public func getOptionAsRole(optionName: String) -> Role? {
+    func getOptionAsRole(optionName: String) -> Role? {
         let options = self.data["data"] as! [String: Any]
 
         // Options can be nil, as such we return an optional value
@@ -198,7 +252,7 @@ public class SlashCommandEvent: InteractionEvent {
                 if option.name == optionName {
                     if option.type == .role {
                         var roleDict = optionData["roles"] as! [String: Any]
-                        roleDict = roleDict[option.value] as! [String: Any]
+                        roleDict = roleDict[option.value!] as! [String: Any]
                         role = Role(roleDict)
                     } else {
                         self.swiftcord.warn("The option \(optionName) is not a role!")
@@ -212,7 +266,7 @@ public class SlashCommandEvent: InteractionEvent {
     }
 
     /// Returns the option data as a `String`.
-    public func getOptionAsString(optionName: String) -> String? {
+    func getOptionAsString(optionName: String) -> String? {
         var string: String?
 
         for option in self.options {
@@ -226,7 +280,7 @@ public class SlashCommandEvent: InteractionEvent {
         return string
     }
 
-    public func getOptionAsUser(optionName: String) -> User? {
+    func getOptionAsUser(optionName: String) -> User? {
         let options = self.data["data"] as! [String: Any]
 
         var user: User?
@@ -236,7 +290,7 @@ public class SlashCommandEvent: InteractionEvent {
                 if option.name == optionName {
                     if option.type == .user {
                         var userDict = optionData["users"] as! [String: Any]
-                        userDict = userDict[option.value] as! [String: Any]
+                        userDict = userDict[option.value!] as! [String: Any]
                         user = User(self.swiftcord, userDict)
                         break
                     }
@@ -246,23 +300,17 @@ public class SlashCommandEvent: InteractionEvent {
 
         return user
     }
-}
-
-public struct SlashCommandEventOptions {
-    public let name: String
-    public let type: ApplicationCommandType
-    public let value: String
-
-    init(data: [String: Any]) {
-        self.name = data["name"] as! String
-        self.type = ApplicationCommandType(rawValue: data["type"] as! Int)!
-
-        if self.type == .int {
-            self.value = String(data["value"] as! Int)
-        } else if self.type == .bool {
-            self.value = String(data["value"] as! Bool)
-        } else {
-            self.value = data["value"] as! String
-        }
+    
+    /// Return option data as a `SlashCommandEventOptions` object.
+    /// Used to get `subCommand` and `subCommandGroup` types normally.
+    func getOptionAsSlashCommandEventOptions(optionName: String) -> SlashCommandEventOptions? {
+        var slashCommandEventOptions: SlashCommandEventOptions?
+            for option in self.options {
+                if option.name == optionName {
+                    slashCommandEventOptions = option
+                }
+            }
+        
+        return slashCommandEventOptions
     }
 }

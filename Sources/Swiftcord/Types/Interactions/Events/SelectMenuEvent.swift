@@ -16,8 +16,8 @@ public class SelectMenuEvent: InteractionEvent {
     public let swiftcord: Swiftcord
 
     /// Guild object for this channel
-    public var guild: Guild {
-        return self.swiftcord.getGuild(for: channelId)!
+    public var guild: Guild? {
+        return self.swiftcord.getGuild(for: channelId)
     }
 
     public let token: String
@@ -44,14 +44,24 @@ public class SelectMenuEvent: InteractionEvent {
         let componentData = SelectMenuComponentData(componentType: inter["component_type"] as! Int, customId: inter["custom_id"] as! String, value: (inter["values"] as! [String])[0])
         self.selectedValue = componentData
 
-        var userJson = data["member"] as! [String: Any]
-        userJson = userJson["user"] as! [String: Any]
+        var userJson: [String: Any]
+        if let memberJson = data["member"] as? [String: Any] {
+            userJson = memberJson["user"] as! [String: Any]
+        } else {
+            userJson = data["user"] as! [String: Any]
+        }
         self.user = User(swiftcord, userJson)
 
         self.ephemeral = 0
         self.isDefered = false
 
-        self.member = Member(swiftcord, guild, data["member"] as! [String: Any])
+        self.member = nil
+        if let memberData = data["member"] as? [String: Any] {
+            guard let guild = self.guild else {
+                return
+            }
+            self.member = Member(swiftcord, guild, memberData)
+        }
     }
 }
 

@@ -140,6 +140,18 @@ enum Endpoint {
 
     case getThreads(Snowflake)
 
+    case startThreadWithExistingMessage(channel: Snowflake, message: Snowflake)
+
+    case startThreadWithoutMessage(channel: Snowflake)
+
+    case joinThread(Snowflake)
+
+    case leaveThread(Snowflake)
+
+    case addThreadMember(thread: Snowflake, member: Snowflake)
+
+    case removeThreadMember(thread: Snowflake, member: Snowflake)
+
     case getUser(Snowflake)
 
     case getUserConnections

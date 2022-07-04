@@ -1665,6 +1665,41 @@ open class Swiftcord {
         return Message(self, data as! [String: Any])
     }
 
+    public func createThread(
+        in channel: Snowflake,
+        for message: Snowflake,
+        _ params: StartThreadData
+    ) async throws -> ThreadChannel {
+        let data = try await self.request(.startThreadWithExistingMessage(channel: channel, message: message), body: params.dictionary)
+
+        return ThreadChannel(self, data as! [String: Any])
+    }
+
+    public func createThread(
+        in channel: Snowflake,
+        _ params: StartThreadData
+    ) async throws -> ThreadChannel {
+        let data = try await self.request(.startThreadWithoutMessage(channel: channel), body: params.dictionary)
+
+        return ThreadChannel(self, data as! [String: Any])
+    }
+
+    public func joinThread(id thread: Snowflake) async throws {
+        _ = try await self.request(.joinThread(thread))
+    }
+
+    public func leaveThread(id thread: Snowflake) async throws {
+        _ = try await self.request(.leaveThread(thread))
+    }
+
+    public func remove(member id: Snowflake, fromThread thread: Snowflake) async throws {
+        _ = try await self.request(.removeThreadMember(thread: thread, member: id))
+    }
+
+    public func add(member id: Snowflake, toThread thread: Snowflake) async throws {
+        _ = try await self.request(.addThreadMember(thread: thread, member: id))
+    }
+
     /**
      Sends an embed to channel
 

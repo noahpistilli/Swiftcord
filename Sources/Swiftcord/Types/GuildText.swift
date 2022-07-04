@@ -181,6 +181,21 @@ public class GuildText: GuildChannel, TextChannel, Updatable {
         return try await self.swiftcord?.getWebhooks(from: self.id)
     }
 
+    public func createThread(
+        for message: Snowflake,
+        _ params: StartThreadData
+    ) async throws -> ThreadChannel? {
+        guard self.type != .guildVoice else { return nil }
+        return try await self.swiftcord?.createThread(in: self.id, for: message, params)
+    }
+
+    public func createThread(
+        _ params: StartThreadData
+    ) async throws -> ThreadChannel? {
+        guard self.type != .guildVoice else { return nil }
+        return try await self.swiftcord?.createThread(in: self.id, params)
+    }
+
 }
 
 /// Permission Overwrite Type

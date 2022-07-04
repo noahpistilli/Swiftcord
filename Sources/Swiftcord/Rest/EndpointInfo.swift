@@ -261,6 +261,24 @@ extension Endpoint {
         case let .modifyGuildEmoji(guild, emoji):
             return (.patch, "/guilds/\(guild)/emojis/\(emoji)")
 
+        case let .startThreadWithExistingMessage(channel, message):
+            return (.post, "/channels/\(channel)/messages/\(message)/threads")
+
+        case let .startThreadWithoutMessage(channel):
+            return (.post, "/channels/\(channel)/threads")
+
+        case let .joinThread(id):
+            return (.put, "/channels/\(id)/thread-members/@me")
+
+        case let .leaveThread(id):
+            return (.delete, "/channels/\(id)/thread-members/@me")
+
+        case let .addThreadMember(thread, member):
+            return (.put, "/channels/\(thread)/thread-members/\(member)")
+
+        case let .removeThreadMember(thread, member):
+            return (.delete, "/channels/\(thread)/thread-members/\(member)")
+
         case let .modifyGuildIntegration(guild, integration):
             return (.patch, "/guilds/\(guild)/integrations/\(integration)")
 

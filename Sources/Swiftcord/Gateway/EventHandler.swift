@@ -302,6 +302,26 @@ extension Shard {
 
             /// MESSAGE_CREATE
             case .messageCreate:
+				// Funny business to handle a messageCreate from an existing DM. We no longer get CHANNEL_CREATE along with MESSAGE_CREATE,
+				// so if a message comes in on an existing DM channel, we can't get its Channel when doing the Message init, and get an
+				// exception force-unwrapping.
+				let channelId = data["channel_id"]
+				if let channelSnowflake = Snowflake(channelId) {
+					if self.swiftcord.getChannel(for: channelSnowflake) == nil { // Try to get it cached first.
+						do {
+							guard let _ = try await self.swiftcord.getChannel(channelSnowflake, rest: true) else { // Not cached, pull it from the gateway. This will set it in the swiftcord.dms array.
+								self.swiftcord.error("Unable to get channel on messageCreate.")
+								return
+							}
+						} catch {
+							self.swiftcord.error("Error getting channel in messageCreate: \(error)")
+							return
+						}
+					}
+				} else {
+					return
+				}
+
                 let msg = Message(self.swiftcord, data)
 
                 if let channel = msg.channel as? GuildText {

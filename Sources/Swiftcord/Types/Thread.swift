@@ -8,6 +8,45 @@
 
 import Foundation
 
+public enum ThreadArchiveDuration: Int, Codable {
+    case oneHour = 60
+    case oneDay = 1440 // 24 * 60
+    case threeDays = 4320 // 3 * 24 * 60
+    case sevenDays = 10080 // 7 * 24 * 60
+}
+
+public enum ThreadType: Int, Codable {
+    case newsThread = 10
+    case publicThread = 11
+    case privateThread = 12
+}
+
+public struct StartThreadData: Encodable {
+    public let name: String
+    public let autoArchiveDuration: ThreadArchiveDuration 
+    public let type: ThreadType 
+    public let invitable: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case name = "name"
+        case autoArchiveDuration = "auto_archive_duration"
+        case type = "type"
+        case invitable = "invitable"
+    }
+
+    public init(
+        name: String,
+        autoArchiveDuration: ThreadArchiveDuration = .oneHour,
+        type: ThreadType = .publicThread,
+        invitable: Bool = true
+    ) {
+        self.name = name
+        self.autoArchiveDuration = autoArchiveDuration
+        self.type = type
+        self.invitable = invitable
+    }
+}
+
 public class ThreadChannel: TextChannel, GuildChannel, Updatable {
     // MARK: Properties
 

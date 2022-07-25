@@ -22,6 +22,8 @@ let package = Package(
     name: "yourswiftexecutablehere",
     dependencies: [
         .package(url: "https://github.com/SketchMaster2001/Swiftcord", .branch("master"))
+        // If you're using swift 5.5+, you need to use the following line instead:
+        // .package(url: "https://github.com/SketchMaster2001/Swiftcord", branch: "master")
     ],
     targets: [
       .target(
@@ -37,7 +39,7 @@ After that, open Sources/main.swift and remove everything and replace it with th
 ```swift
 import Swiftcord
 
-let bot = Swiftcord(token: "Your bot token here")
+let bot = Swiftcord(token: "Your bot token here", eventLoopGroup: nil)
 
 // Set activity if wanted
 let activity = Activities(name: "with Swiftcord!", type: .playing)
@@ -47,11 +49,15 @@ bot.editStatus(status: .online, activity: activity)
 bot.setIntents(intents: .guildMessages)
 
 class MyBot: ListenerAdapter {
-  override func onMessageCreate(event: Message) async {
-    if msg.content == "!ping" {
-      try! await msg.reply(with: "Pong!")
+    override func onMessageCreate(event: Message) async {
+        if event.content == "!ping" {
+            do {
+                _ = try await event.reply(with: "Pong!")
+            } catch {
+                print(error)
+            }
+        }
     }
-  }
 }
 
 bot.addListeners(MyBot())

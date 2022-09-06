@@ -389,6 +389,9 @@ public enum Intents: Int {
 
     /// Typing event of a user in a DM
     case directMessagesTyping = 16384
+    
+    /// Required to receive full content of all messages. This is a privileged intent as of September 2022
+    case messageContent = 32768
 
     /// Events on when an event is created, edited or deleted in a guild
     case guildScheduledEvents = 65536

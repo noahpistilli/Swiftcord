@@ -103,7 +103,7 @@ public class ApplicationCommandOptions: Codable {
         return self
     }
 
-    public func addChoices(choices: ApplicationChoices...) throws -> Self {
+    public func addChoices(choices: [ApplicationChoices]) throws -> Self {
 		guard (self.choices!.count + choices.count) <= 25 else {
 			throw ApplicationCommandSetupError.tooManyElements(errorMsg: "Application Command Option '\(self.name)' already has too many choices assigned to it (\(self.choices!.count)) to be able to add \(choices.count) additional ones.")
 		}
@@ -111,6 +111,10 @@ public class ApplicationCommandOptions: Codable {
         self.choices! += choices // Force-unwrap since if we're adding choices then this should have been made with init(), not decoded.
 
         return self
+	}
+
+    public func addChoices(choices: ApplicationChoices...) throws -> Self {
+		return try self.addChoices(choices: choices)
     }
 
     public func setRequired(required: Bool) -> Self {

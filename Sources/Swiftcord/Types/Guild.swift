@@ -262,6 +262,10 @@ public class Guild: Updatable, Imageable {
         self.verificationLevel = VerificationLevel(rawValue: json["verification_level"] as! Int)!
     }
 
+    public func addRole(_ role: Role, toMember memberId: Snowflake) async throws {
+		_ = try await self.swiftcord!.request(.addRoleToGuildMember(self.id, memberId, role.id));
+    }
+
     /**
      Bans a member from this guild
 
@@ -733,6 +737,10 @@ public class Guild: Updatable, Imageable {
         for limit: Int
     ) async throws -> Int? {
         return try await self.swiftcord?.pruneMembers(in: self.id, for: limit)
+    }
+
+    public func removeRole(_ role: Role, fromMember memberId: Snowflake) async throws {
+		_ = try await self.swiftcord?.request(.removeRoleFromGuildMember(self.id, memberId, role.id));
     }
 
     public func removeTimeoutFromUser(

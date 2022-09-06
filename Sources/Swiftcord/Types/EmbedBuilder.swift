@@ -163,12 +163,12 @@ extension EmbedBuilder {
     public struct Field: Encodable {
         public var name: String
         public var value: String
-        public var isInline: Bool
+        public var inline: Bool
 
         public init(name: String = "", value: String = "", isInline: Bool = true) {
             self.name = name
             self.value = value
-            self.isInline = isInline
+            self.inline = isInline
         }
     }
 

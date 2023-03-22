@@ -382,6 +382,7 @@ extension Shard {
 
             /// READY
             case .ready:
+                self.gatewayUrl = "\(data["resume_gateway_url"] as! String)/?v=9&encoding=json"
                 self.swiftcord.readyTimestamp = Date()
                 self.sessionId = data["session_id"] as? String
 

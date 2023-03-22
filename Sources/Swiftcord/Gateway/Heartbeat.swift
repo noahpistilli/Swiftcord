@@ -10,7 +10,7 @@ import Foundation
 import NIOCore
 
 /// <3
-extension Gateway {
+extension Shard {
     func heartbeat(at interval: TimeAmount) {
         Task {
             do {

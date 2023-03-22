@@ -38,11 +38,7 @@ enum VoiceOP: Int {
 
 /// Organize all websocket close codes
 enum CloseOP: Int {
-    case noInternet = 50,
-         clean = 1000,
-         goingAway = 1001,
-         unexpectedServerError = 1011,
-         unknownError = 4000,
+    case unknownError = 4000,
          unknownOP,
          decodeError,
          notAuthenticated,
@@ -56,6 +52,39 @@ enum CloseOP: Int {
          invalidAPIVersion,
          invalidIntents,
          disallowedIntents
+    
+    var canReconnect: Bool {
+        switch self {
+        case .unknownError:
+            return true
+        case .unknownOP:
+            return true
+        case .decodeError:
+            return true
+        case .notAuthenticated:
+            return true
+        case .authenticationFailed:
+            return false
+        case .alreadyAuthenticated:
+            return true
+        case .invalidSeq:
+            return true
+        case .rateLimited:
+            return true
+        case .sessionTimeout:
+            return true
+        case .invalidShard:
+            return false
+        case .shardingRequired:
+            return false
+        case .invalidAPIVersion:
+            return false
+        case .invalidIntents:
+            return false
+        case .disallowedIntents:
+            return false
+        }
+    }
 }
 
 /// Organize all the different http methods

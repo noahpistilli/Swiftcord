@@ -45,8 +45,10 @@ class ShardManager {
     func disconnect() {
         guard self.shards.count > 0 else { return }
 
-        for shard in self.shards {
-            shard.stop()
+        Task {
+            for shard in self.shards {
+                await shard.stop()
+            }
         }
 
         self.shards.removeAll()
@@ -57,11 +59,13 @@ class ShardManager {
      - parameter id: Id of the shard to kill
      */
     func kill(_ id: Int) {
-        guard let index = self.shards.firstIndex(where: { $0.id == id }) else { return }
+        Task {
+            guard let index = self.shards.firstIndex(where: { $0.id == id }) else { return }
 
-        let shard = self.shards.remove(at: index)
+            let shard = self.shards.remove(at: index)
 
-        shard.stop()
+            await shard.stop()
+        }
     }
 
     /**

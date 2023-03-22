@@ -13,7 +13,7 @@ import NIOPosix
 import NIOCore
 
 /// WS class
-class Shard: Gateway {
+actor Shard {
 
     // MARK: Properties
     /// Gateway URL for gateway
@@ -26,9 +26,6 @@ class Shard: Gateway {
     var heartbeatPayload: Payload {
         return Payload(op: .heartbeat, data: self.lastSeq ?? NSNull())
     }
-
-    /// The dispatch queue to handle sending heartbeats
-    let heartbeatQueue: DispatchQueue!
 
     /// ID of shard
     let id: Int
@@ -84,11 +81,6 @@ class Shard: Gateway {
             self.eventLoopGroupProvided = false
         }
 
-        self.heartbeatQueue = DispatchQueue(
-            label: "io.github.SketchMaster2001.Swiftcord.shard.\(id).heartbeat",
-            qos: .userInitiated
-        )
-
         self.globalBucket = Bucket(
             name: "io.github.SketchMaster2001.Swiftcord.shard.\(id).global",
             limit: 120,
@@ -131,66 +123,6 @@ class Shard: Gateway {
         await self.handleEvent(payload.d as! [String: Any], payload.t!)
     }
 
-    /**
-     Handles gateway disconnects
-
-     - parameter code: Close code for the gateway closing
-     */
-    func handleDisconnect(for code: Int) async {
-        self.isReconnecting = true
-
-        self.swiftcord.debug("status of the bot to disconnected")
-        
-        guard let closeCode = CloseOP(rawValue: code) else {
-            self.swiftcord.log("Connection closed with unrecognized response \(code).")
-
-            await self.reconnect()
-
-            return
-        }
-
-        switch closeCode {
-        case .authenticationFailed:
-            self.swiftcord.error("Invalid Bot Token")
-            break
-
-        case .invalidShard:
-            self.swiftcord.warn("Invalid Shard (We messed up here. Try again.)")
-            break
-
-        case .noInternet:
-            try! await Task.sleep(seconds: 10)
-            self.swiftcord.debug("Detected a loss of internet...")
-            await self.reconnect()
-
-        case .shardingRequired:
-            self.swiftcord.error("Sharding is required for this bot to run correctly.")
-            break
-
-        case .invalidAPIVersion:
-            // This should never happen ever
-            self.swiftcord.error("The API version sent to Discord is incorrect. Something is seriously wrong here. Please report this.")
-
-        case .invalidIntents:
-            // This also should never happen
-            self.swiftcord.error("The intents sent to Discord are incorrect. Something is seriously wrong here. Please report this.")
-
-        case .disallowedIntents:
-            self.swiftcord.error("You tried to subscribe to an intent you are not authorized to use. Please remove that intent.")
-            break
-
-        case .unexpectedServerError:
-            self.swiftcord.debug("Unexpected server error, check your internet connection. Reconnecting in 10 seconds")
-            try! await Task.sleep(seconds: 10)
-            await self.reconnect()
-        case .goingAway:
-            self.swiftcord.debug("Going away: The server has moved or the browser is going away")
-            await self.reconnect()
-        default:
-            await self.reconnect()
-        }
-    }
-
     /// Sends shard identity to WS connection
     func identify() {
         #if os(macOS)
@@ -209,9 +141,9 @@ class Shard: Gateway {
             "token": self.swiftcord.token,
             "intents": self.swiftcord.intents,
             "properties": [
-                "$os": osName,
-                "$browser": "Swiftcord",
-                "$device": "Swiftcord"
+                "os": osName,
+                "browser": "Swiftcord",
+                "device": "Swiftcord"
             ],
             "compress": false,
             "large_threshold": 250,

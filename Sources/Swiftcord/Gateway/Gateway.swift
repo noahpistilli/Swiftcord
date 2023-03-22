@@ -17,41 +17,7 @@ import NIOPosix
 import NIOWebSocket
 import NIOCore
 
-protocol Gateway: AnyObject {
-
-    var swiftcord: Swiftcord { get }
-
-    var acksMissed: Int { get set }
-
-    var gatewayUrl: String { get set }
-
-    var heartbeatPayload: Payload { get }
-
-    var heartbeatQueue: DispatchQueue! { get }
-
-    var isConnected: Bool { get set }
-
-    var session: WebSocket? { get set }
-
-    func handleDisconnect(for code: Int) async
-
-    func handlePayload(_ payload: Payload) async
-
-    func heartbeat(at interval: TimeAmount)
-
-    func reconnect() async
-
-    func send(_ text: String, presence: Bool)
-
-    func start() async
-
-    func stop()
-    
-    var eventLoopGroup: EventLoopGroup { get }
-
-}
-
-extension Gateway {
+extension Shard {
 
     /// Starts the gateway connection
     func start() async {
@@ -70,7 +36,6 @@ extension Gateway {
             
             self.onText()
             self.onClose()
-            
         }.whenFailure { error in
             self.swiftcord.error("Failed to connect to Discord, attempting reconnect. Error: \(error)")
             Task { await self.start() }
@@ -85,10 +50,26 @@ extension Gateway {
     }
     
     private func onClose() {
-        // TODO: Properly handle on close, this is insanely incorrect
-        self.session?.onClose.whenComplete { [weak self] _ in
+        guard let ws = self.session else { return }
+        ws.onClose.whenComplete { [weak self] _ in
             guard let self = self else { return }
-            Task { await self.start() }
+            Task {
+                if await self.canReconnect(code: ws.closeCode) {
+                    self.swiftcord.log("Close code: \(ws.closeCode)")
+                        await self.start()
+                } else {
+                    return
+                }
+            }
+        }
+    }
+    
+    private func canReconnect(code: WebSocketErrorCode?) -> Bool {
+        switch code {
+        case let .unknown(_code):
+            guard let discordCode = CloseOP(rawValue: Int(_code)) else { return true }
+            return discordCode.canReconnect
+        default: return true
         }
     }
 }

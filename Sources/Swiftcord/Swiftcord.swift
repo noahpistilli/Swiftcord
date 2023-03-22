@@ -635,8 +635,10 @@ open class Swiftcord {
 
         let payload = Payload(op: .statusUpdate, data: data).encode()
 
-        for shard in self.shardManager.shards {
-            shard.send(payload, presence: true)
+        Task {
+            for shard in self.shardManager.shards {
+                await shard.send(payload, presence: true)
+            }
         }
     }
 

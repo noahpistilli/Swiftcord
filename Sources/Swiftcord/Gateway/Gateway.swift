@@ -15,7 +15,7 @@ import Dispatch
 import WebSocketKit
 import NIOPosix
 import NIOWebSocket
-import NIO
+import NIOCore
 
 protocol Gateway: AnyObject {
 
@@ -37,7 +37,7 @@ protocol Gateway: AnyObject {
 
     func handlePayload(_ payload: Payload) async
 
-    func heartbeat(at interval: Int) async
+    func heartbeat(at interval: TimeAmount)
 
     func reconnect() async
 
@@ -55,75 +55,40 @@ extension Gateway {
 
     /// Starts the gateway connection
     func start() async {
-        self.swiftcord.trace("Before creating loopgroup")
-        let promise = eventLoopGroup.next().makePromise(of: WebSocketErrorCode.self)
-
         self.acksMissed = 0
-        self.swiftcord.trace("Before force unwrapping URL")
-        let url = URL(string: self.gatewayUrl)!
-        let path = self.gatewayUrl.components(separatedBy: "/?")[1]
-
+        
         self.swiftcord.trace("Create websocketclient")
-        let wsClient = WebSocketClient(eventLoopGroupProvider: .shared(eventLoopGroup.next()), configuration: .init(tlsConfiguration: .clientDefault, maxFrameSize: 1 << 31))
-
+        
         self.swiftcord.trace("Before connecting to the websocket")
-        try! await wsClient.connect(
-            scheme: url.scheme!,
-            host: url.host!,
-            port: url.port ?? 443,
-            path: "/?" + path
+        WebSocket.connect(
+            to: self.gatewayUrl,
+            configuration: .init(tlsConfiguration: nil, maxFrameSize: 1 << 31),
+            on: self.eventLoopGroup
         ) { ws in
-
             self.session = ws
             self.isConnected = true
-
-            self.session?.onText { _, text in
-                self.swiftcord.trace("Handle incoming payload: \(text)")
-                await self.handlePayload(Payload(with: text))
-            }
-
-            self.session?.onClose.whenComplete { result in
-                self.swiftcord.trace("onclose.whencomplete")
-                switch result {
-                case .success():
-                    self.isConnected = false
-                    self.swiftcord.trace("Successfull onclose")
-                    // If it is nil we just do nothing
-                    if let closeCode = self.session?.closeCode {
-                        promise.succeed(closeCode)
-                        self.swiftcord.trace("promise succeeded with closeCode")
-                    }
-                    break
-                case .failure(_):
-                    self.swiftcord.trace("session onclose failed")
-                    break
-                }
-            }
-
-            self.swiftcord.log("[Swiftcord] Connected to Discord!")
-        }.get()
-
-        let errorCode = try! await promise.futureResult.get()
-        self.swiftcord.debug("Got errorCode successfully")
-        
-        switch errorCode {
-        case .unknown(let int):
-            // Unknown will the codes sent by Discord
-            self.swiftcord.debug("Discord error code: \(errorCode). Trying to reconnect")
-            await self.handleDisconnect(for: Int(int))
-        case .goingAway:
-            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
-            await self.handleDisconnect(for: 1001)
-        case .unexpectedServerError:
-            // Usually means the client lost their internet connection
-            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
-            await self.handleDisconnect(for: 1011)
-        case .normalClosure:
-            // We always want to keep the bot alive so reconnect
-            self.swiftcord.debug("Websocket error code: \(errorCode). Trying to reconnect")
-            await self.handleDisconnect(for: 1000)
-        default:
-            self.swiftcord.error("Unknown Error Code: \(errorCode). Please restart the app.")
+            
+            self.onText()
+            self.onClose()
+            
+        }.whenFailure { error in
+            self.swiftcord.error("Failed to connect to Discord, attempting reconnect. Error: \(error)")
+            Task { await self.start() }
+        }
+    }
+    
+    private func onText() {
+        self.session?.onText { _, text in
+            self.swiftcord.trace("Handle incoming payload: \(text)")
+            await self.handlePayload(Payload(with: text))
+        }
+    }
+    
+    private func onClose() {
+        // TODO: Properly handle on close, this is insanely incorrect
+        self.session?.onClose.whenComplete { [weak self] _ in
+            guard let self = self else { return }
+            Task { await self.start() }
         }
     }
 }

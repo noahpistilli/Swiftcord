@@ -5,7 +5,9 @@
 //  Created by Alejandro Alonso
 //  Copyright © 2017 Alejandro Alonso. All rights reserved.
 //
+
 import Foundation
+import NIOCore
 
 /// Gateway Handler
 extension Shard {
@@ -35,8 +37,8 @@ extension Shard {
 
         /// OP: 10
         case .hello:
-            self.heartbeat(at: (payload.d as! [String: Any])["heartbeat_interval"] as! Int)
-
+            self.heartbeat(at: .milliseconds((payload.d as! [String: Any])["heartbeat_interval"] as! Int64))
+            
             guard !self.isReconnecting else {
                 self.isReconnecting = false
                 let data: [String: Any] = [

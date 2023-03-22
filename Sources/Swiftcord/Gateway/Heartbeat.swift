@@ -7,30 +7,31 @@
 //
 
 import Foundation
-import Dispatch
+import NIOCore
 
 /// <3
 extension Gateway {
-    func heartbeat(at interval: Int) {
-        guard self.isConnected else {
-            return
-        }
-
-        guard self.acksMissed < 3 else {
-            Task {
-                self.swiftcord.debug("[Swiftcord] Did not receive ACK from server, reconnecting...")
-                await self.reconnect()
+    func heartbeat(at interval: TimeAmount) {
+        Task {
+            do {
+                try await Task.sleep(nanoseconds: UInt64(interval.nanoseconds))
+            } catch {
+                self.swiftcord.error("Heartbeat failed to sleep. Error: \(error)")
             }
-            return
-        }
+            
+            guard self.isConnected else {
+                return
+            }
 
-        self.acksMissed += 1
+            // TODO: Should 3 missed acks be the determination of a zombied connection? Less?
+            guard self.acksMissed < 3 else {
+                    self.swiftcord.debug("Did not receive ACK from server, reconnecting...")
+                    await self.reconnect()
+                return
+            }
 
-        self.send(self.heartbeatPayload.encode(), presence: false)
-
-        self.heartbeatQueue.asyncAfter(
-            deadline: .now() + .milliseconds(interval)
-        ) { [unowned self] in
+            self.acksMissed += 1
+            self.send(self.heartbeatPayload.encode(), presence: false)
             self.heartbeat(at: interval)
         }
     }
